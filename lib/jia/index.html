@@ -5,7 +5,7 @@
 <style>
 body{
     font-size: 12px;
-    font-family: Source Code Pro,DejaVu Sans Mono,Ubuntu Mono,Anonymous Pro,Droid Sans Mono,Menlo,Monaco,Consolas,Inconsolata,Courier,monospace,PingFang SC,Microsoft YaHei,sans-serif;
+    font-family: Source Code Pro,DejaVu Sans Mono,Ubuntu Mono,Anonymous Pro,Droid Sans Mono,Menlo,Monaco,Consolas,Inconsolata,Courier,monospace,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif;
     text-align: center;
 }
 table{
@@ -32,36 +32,48 @@ table{
     <img id='img' src=''></img>
 </div>
 <script>
-const LINES=5;
+const ov=function(x){return (window.innerWidth || (document.body && document.body.clientWidth) )>x};
+
 const ITEMS=40;
 const ALTS=[
-'','','','','',
-'','','','','',
-'','','','','',
-'','','','','',
-'','','','','',
-'','','','','',
-'','','','','',
-'','','','',''
+'玩手机佳佳','桃园五结义','佳佳凝望','睿智的眼神','耶~',
+'普信注视','玩手机','爬省体栏杆','省体石猴','荡秋千',
+'佳宇歪了','普信注视大','图书馆翻墙','翻墙2','无聊死了',
+'啥玩意儿？','背影','锻炼哦','妹妹的滑板','滑板2封面',
+'真的会栓Q','无语住了','佳宇扭曲','嘤嘤嘤~','让我康康',
+'海绵宝宝','鸡骨架佳佳','海绵宝宝2','海绵宝宝3','滑铲',
+'地铁打排位','合成表','看我多开心','你在看啥？','社会你佳哥',
+'...','...2','...3','...4','偶遇'
 ];
 const FAKE='../fake.html';
-const LOVEJIAYU1='<del>林琼喜欢<span style="color:114514" onclick="document.writeln(LOVEJIAYU2);setTimeout(function(){location=FAKE;},3000)">甲鱼</span>但是不承认。哈哈</del>';
+const LOVEJIAYU1='<del>林琼喜欢<span style="color:#114514;font-style:none;" onclick="document.writeln(LOVEJIAYU2);setTimeout(function(){location=FAKE;},3000)">甲鱼</span>但是不承认。哈哈</del>';
 const LOVEJIAYU2='<br />而且梦滢也偷偷暗恋&nbsp;<span onclick="location=FAKE">甲鱼<span>&nbsp;哦'
 
 const list=document.getElementById('wrapper');
 const img=document.getElementById('img');
-let tmp='';
-for(let i=0;i<LINES;i++){
-    tmp+='<tr>\n';
-    for(let j=i;j<ITEMS;j+=LINES){
-        tmp+=(
-        '<td><button onclick="img.src=this.innerText;">'+j+'.jpg</button></td>\n'+
-        '<td>'+ALTS[j]+'&nbsp;</td>\n'
-        );
+
+let LINES=5;
+let selected=-1;
+
+window.onload=window.onresize=document.body.onclick=function(){
+    LINES=ov(1200)?5:ov(750)?8:ov(468)?10:ov(340)?14:ov(270)?20:40;
+    let tmp='';
+    for(let i=0;i<LINES;i++){
+        tmp+='<tr>\n';
+        for(let j=i;j<ITEMS;j+=LINES){
+            tmp+=(
+            selected==j?
+            '<td><button style="background-color:green" onclick="selected='+j+';img.src=this.innerText;">'+j+'.jpg</button></td>\n'+
+            '<td style="color:green;font-weight:bold">'+ALTS[j]+'&nbsp;</td>\n'
+            :
+            '<td><button onclick="selected='+j+';img.src=this.innerText;">'+j+'.jpg</button></td>\n'+
+            '<td>'+ALTS[j]+'&nbsp;</td>\n'
+            );
+        }
+        tmp+='</tr>\n';
     }
-    tmp+='</tr>\n';
+    list.innerHTML=tmp;
 }
-list.innerHTML+=tmp;
 </script>
 <div id='bottom'>Copyright (c) by <b>wxr</b>. <a class='comment' onclick='document.writeln(LOVEJIAYU1);setTimeout(function(){document.writeln(LOVEJIAYU2);},5000)'>More</a></div>
 </body>
