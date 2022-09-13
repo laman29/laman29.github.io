@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>index</title>
+<link rel='stylesheet' type='text/css' href='../../9934/css/header.css' />
+<style>
+body{
+    font-size: 12px;
+    font-family: Source Code Pro,DejaVu Sans Mono,Ubuntu Mono,Anonymous Pro,Droid Sans Mono,Menlo,Monaco,Consolas,Inconsolata,Courier,monospace,PingFang SC,Microsoft YaHei,sans-serif;
+    text-align: center;
+}
+table{
+    margin: 0 auto;
+}
+#bottom{
+    margin: 16 auto;
+    font-size: 8px;
+    color: #114514;
+}
+.comment{
+    color: gray;
+}
+</style>
+</head>
+<body>
+<div id='header'> 
+<span class='comment'>大</span>甲鱼查看器 <span class='comment'>Index of /lib/jia</span>
+<div style='height:3px;width:100%;background-color:#aaaaaa;' align='center'></div>
+<div style='height:3px;width:100%;background-color:#ffffff;' align='center'></div>
+</div>
+<div id='wrapper-out'>
+    <table id='wrapper' border='0'></table>
+    <img id='img' src=''></img>
+</div>
+<script>
+const LINES=5;
+const ITEMS=40;
+const ALTS=[
+'','','','','',
+'','','','','',
+'','','','','',
+'','','','','',
+'','','','','',
+'','','','','',
+'','','','','',
+'','','','',''
+];
+const FAKE='../fake.html';
+const LOVEJIAYU1='<del>林琼喜欢<span style="color:114514" onclick="document.writeln(LOVEJIAYU2);setTimeout(function(){location=FAKE;},3000)">甲鱼</span>但是不承认。哈哈</del>';
+const LOVEJIAYU2='<br />而且梦滢也偷偷暗恋&nbsp;<span onclick="location=FAKE">甲鱼<span>&nbsp;哦'
+
+const list=document.getElementById('wrapper');
+const img=document.getElementById('img');
+let tmp='';
+for(let i=0;i<LINES;i++){
+    tmp+='<tr>\n';
+    for(let j=i;j<ITEMS;j+=LINES){
+        tmp+=(
+        '<td><button onclick="img.src=this.innerText;">'+j+'.jpg</button></td>\n'+
+        '<td>'+ALTS[j]+'&nbsp;</td>\n'
+        );
+    }
+    tmp+='</tr>\n';
+}
+list.innerHTML+=tmp;
+</script>
+<div id='bottom'>Copyright (c) by <b>wxr</b>. <a class='comment' onclick='document.writeln(LOVEJIAYU1);setTimeout(function(){document.writeln(LOVEJIAYU2);},5000)'>More</a></div>
+</body>
+</html>
