@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>点击屏幕...</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<style type="text/css">
+* {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+}
+video#video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+video#video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+</style>
+</head>
+<body>
+    <div id="overlay" class="overlay">
+        <video id="video" class="video" src="https://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4"></video>
+<script type="text/javascript">
+document.body.onclick=document.body.ontouchstart=function(){
+var video=document.getElementById("video");
+video.play();
+video.onended=function(){location.reload()};
+document.title='。。。'
+}
+</script>
+</body>
+</html>
