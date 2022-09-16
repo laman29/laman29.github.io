@@ -9,6 +9,13 @@
 <script>
 const allow_list=[15,21,23,30,31,42];
 const name_list='*琼 **艳 ***滢 **然 **青 **宇'.split(' ');
+const allowed=[];
+var v='';
+
+for(let i=0;i<allow_list.length;i++){
+    let x=allow_list[i];
+    allowed[allowed.length]=x+'C202132'+x;
+}
 
 function setCookie(cname,cvalue,exdays){
     var d=new Date();
@@ -42,13 +49,6 @@ if(getCookie('reg')){
     location=('https://laman29.github.io/'+arg).replace('//','/');
 }
 
-const allowed=[];
-var v='';
-
-for(let i=0;i<allow_list.length;i++){
-    let x=allow_list[i];
-    allowed[allowed.length]=x+'C202132'+x;
-}
 const p=document.getElementById('pwd');
 outer.style.display='';
 p.onkeyup=function(){
