@@ -47,17 +47,16 @@ if(getCookie('reg')){
     reset.style.display='';
     document.title='欢迎 '+allow_list[allowed.indexOf(getCookie('reg'))]+(' - https://laman29.github.io/'+arg).replace('//','/');
     location=('https://laman29.github.io/'+arg).replace('//','/');
-    raise
-}
-
-const p=document.getElementById('pwd');
-outer.style.display='';
-p.onkeyup=function(){
-    v=p.value;
-    if(allowed.indexOf(v)>-1){
-        setCookie('reg',allow_list[allowed.indexOf(v)],5);
-        document.title='欢迎 '+name_list[allowed.indexOf(v)]+(' - https://laman29.github.io/'+arg).replace('//','/');
-        location=('https://laman29.github.io/'+arg).replace('//','/');
+}else{
+    const p=document.getElementById('pwd');
+    outer.style.display='';
+    p.onkeyup=function(){
+        v=p.value;
+        if(allowed.indexOf(v)>-1){
+            setCookie('reg',allow_list[allowed.indexOf(v)],5);
+            document.title='欢迎 '+name_list[allowed.indexOf(v)]+(' - https://laman29.github.io/'+arg).replace('//','/');
+            location=('https://laman29.github.io/'+arg).replace('//','/');
+        }
     }
 }
 </script>
