@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<title>lm29 - go</title>
+</head>
+<body>
+输入你的口令：
+<input id='pwd' style='display:none' placeholder='示例：114514C1919810' />
+<p id='reset' style='display:none'>正在登录...&nbsp;<button onclick='if(confirm("确定？这将使你重新输入口令")){document.cookie="reg=";location.reload(false)}'>重置（谨慎操作）</button></p>
+<script>
+const allow_list=[15,21,23,30,31,42];
+const name_list='*琼 **艳 ***滢 **然 **青 **宇'.split(' ');
+
+function setCookie(cname,cvalue,exdays){
+    var d=new Date();
+    d.setTime(d.getTime()+(exdays*86400000));
+    document.cookie='expires='+d.toUTCString()
+    document.cookie='path=/';
+    document.cookie=cname+'='+cvalue;
+}
+function getCookie(cname){
+    var name=cname+'=';
+    var ca=document.cookie.split(';');
+    for(var i=0;i<ca.length;i++){
+        var c=ca[i];
+        while(c.charAt(0)==' '){
+            c=c.substring(1);
+        }
+        if(c.indexOf(name)==0){
+            return c.substring(name.length,c.length);
+        }
+    }
+    return 0;
+}
+
+const arg=location.search.substring(1);
+const reset=document.getElementById('reset');
+
+if(getCookie('reg')){
+    reset.style.display='';
+    document.title='欢迎 '+allow_list[allowed.indexOf(getCookie('reg'))]+(' - https://laman29.github.io/'+arg).replace('//','/');
+    location=('https://laman29.github.io/'+arg).replace('//','/');
+}
+
+const allowed=[];
+var v='';
+
+for(let i=0;i<allow_list.length;i++){
+    let x=allow_list[i];
+    allowed[allowed.length]=x+'C202132'+x;
+}
+const p=document.getElementById('pwd');
+p.style.display='';
+p.onkeyup=function(){
+    v=p.value;
+    if(allowed.indexOf(v)>-1){
+        setCookie('reg',allow_list[allowed.indexOf(v)],5);
+        document.title='欢迎 '+name_list[allowed.indexOf(v)]+(' - https://laman29.github.io/'+arg).replace('//','/');
+        location=('https://laman29.github.io/'+arg).replace('//','/');
+    }
+}
+</script>
+</body>
+</html>
