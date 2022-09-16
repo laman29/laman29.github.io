@@ -4,8 +4,7 @@
 <title>lm29 - go</title>
 </head>
 <body>
-输入你的口令：
-<input id='pwd' style='display:none' placeholder='示例：114514C1919810' />
+<span id='p-out' style='display:none'>输入你的口令：<input id='pwd' placeholder='示例：114514C1919810' /></span>
 <p id='reset' style='display:none'>正在登录...&nbsp;<button onclick='if(confirm("确定？这将使你重新输入口令")){document.cookie="reg=";location.reload(false)}'>重置（谨慎操作）</button></p>
 <script>
 const allow_list=[15,21,23,30,31,42];
@@ -35,6 +34,7 @@ function getCookie(cname){
 
 const arg=location.search.substring(1);
 const reset=document.getElementById('reset');
+const outer=document.getElementById('p-out');
 
 if(getCookie('reg')){
     reset.style.display='';
@@ -50,7 +50,7 @@ for(let i=0;i<allow_list.length;i++){
     allowed[allowed.length]=x+'C202132'+x;
 }
 const p=document.getElementById('pwd');
-p.style.display='';
+outer.style.display='';
 p.onkeyup=function(){
     v=p.value;
     if(allowed.indexOf(v)>-1){
