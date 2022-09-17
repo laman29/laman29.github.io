@@ -46,6 +46,7 @@ const outer=document.getElementById('p-out');
 if(getCookie('reg')){
     reset.style.display='';
     document.title='欢迎 '+allow_list[allowed.indexOf(getCookie('reg'))]+(' - https://laman29.github.io/'+arg).replace('//','/');
+    alert(document.title)
     location=('https://laman29.github.io/'+arg.replace('+','/')).replace('//','/');
 }else{
     const p=document.getElementById('pwd');
