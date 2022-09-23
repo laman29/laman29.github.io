@@ -7,6 +7,10 @@
 <span id='p-out' style='display:none'>输入你的口令：<input id='pwd' placeholder='示例：114514C1919810' /></span>
 <p id='reset' style='display:none'>正在登录...&nbsp;<button onclick='if(confirm("确定？这将使你重新输入口令")){document.cookie="reg=";location.reload(false)}'>重置（谨慎操作）</button></p>
 <script>
+const arg=location.search.substring(1);
+const reset=document.getElementById('reset');
+const outer=document.getElementById('p-out');
+const NOSKIP='noskip=1';
 const allow_list=[15,21,23,30,31,42];
 const name_list='*琼 **艳 ***滢 **然 **青 **宇'.split(' ');
 const allowed=[];
@@ -40,14 +44,13 @@ function getCookie(cname){
     return 0;
 }
 
-const arg=location.search.substring(1);
-const reset=document.getElementById('reset');
-const outer=document.getElementById('p-out');
 
 if(getCookie('reg')){
     reset.style.display='';
-    document.title='欢迎 '+allow_list[allowed.indexOf(getCookie('reg'))]+(' - https://laman29.github.io/'+arg);
-    location.href=('https://laman29.github.io/'+arg.replace('+','/'));
+    document.title='欢迎 '+name_list[allow_list.indexOf(getCookie('reg'))]+(' - https://laman29.github.io/'+arg);
+    if(arg!=NOSKIP){
+        location.href=('https://laman29.github.io/'+arg.replace('+','/'));
+    }
 }else{
     const p=document.getElementById('pwd');
     outer.style.display='';
@@ -56,7 +59,9 @@ if(getCookie('reg')){
         if(allowed.indexOf(v)>-1){
             setCookie('reg',allow_list[allowed.indexOf(v)],5);
             document.title='欢迎 '+name_list[allowed.indexOf(v)]+(' - https://laman29.github.io/'+arg);
-            location.href=('https://laman29.github.io/'+arg.replace('+','/'));
+            if(arg!=NOSKIP){
+                location.href=('https://laman29.github.io/'+arg.replace('+','/'));
+            }
         }
     }
 }
