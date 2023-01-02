@@ -1,17 +1,115 @@
 <!doctype html>
 <html>
 <head>
-<title></title>
-<style>
-img#sb{
-    border:4px dashed #777;
-    margin:10px;
+<title>佳宇是个骗子</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link rel="stylesheet" type="text/css" href="9934/css/header.css" />
+<link rel="stylesheet" type="text/css" href="9934/css/indexgit.css" />
+<script src='../9934/js/cookie.js'></script>
+<!--[if IE]><script type="text/javascript">
+    console.log("此为IE版本，可能会不稳定")
+</script><![endif]-->
+<script>
+window.dataLayer=window.dataLayer||[];
+gtag=(a,b)=>dataLayer.push([a,b]);
+gtag('js',new Date());
+gtag('config','UA-190316399-3');
+</script>
+<style type="text/css">
+*{
+    word-wrap: break-word;
+}
+html,body,iframe {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+}
+.overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    z-index: 2;
+    background-image: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center 0;
+}
+#content,#topbutton{
+    display:none;
+}
+#adv-wrapper-1{
+    z-index: 7;
+    margin: 0;
+    text-align: center;
+    height: 100%;
+}
+#ad1{
+    z-index: 7;
+}
+#rbdiv-1{
+    z-index: 9;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 1px;
 }
 </style>
 </head>
-<body>
-<img id='sb' src='lib/fish.jpg' />
-<script>
-</script>
+<body style="height: 100%">
+<div id="header">
+    <a href="./">
+        <span style="color:#ff0000">w</span>
+        <span style="color:#0000ff">x</span>
+        <span style="color:#00ff00">r</span>
+        <span style="color:#ff00ff">，</span>
+        <span style="color:#fff000">niu</span>
+        <span style="color:#00cccc">bi</span>
+        <span style="color:#ff0000">！</span>
+    </a>
+    <div style="height:3px;width:100%;background-color:#aaaaaa;" align="center"></div>
+    <div style="height:3px;width:100%;background-color:#ffffff;" align="center"></div>
+</div>
+
+<div id="content" align="center">
+小黑子卤出鸡脚了吧:D
+</div>
+
+<div id='adv-wrapper-1' class='overlay'>
+    <div id='ad1' class='overlay'>
+        <iframe frameborder='0' scrolling='auto' src='lib/ad.html'></iframe>
+    </div>
+    <div id="rbdiv-1">
+        <button id="skip-button-1" title='点击以跳过广告'>跳过</button>
+    </div>
+    <script>
+    (function(){
+        const SKIPWAIT=0
+        const advdiv=document.getElementById("adv-wrapper-1");
+        const content=document.getElementById("content");
+        const rbdiv=document.getElementById("rbdiv-1");
+        const skipButton=document.getElementById("skip-button-1");
+        const skipClick=(event)=>{
+            for(let i=0;i<16;i++){
+                setTimeout(()=>advdiv.style.opacity=(15-i)/16,i*8);
+            }
+            content.style.display='block';
+            setTimeout(()=>{advdiv.innerHTML='';advdiv.style.display='none'},5120);
+        }
+        skipButton.addEventListener("click",skipClick);
+        setTimeout(()=>rbdiv.style.display='flex',SKIPWAIT);
+    })()
+    </script>
+</div>
+
 </body>
 </html>
