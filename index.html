@@ -4,13 +4,21 @@
 <title>首页 | Laman29</title>
 <link rel='stylesheet' href='9934/css/header.css' type='text/css' />
 <style>
+#headtitle{
+    text-decoration: none;
+}
 #content{
     text-align: left;
 }
 #bottom{
-    margin: 16 auto;
+    margin: 16px auto;
     font-size: 8px;
     color: #114514;
+}
+body{
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 h2{
     font-size: 2em;
@@ -18,13 +26,36 @@ h2{
 .comment{
     color: gray;
 }
+p a{
+    border: 3px solid #114514;
+    margin: 2px;
+    padding: 3px;
+    border-radius: 6px;
+    font-size: 0.9em
+    font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
+    color: #ffffff;
+    background-color: rgb(1 145 14);
+    cursor: pointer;
+}
+p a:hover{
+    background-color: #006600;
+    color: #ffff00;
+    text-decoration: none;
+}
+p a::after{
+    content: ' >>';
+    color: #abcdef
+}
+p a:hover::after{
+    color: #ff6600
+}
 </style>
 </head>
 <body style='height: 100%'>
 <div id='header'>
-    <span id='headtitle'>欢&nbsp;迎&nbsp;练&nbsp;习</span>
+    <a id='headtitle' href='#' onclick='alert("继续练习！")'>欢&nbsp;迎&nbsp;练&nbsp;习</a>
     <div style='height:3px;width:100%;background-color:#aaaaaa;' align='center'></div>
-    <div style='height:3px;width:100%;background-color:#ffffff;' align='center'></div>
+    <div style='height:3px;width:100%;background-color:#eeeeee;' align='center'></div>
 </div>
 <div id='content'>
     <h2>
@@ -42,13 +73,11 @@ h2{
         </a>
     </h2>
     <p>
-        测试
-        <div class="">
-            
-        </div>
+        测试文本
+        <a>链接1</a>
     </p>
 </div>
-<div id='bottom'>Copyright (c) by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
+<div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
 
 <script>
 setInterval((function(){
