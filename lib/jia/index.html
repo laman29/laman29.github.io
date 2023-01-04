@@ -27,6 +27,19 @@ table{
 <div style='height:3px;width:100%;background-color:#aaaaaa;' align='center'></div>
 <div style='height:3px;width:100%;background-color:#ffffff;' align='center'></div>
 </div>
+<a href="#top"><div id="topbutton" style="display:hidden"></div></a>
+<script>
+(function(){
+	var topE=document.getElementById("topbutton");
+	addEventListener('load',()=>document.body.addEventListener('scroll',function(){
+		if(window.scrollY>10){
+			topE.style.display="block"
+		}else{
+			topE.style.display="none"
+		}
+	}))
+})()
+</script>
 <div id='wrapper-out'>
     <table id='wrapper' border='0'></table>
     <img id='img' src=''></img>
@@ -47,7 +60,7 @@ const ALTS=[
 ];
 const FAKE='../fake.html';
 const LOVEJIAYU1='<del>林琼喜欢<span style="color:#114514;font-style:none;" onclick="document.writeln(LOVEJIAYU2);setTimeout(function(){location=FAKE;},3000)">甲鱼</span>但是不承认。哈哈</del>';
-const LOVEJIAYU2='<br />甲鱼是&nbsp;<span onclick="location=FAKE">爬行动物<span>&nbsp;哦'
+const LOVEJIAYU2='<br /><span onclick="location=FAKE">甲鱼<span>&nbsp;真好吃！'
 
 const list=document.getElementById('wrapper');
 const img=document.getElementById('img');
