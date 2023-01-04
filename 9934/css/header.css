@@ -1,7 +1,19 @@
-*{filter:grayscale(0%)}
 body {
-	font-family:PingFangSC-Regular,Verdana,Arial,"微软雅黑","宋体";
-	padding-top:70px;
+    padding-top:70px;
+    font-family: Source Code Pro,DejaVu Sans Mono,Ubuntu Mono,Anonymous Pro,Droid Sans Mono,Menlo,Monaco,Consolas,Inconsolata,Courier,monospace,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif;
+    text-align: center;
+    background-color: #eeeeee
+}
+table{
+    margin: 0 auto;
+}
+#bottom{
+    margin: 16 auto;
+    font-size: 8px;
+    color: #114514;
+}
+.comment{
+    color: gray;
 }
 a:link {text-decoration:none;}
 a:visited {text-decoration:none;}
