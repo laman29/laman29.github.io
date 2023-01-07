@@ -7,6 +7,14 @@ body {
 table{
     margin: 0 auto;
 }
+a{
+    color:#0000ff;
+}
+a:link {text-decoration:none;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:underline;}
+a:active {text-decoration:underline;}
+
 #bottom{
     margin: 16 auto;
     font-size: 8px;
@@ -15,26 +23,22 @@ table{
 .comment{
     color: gray;
 }
-a:link {text-decoration:none;}
-a:visited {text-decoration:none;}
-a:hover {text-decoration:underline;}
-a:active {text-decoration:underline;}
 .inline {display:inline}
 #header {
-	font-size:3em;
-	text-align:center;
-	background:#eeeeee;
-	position:fixed;
-	top:0px;
-	left:0px;
-	right:0px;
-	margin:0 auto
+    font-size:3em;
+    text-align:center;
+    background:#eeeeee;
+    position:fixed;
+    top:0px;
+    left:0px;
+    right:0px;
+    margin:0 auto
 }
 #topbutton {
-	background:url("../lib/pic/top.png");
-	position:fixed;
-	width:48px;
-	height:48px;
-	top:80px;
-	right:10px;
+    background:url("../lib/pic/top.png");
+    position:fixed;
+    width:48px;
+    height:48px;
+    top:80px;
+    right:10px;
 }
