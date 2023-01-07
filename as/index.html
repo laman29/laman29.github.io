@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<title>Conversion</title>
+<script>
+var x=location.search.substring(1);
+if(x){
+    location.href=atob(x);
+}
+</script>
+</head>
+<body>
+
+<input id='url' placeholder='输入网址以生成跳转链接' />
+<button id='convert'>转化...</button>
+<br />
+<p id='out'>在文本框输入要转换的网址（不含中文），然后按下“转化”按钮！</p>
+
+<script>
+var url=document.getElementById('url'),
+    convert=document.getElementById('convert'),
+    out=document.getElementById('out');
+convert.addEventListener('click',function(){
+    out.innerText='https://laman29.github.io/as?'+btoa(url.value);
+});
+</script>
+
+</body>
+</html>
