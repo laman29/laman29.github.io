@@ -49,7 +49,8 @@ p a::after{
 p a:hover::after{
     color: #ff6600
 }
-div#content >a{
+#content >a{
+    margin: 1em 0 0.5em -1em
     font-size: 1.5em;
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     font-weight: bold;
@@ -59,6 +60,9 @@ div#content >a{
     font-size: 0.6em;
     color: #424242;
     font-weight: normal;
+}
+#content >p{
+    margin: 0.5em 0 0.5em 1em;
 }
 .comment{
     color: gray;
@@ -75,10 +79,10 @@ div#content >a{
     <h2>
         <a id='title' name='title' href='#' onclick='location.reload(1);'><!-- title --></a>
     </h2>
-
     <ul>
         <li><a href='#game'>游戏</a></li>
         <li><a href='#tool'>工具箱</a></li>
+        <li><a href='#download'>下载</a></li>
     </ul>
 
     <a name='game' href='#title'>游戏</a>
@@ -87,12 +91,18 @@ div#content >a{
     <p>经典游戏<a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊无限道具</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a></p>
 
     <a name='tool' href='#title'>工具箱</a>
-    <p>链接中转站<a href='as/'>前往</a>
-    <p>骗人<a href='lib/fake.html'>前往</a>
+    <p>链接中转站<a href='as/'>前往</a></p>
+    <p>骗人<a href='lib/fake.html'>前往</a></p>
+
+    <a name='download' href='#title'>下载</a>
+    <p>（待完成）</p>
 
 </div>
 
-<div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=%E6%8A%A5%E5%91%8A%E6%BC%8F%E6%B4%9E&body=%E6%B3%A5%E5%9A%8E%EF%BC%8C%E6%88%91%E5%9C%A8%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E5%8F%91%E7%8E%B0%E4%BA%86%E4%B8%80%E4%BA%9BBug%EF%BC%9A%0A%0A(%E5%B7%B2%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E5%BC%80%E5%A4%B4)'>联系laman29</a></div>
+<div id='bottom'>
+Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=%E6%8A%A5%E5%91%8A%E6%BC%8F%E6%B4%9E&body=%E6%B3%A5%E5%9A%8E%EF%BC%8C%E6%88%91%E5%9C%A8%E4%BD%A0%E7%9A%84%E7%BD%91%E7%AB%99%E5%8F%91%E7%8E%B0%E4%BA%86%E4%B8%80%E4%BA%9BBug%EF%BC%9A%0A%0A(%E5%B7%B2%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E5%BC%80%E5%A4%B4)'>联系laman29</a>
+<br />
+</div>
 
 
 <script>
@@ -129,5 +139,6 @@ setInterval((function(){
     })(),150);
 })()
 </script>
+<img src='https://count.getloli.com/get/@lm29site' style='display: none;' />
 </body>
 </html>
