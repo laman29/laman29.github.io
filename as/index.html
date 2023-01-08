@@ -1,11 +1,16 @@
 <!doctype html>
 <html>
 <head>
-<title>Conversion</title>
+<title>Laman29</title>
 <script>
 var x=location.search.substring(1);
+var flag=0;
 if(x){
-    location.href=atob(x);
+    try{
+        location.href=atob(x);
+    }catch(DomException){
+        flag=1;
+    }
 }
 </script>
 </head>
@@ -14,14 +19,29 @@ if(x){
 <input id='url' placeholder='输入网址以生成跳转链接' />
 <button id='convert'>转化...</button>
 <br />
-<p id='out'>在文本框输入要转换的网址（不含中文），然后按下“转化”按钮！</p>
+<p>在文本框输入要转换的网址（不含中文），然后按下“转化”按钮！</p>
+<a id='out'></a>
 
 <script>
+if(flag){
+    document.title=document.body.innerText='链接打开失败';
+    throw 114514;
+}
+document.title='URL跳转 | Laman29';
+if(x){
+    setInterval((function(){
+        var i=0;
+        var s=['-','\\','|','/'];
+        return function(){
+            console.log(document.title='正在跳转... '+s[(i++)%4]);
+        };
+    })(),300);
+}
 var url=document.getElementById('url'),
     convert=document.getElementById('convert'),
     out=document.getElementById('out');
 convert.addEventListener('click',function(){
-    out.innerText='https://laman29.github.io/as?'+btoa(url.value);
+    out.innerText=out.href='https://laman29.github.io/as?'+btoa(encodeURI(url.value));
 });
 </script>
 
