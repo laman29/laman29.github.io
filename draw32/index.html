@@ -4,11 +4,41 @@
 <script>
 const configs={
 
-//抽号机配置
+// 抽号机配置
 
-//所有人的名字，以空格分隔
-//例：names:'张三 李四 王五'
-names:'唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认'
+// 所有人的名字，以空格分隔
+// 例：'张三 李四 王五'
+// 这个字段指定哪些人会被抽到
+//names: '唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认',
+names: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
+
+// 按顺序排的名字，以空格分隔
+// 和names一样，但是不存在的位置要多空一格
+names_index: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 陈佳宇 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
+
+// 一帧(frame)的长度，ms
+// 建议50
+frame: 50,
+
+// 在出现最终结果前，闪现多少个名字
+// 建议4
+before: 4,
+
+// 是否截取前两个字
+cuttwo: false,
+
+// 设置固有测试项
+fixed: [],
+
+// 是否启用彩蛋 & 彩蛋配置
+eggs: {
+    //总开关
+    able: false,
+    //玩梗概率
+    p_jok: 0.15,
+    //尾杀概率
+    p_end: 0.4,
+},
 
 };
 </script>
@@ -215,11 +245,10 @@ function ns(xlist){
     }
 }
 function Timer(){
-    const tick=50;
     var t=0;
     return function(f=function(){},x=1){
         setTimeout(f,t,arguments);
-        t+=tick*x;
+        t+=configs.frame*x;
     }
 }
 next=Timer()
@@ -237,6 +266,7 @@ var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
 var cells=[];
 const all=configs.names.split(' ');
+const all_index=(' '+configs.names_index).split(' ');
 
 $minus.onclick=function(){
     if(num>1){num--};
@@ -270,6 +300,10 @@ $start.onclick=redrawbutton.onclick=function(){
     $drawing.style.display='inline-block';
     start();
 }
+
+function getid(x){
+    return all_index.indexOf(x);
+}
 function start(){
     $display_num.innerText=num;
     $drawtitle.style.display='inline-block';
@@ -295,18 +329,26 @@ function start(){
         $redrawball.src=['blue','pink'][mode]+'.png';
         $drawtitle.style.display='none';
         $redraw.style.display='inline-block';
+        for(var i=0;i<num;i++){
+            cells[i].onclick=(function(i){
+                return function(){
+                    drawone(i);
+                    next=Timer();
+                };
+            })(i);
+        }
     });
     next=Timer();
 }
-function drawone(which,before=4){
+function drawone(which,before=configs.before){
     for(var i=0;i<before;i++){
         next(function(){cells[which].innerText=choose(all)});
     }
     if(!rest.length){
         rest=all.concat();
     }
-    var name=choose(rest);
-    next(function(name){cells[which].innerText=name[2]},1,name);
+    var name=configs.fixed[which]||choose(rest);
+    next(function(args){cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2])},1,name);
     rest=rest.filter(function(x){return x!=name});
 }
 
