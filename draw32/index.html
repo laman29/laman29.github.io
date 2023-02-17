@@ -2,7 +2,7 @@
 <head>
 <title>32班专属抽号🐔</title>
 <script>
-const configs={
+var configs={
 
 // 抽号机配置
 
@@ -265,8 +265,8 @@ var mode=0;
 var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
 var cells=[];
-const all=configs.names.split(' ');
-const all_index=(' '+configs.names_index).split(' ');
+var all=configs.names.split(' ');
+var all_index=(' '+configs.names_index).split(' ');
 
 $minus.onclick=function(){
     if(num>1){num--};
