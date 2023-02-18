@@ -22,7 +22,7 @@ frame: 50,
 
 // 在出现最终结果前，闪现多少个名字
 // 建议4
-before: 4,
+before: 0,
 
 // 是否截取前两个字
 cuttwo: false,
@@ -35,9 +35,9 @@ eggs: {
     //总开关
     able: false,
     //玩梗概率
-    p_jok: 0.15,
+    //p_jok: 0.15,
     //尾杀概率
-    p_end: 0.4,
+    p_end: 0.3,
 },
 
 };
@@ -150,7 +150,7 @@ td{
     height: 1.2em;
     padding: 0 0.3em;
     border: 0.1em solid #114514;
-    border-radius: 50vh;
+    border-radius: 0.9em;
     color: #ffffff;
     background-color:#199810;
 }
@@ -158,7 +158,7 @@ td{
     height: 1.2em;
     padding: 0 0.3em;
     border: 0.1em solid #bf2d0e;
-    border-radius: 50vh;
+    border-radius: 0.9em;
     color: #ffffff;
     background-color:#ddaa00;
 }
@@ -166,9 +166,15 @@ td{
     height: 1.2em;
     padding: 0 0.3em;
     border: 0.1em solid #191981;
-    border-radius: 50vh;
+    border-radius: 0.9em;
     color: #ff0000;
     background-color:#addddd;
+}
+.t34{
+    position: relative;
+    top: -0.1em;
+    display: inline-block;
+    width: 0.667em;
 }
 </style>
 </head>
@@ -176,9 +182,9 @@ td{
 <div id='entering'>
     <h1>欢迎抽号</h1>
     <p>
-        <span id='minus' class='bt'>-</span>
+        <span id='minus' class='bt t34'>-</span>
         <span id='num'>1</span>
-        <span id='plus' class='bt'>+</span>
+        <span id='plus' class='bt t34'>+</span>
     </p>
     <span id='config' class='bt'>选项...</span>
     <p>
@@ -188,9 +194,9 @@ td{
 <div id='drawing'>
     <h2 id='drawtitle'>随机抽取<span id='display_num'></span>名小可爱</h2>
     <p id='redraw'>
-        <span id='minus2' class='bt'>-</span>
+        <span id='minus2' class='bt t34'>-</span>
         <span id='num2'>1</span>
-        <span id='plus2' class='bt'>+</span>
+        <span id='plus2' class='bt t34'>+</span>
         <span id='redrawbutton' class='bt7'>
         <img id='redrawball' class='ball' src='' />
         重新抽取
@@ -321,9 +327,18 @@ function start(){
     if(!mode){
         rest=[];
     }
-    for(var i=0;i<num;i++){
+    for(var i=0;i<num-1;i++){
         drawone(i);
     }
+    if(configs.eggs.able && Math.random()<configs.eggs.p_end){
+        var _rest=rest.concat();
+        drawone(num-1);
+        rest=_rest;
+        var _name=configs.fixed[which]||choose(rest);
+        next(function(args){cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2])},1,_name);
+        rest=rest.filter(function(x){return x!=name});
+        //没写完
+    }else{drawone(num-1);}
     next(function(){
         $num2.innerText=num;
         $redrawball.src=['blue','pink'][mode]+'.png';
@@ -348,7 +363,12 @@ function drawone(which,before=configs.before){
         rest=all.concat();
     }
     var name=configs.fixed[which]||choose(rest);
-    next(function(args){cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2])},1,name);
+    next(function(args){
+        cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2]);
+        if(mode&&args[3]){
+            cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />保<br />底</span>'
+        }
+    },1,name,rest.length==1);
     rest=rest.filter(function(x){return x!=name});
 }
 
