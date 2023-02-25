@@ -18,7 +18,7 @@ var subj='语文 数学 英语 缺犯 历史 地理 生物 物理 体育'.split(
 var x=[];
 for(var i=0;i<subj.length;i++){
     do{
-        x[i]=prompt('请输入 '+subj[i]+' 成绩：');
+        x[i]=prompt('请输入 '+subj[i]+' 成绩：','');
         if(!isnum(x[i])){
             x[i]=0;
         }
