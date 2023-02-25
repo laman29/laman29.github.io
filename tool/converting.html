@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<title>折算机</title>
+<style>
+
+</style>
+</head>
+<body>
+
+<p id='box'></p>
+
+<script>
+function isnum(x){
+    return x && x.indexOf('-')==-1 && !isNaN(parseFloat(x)) && isFinite(x);
+}
+var subj='语文 数学 英语 缺犯 历史 地理 生物 物理 体育'.split(' ');
+var x=[];
+for(var i=0;i<subj.length;i++){
+    do{
+        x[i]=prompt('请输入 '+subj[i]+' 成绩：');
+        if(!isnum(x[i])){
+            x[i]=0;
+        }
+    }while(!x[i])
+    x[i]=parseFloat(x[i]);
+}
+var k=[1,1,1,.5,.5,.3,.3,.9,1];
+var sum1=0;
+var sum2=0;
+for(var i=0;i<subj.length;i++){
+    sum1+=x[i];
+    sum2+=k[i]*x[i];
+}
+alert(box.innerText='折算前：'+sum1+'\n折算后：'+sum2);
+</script>
+</body>
+</html>
