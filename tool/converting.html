@@ -11,20 +11,33 @@
 <p id='box'></p>
 
 <script>
+function $(x){
+    return document.getElementById(x);
+}
+
+
 function isnum(x){
     return x && x.indexOf('-')==-1 && !isNaN(parseFloat(x)) && isFinite(x);
 }
+function sprompt(tip){
+    //$('box').innerHTML=tip+'<br /><input id="in" /><button id="go">继续</button>';
+    return prompt(tip)
+}
 var subj='语文 数学 英语 缺犯 历史 地理 生物 物理 体育'.split(' ');
 var x=[];
+x=sprompt('请按以下顺序输入各科成绩：\n'+subj.join(' ')+'\n空格分隔').split(' ')
+
 for(var i=0;i<subj.length;i++){
-    do{
-        x[i]=prompt('请输入 '+subj[i]+' 成绩：','');
+    /*do{
+        x[i]=sprompt('请输入 '+subj[i]+' 成绩：');
         if(!isnum(x[i])){
             x[i]=0;
         }
-    }while(!x[i])
+    }while(!x[i])*/
     x[i]=parseFloat(x[i]);
 }
+
+
 var k=[1,1,1,.5,.5,.3,.3,.9,1];
 var sum1=0;
 var sum2=0;
@@ -32,7 +45,7 @@ for(var i=0;i<subj.length;i++){
     sum1+=x[i];
     sum2+=k[i]*x[i];
 }
-alert(box.innerText='折算前：'+sum1+'\n折算后：'+sum2);
+alert($('box').innerText='折算前：'+sum1+'\n折算后：'+sum2);
 </script>
 </body>
 </html>
