@@ -1,379 +1,115 @@
+<!doctype html>
 <html>
 <head>
-<meta name='viewport' content='user-scalable=no' />
-<title>32班专属抽号🐔</title>
-<script>
-var configs={
-
-// 抽号机配置
-
-// 所有人的名字，以空格分隔
-// 例：'张三 李四 王五'
-// 这个字段指定哪些人会被抽到
-//names: '唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认',
-names: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
-
-// 按顺序排的名字，以空格分隔
-// 和names一样，但是不存在的位置要多空一格
-names_index: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 陈佳宇 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
-
-// 一帧(frame)的长度，ms
-// 建议50
-frame: 25,
-
-// 在出现最终结果前，闪现多少个名字
-// 建议4
-before: 8,
-
-// 是否截取前两个字
-cuttwo: false,
-
-// 设置固有测试项
-fixed: [],
-
-// 是否启用彩蛋 & 彩蛋配置
-eggs: {
-    //总开关
-    able: false,
-    //玩梗概率
-    //p_jok: 0.15,
-    //尾杀概率
-    p_end: 0.3,
-},
-
-};
-</script>
+<title>首页 | Laman29</title>
+<link rel='stylesheet' href='9934/css/header.css' type='text/css' />
 <style>
+#headtitle{
+    text-decoration: none;
+}
+#content{
+    text-align: left;
+}
+#bottom{
+    margin: 16px auto;
+    font-size: 8px;
+    color: #114514;
+}
 body{
-    width: 100%;
-    height: 67.6vw;
-    padding-top: 1em;
-    font-size: 6.76vw;
-    line-height: 1;
-    text-align: center;
-    background-color: #fafafa;
-}
-div{
-    position: relative;	
-    margin: 0;
-    box-sizing: border-box;
-    border: 0px solid red;
-    padding: 0;
-    display: inline-block;
-    float: left;
-    width: 100%;
-    height: 100%;
-}
-h1{
-    font-size: 1.5em;
-    font-weight: normal;
-    margin: 0;
-    border: 0.1em solid #cccccc;
-    border-radius: 0.3em;
-    padding: 0.3em;
-    display: inline-block;
-    background-color: #eeeeee;
+    font-size: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 h2{
-    font-size: 1.1em;
+    font-size: 2em;
+}
+.comment{
+    color: gray;
+}
+p a{
+    border: 3px solid #114514;
+    margin: 2px;
+    padding: 3px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
+    color: #ffffff;
+    background-color: rgb(1 145 14);
+    cursor: pointer;
+}
+p a:hover{
+    background-color: #006600;
+    color: #ffff00;
+    text-decoration: none;
+}
+p a::after{
+    content: ' >>';
+    color: #abcdef
+}
+p a:hover::after{
+    color: #ff6600
+}
+div#content>a{
+    font-size: 1.5em;
+    font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
+    font-weight: bold;
+}
+div#content>a::before{
+    content: ' § ';
+    font-size: 0.6em;
+    color: #424242;
     font-weight: normal;
-    margin: 0;
-    border: 0.1em solid #cccccc;
-    border-radius: 0.3em;
-    padding: 0.2em;
-    display: inline-block;
-    background-color: #eeeeee;
-}
-table{
-    border: 0;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    font-size: 1em;
-}
-td{
-    padding: 0.1em;
-    width: 50%;
-    height: 100%;
-    text-align: center;
-}
-
-#options{
-    position: fixed;
-    height: auto;
-    width: 70%;
-    top: 1.2em;
-    left: 15%;
-    z-index: 9;
-    padding: 0.9em;
-    border: 0.2em solid #bf620a;
-    border-radius: 1em;
-    background-color: #eeeeee;
-}
-#num,#num2{
-    font-size: 1.3em;
-}
-#redraw{
-    height: 1.1em;
-    padding: 0.3em;
-    margin: 0;
-}
-#redrawbutton{
-    height: 1.1em;
-    padding-left: 0.1em;
-    padding-right: 0.4em;
-}
-#redrawball{
-    width: 1.1em;
-    height: 1.1em;
-    position: relative;
-    top: 0.2em;
-}
-#display{
-    padding-top: 0.5em;
-}
-
-#drawing,#options,#pink,#redraw{
-    display: none;
-}
-
-.opt-tips{
-    display: inline-block;
-    text-align: left;
-    font-size: 0.5em;
-}
-.ball{
-    width: 2em;
-    height: 2em;
-    border-radius: 50vw;
-}
-.bt{
-    height: 1.2em;
-    padding: 0 0.3em;
-    border: 0.1em solid #114514;
-    border-radius: 0.9em;
-    color: #ffffff;
-    background-color:#199810;
-}
-.bt5{
-    height: 1.2em;
-    padding: 0 0.3em;
-    border: 0.1em solid #bf2d0e;
-    border-radius: 0.9em;
-    color: #ffffff;
-    background-color:#ddaa00;
-}
-.bt7{
-    height: 1.2em;
-    padding: 0 0.3em;
-    border: 0.1em solid #191981;
-    border-radius: 0.9em;
-    color: #ff0000;
-    background-color:#addddd;
-}
-.t34{
-    position: relative;
-    top: -0.1em;
-    display: inline-block;
-    width: 0.667em;
 }
 </style>
 </head>
-<body>
-<div id='entering'>
-    <h1>欢迎抽号</h1>
-    <p>
-        <span id='minus' class='bt t34'>-</span>
-        <span id='num'>1</span>
-        <span id='plus' class='bt t34'>+</span>
-    </p>
-    <span id='config' class='bt'>选项...</span>
-    <p>
-        <span id='start' class='bt7'>&nbsp;开始！</span>
-    </p>
+<body style='height: 100%'>
+<div id='header'>
+    <a id='headtitle' href='#' onclick='alert("继续练习！")'>欢&nbsp;迎&nbsp;练&nbsp;习</a>
+    <div style='height:3px;width:100%;background-color:#aaaaaa;' align='center'></div>
+    <div style='height:3px;width:100%;background-color:#eeeeee;' align='center'></div>
 </div>
-<div id='drawing'>
-    <h2 id='drawtitle'>随机抽取<span id='display_num'></span>名小可爱</h2>
-    <p id='redraw'>
-        <span id='minus2' class='bt t34'>-</span>
-        <span id='num2'>1</span>
-        <span id='plus2' class='bt t34'>+</span>
-        <span id='redrawbutton' class='bt7'>
-        <img id='redrawball' class='ball' src='' />
-        重新抽取
-        </span>
-    </p>
-    <table id='display'>
-        <!-- Dynamic --!>
-        <tr id='tr0'></tr>
-        <tr id='tr1'></tr>
-        <tr id='tr2'></tr>
-        <tr id='tr3'></tr>
-        <tr id='tr4'></tr>
-    </table>
+<div id='content'>
+    <h2>
+        <a name='title' href='#' onclick='location.reload(1);'>
+            <span style='color:#ff0000'>练</span>
+            <span style='color:#0000ff'>习</span>
+            <span style='color:#00cc00'>时</span>
+            <span style='color:#ff00ff'>长</span>
+            <span style='color:#ffcc00'>：</span>
+            <span style='color:#00ccff'>不</span>
+            <span style='color:#ff0000'>到</span>
+            <span style='color:#0000ff'>两</span>
+            <span style='color:#00cc00'>年</span>
+            <span style='color:#ff00ff'>半</span>
+        </a>
+    </h2>
+
+
+    <ul>
+        <li><a href='#game'>游戏</a></li>
+        <li><a href='#tool'>工具箱</a></li>
+    </ul>
+
+    <a name='game' href='#title'>游戏</a>
+    <p>游戏主页<a href='9934/wxr/'>前往</a></p>
+    <p>本站游戏<a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
+    <p>经典游戏<a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊无限道具</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a></p>
+
+    <a name='tool' href='#title'>工具箱</a>
+    <p>链接中转站<a href='as/'>前往</a>
+    <p>骗人<a href=''>
+
 </div>
-<div id='options'>
-    <h2>选项</h2>
-    <p id='blue'>
-        <img class='ball' src='blue.png' />
-        <span class='opt-tips'>
-            【相遇之缘】<br />
-            全部随缘，看脸抽签。<br />
-            在这个模式下，任何概率<br />
-            都是随机。<br />
-            据说，拜佛祖能降低概率
-        </span>
-    </p>
-    <p id='pink'>
-        <img class='ball' src='pink.png' />
-        <span class='opt-tips'>
-            【纠缠之缘】<br />
-            平均分布，轮流处刑。<br />
-            在这个模式下，将高几率<br />
-            抽取逃过一劫的小可爱。<br />
-            底数用完后触发保底机制
-        </span>
-    </p>
-    <span id='toggle_mode' class='bt'>切换</span>
-    <span id='close_opt' class='bt7'>确定</span>
-</div>
+<div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
 
 <script>
-try{
-
-function $(x){
-    return document.getElementById(x);
-}
-function ns(xlist){
-    xlist=xlist.split(' ');
-    for(var i=0;i<xlist.length;i++){
-        var x=xlist[i];
-        window['$'+x]=$(x);
-    }
-}
-function Timer(){
-    var t=0;
-    return function(f=function(){},x=1){
-        setTimeout(f,t,arguments);
-        t+=configs.frame*x;
-    }
-}
-next=Timer()
-function choose(arr){
-    return arr[Math.floor(Math.random()*arr.length)]
-}
-
-ns('entering minus num plus config start');
-ns('drawing display_num drawtitle redraw plus2 num2 minus2 redrawball tr0 tr1 tr2 tr3 tr4');
-ns('options blue pink toggle_mode close_opt');
-
-var num=1;
-var mode=0;
-var rest=[];
-var rows=[tr0,tr1,tr2,tr3,tr4];
-var cells=[];
-var all=configs.names.split(' ');
-var all_index=(' '+configs.names_index).split(' ');
-
-$minus.onclick=function(){
-    if(num>1){num--};
-    $num.innerText=num;
-}
-$plus.onclick=function(){
-    if(num<10){num++};
-    $num.innerText=num;
-}
-$minus2.onclick=function(){
-    if(num>1){num--};
-    $num2.innerText=num;
-}
-$plus2.onclick=function(){
-    if(num<10){num++};
-    $num2.innerText=num;
-}
-$config.onclick=function(){
-    $options.style.display='block';
-}
-$toggle_mode.onclick=function(){
-    mode=1-mode;
-    $blue.style.display=['block','none'][mode];
-    $pink.style.display=['none','block'][mode];
-}
-$close_opt.onclick=function(){
-    $options.style.display='none';
-}
-$start.onclick=redrawbutton.onclick=function(){
-    $entering.style.display='none';
-    $drawing.style.display='inline-block';
-    start();
-}
-
-function getid(x){
-    return all_index.indexOf(x);
-}
-function start(){
-    $display_num.innerText=num;
-    $drawtitle.style.display='inline-block';
-    $redraw.style.display='none';
-    cells=[]
-    for(var i=0;i<5;i++){
-        rows[i].innerHTML='';
-    }
-    for(var i=0;i<num;i++){
-        rows[i%5].innerHTML+='<td><span id="cell'+i+'" class="bt5">🏀</span></td>';
-    }
-    for(var i=0;i<num;i++){
-        cells.push($('cell'+i));
-    }
-    if(!mode){
-        rest=[];
-    }
-    for(var i=0;i<num-1;i++){
-        drawone(i);
-    }
-    if(configs.eggs.able && Math.random()<configs.eggs.p_end){
-        var _rest=rest.concat();
-        drawone(num-1);
-        rest=_rest;
-        var _name=configs.fixed[which]||choose(rest);
-        next(function(args){cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2])},1,_name);
-        rest=rest.filter(function(x){return x!=name});
-        //没写完
-    }else{drawone(num-1);}
-    next(function(){
-        $num2.innerText=num;
-        $redrawball.src=['blue','pink'][mode]+'.png';
-        $drawtitle.style.display='none';
-        $redraw.style.display='inline-block';
-        for(var i=0;i<num;i++){
-            cells[i].onclick=(function(i){
-                return function(){
-                    drawone(i);
-                    next=Timer();
-                };
-            })(i);
-        }
-    });
-    next=Timer();
-}
-function drawone(which,before=configs.before){
-    for(var i=0;i<before;i++){
-        next(function(){cells[which].innerText=choose(all)});
-    }
-    if(!rest.length){
-        rest=all.concat();
-    }
-    var name=configs.fixed[which]||choose(rest);
-    next(function(args){
-        cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2]);
-        if(mode&&args[3]){
-            cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />保<br />底</span>'
-        }
-    },1,name,rest.length==1);
-    rest=rest.filter(function(x){return x!=name});
-}
-
-}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+setInterval((function(){
+    var ht=document.getElementById('headtitle');
+    var i=0;
+    return function(){
+        ht.style.color='hsl('+(i++)%360+' 100% 33%)';
+    };
+})(),100)
 </script>
 </body>
 </html>
