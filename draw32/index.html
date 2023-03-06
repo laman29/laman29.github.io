@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>32班专属抽号🐔</title>
 <script>
 var configs={
@@ -28,7 +29,7 @@ before: 8,
 cuttwo: false,
 
 // 设置固有测试项
-fixed: [],
+fixed: [''],
 
 // 是否启用彩蛋 & 彩蛋配置
 eggs: {
@@ -261,6 +262,12 @@ next=Timer()
 function choose(arr){
     return arr[Math.floor(Math.random()*arr.length)]
 }
+function music(path,time=0){
+    var audio=new Audio(path);
+    audio.currentTime=time;
+    audio.play();
+    return audio;
+}
 
 ns('entering minus num plus config start');
 ns('drawing display_num drawtitle redraw plus2 num2 minus2 redrawball tr0 tr1 tr2 tr3 tr4');
@@ -268,12 +275,18 @@ ns('options blue pink toggle_mode close_opt');
 
 var num=1;
 var mode=0;
+var injntm=false;
 var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
 var cells=[];
 var all=configs.names.split(' ');
 var all_index=(' '+configs.names_index).split(' ');
 
+document.body.onclick=function(){
+    if(!injntm){
+        music('j.mp3');
+    }
+}
 $minus.onclick=function(){
     if(num>1){num--};
     $num.innerText=num;
@@ -352,6 +365,13 @@ function start(){
                 };
             })(i);
         }
+    });
+    var jntm=music('jntm.mp3',0.25);
+    injntm=true;
+    next(function(){
+        jntm.pause();
+        delete jntm;
+        injntm=false;
     });
     next=Timer();
 }
