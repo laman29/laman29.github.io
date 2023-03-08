@@ -47,14 +47,17 @@ p a::after{
     color: #abcdef
 }
 p a:hover::after{
-    color: #ff6600
+    color: #ff6600;
 }
-div#content>a{
+#title>span{
+    display: none;
+}
+#content>a{
     font-size: 1.5em;
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     font-weight: bold;
 }
-div#content>a::before{
+#content>a::before{
     content: ' § ';
     font-size: 0.6em;
     color: #424242;
@@ -84,10 +87,10 @@ div#content>a::before{
         </a>
     </h2>
 
-
     <ul>
         <li><a href='#game'>游戏</a></li>
         <li><a href='#tool'>工具箱</a></li>
+        <li><a href='#prog'>有趣的玩意</a></li>
     </ul>
 
     <a name='game' href='#title'>游戏</a>
@@ -96,8 +99,14 @@ div#content>a::before{
     <p>经典游戏<a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊无限道具</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a></p>
 
     <a name='tool' href='#title'>工具箱</a>
-    <p>链接中转站<a href='as/'>前往</a>
-    <p>骗人<a href=''>
+    <p>链接中转站<a href='as/'>前往</a></p>
+    <p>下载站<a href='download/'>索引</a></p>
+    <p>骗人<a href='lib/fake.html'>长按复制链接</a></p>
+
+    <a name='prog' href='#title'>一些有趣的玩意</a>
+    <p>32班专属抽号机<a href='go/?draw32'>前往</a></p>
+    <p>地球联合政府<a href='https://uegov.world/'>前往</a></p>
+    <p>地下城居住资格抽签<a href='https://uegov.world/random-draw/'>前往</a></p>
 
 </div>
 <div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
