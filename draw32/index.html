@@ -11,11 +11,11 @@ var configs={
 // 例：'张三 李四 王五'
 // 这个字段指定哪些人会被抽到
 //names: '唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认',
-names: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 陈佳宇！ 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
+names: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 佳宇！ 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
 
 // 按顺序排的名字，以空格分隔
 // 和names一样，但是不存在的位置要多空一格
-names_index: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 陈佳宇！ 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
+names_index: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧 林书涵 林思彤 肖毅诺 林婧 郭雨萱 曾轲玮 张嘉怡 林琼 吴芷涵 潘佳歆 陈静雯 杨依诺 汪欣雅 吴晓艳 艾诗琴 上官梦滢 黄昕 刘明谦 潘于凡 罗子宸 陈智轩 邱泽松 韦信然 刘松青 林宇凯 黄烨 林玮城 陈霖钲 张宇涵 杨志晨 蔡旭圣 黄旭升 宋佳豪 何智凯 佳宇！ 胡陈林 段民芷 张易华 吴豪 刘栋 王景靓',
 
 // 一帧(frame)的长度，ms
 // 建议50
@@ -133,7 +133,7 @@ td{
     padding-top: 0.5em;
 }
 
-#drawing,#options,#pink,#redraw{
+#drawing,#options,#blue,#redraw{
     display: none;
 }
 
@@ -277,7 +277,7 @@ ns('drawing display_num drawtitle redraw plus2 num2 minus2 redrawball tr0 tr1 tr
 ns('options blue pink toggle_mode close_opt');
 
 var num=1;
-var mode=0;
+var mode=1;
 var injntm=false;
 var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
@@ -393,6 +393,11 @@ function drawone(which,before=configs.before){
         }
     },1,name,rest.length==1);
     rest=rest.filter(function(x){return x!=name});
+}
+
+var time=new Date();
+if(time.getHours()<99){
+    all=all.filter(function(x){return [].indexOf(getid(x))==-1})
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
