@@ -93,6 +93,8 @@ p a:hover::after{
         <li><a href='#prog'>有趣的玩意</a></li>
     </ul>
 
+    <p><a href='#' onclick='jntm.play()'>播放《只因你太美》</a></p>
+
     <a name='game' href='#title'>游戏</a>
     <p>游戏主页<a href='9934/wxr/'>前往</a></p>
     <p>本站游戏<a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
@@ -118,7 +120,8 @@ setInterval((function(){
     return function(){
         ht.style.color='hsl('+(i++)%360+' 100% 33%)';
     };
-})(),100)
+})(),100);
+var jntm=new Audio('draw32/jntm_full.mp3');
 </script>
 </body>
 </html>
