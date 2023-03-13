@@ -241,8 +241,8 @@ td{
 <script>
 try{
 
-new Audio('j.mp3');
-new Audio('jntm.mp3');
+//new Audio('j.mp3');
+//new Audio('jntm.mp3');
 
 function $(x){
     return document.getElementById(x);
@@ -278,7 +278,7 @@ ns('options blue pink toggle_mode close_opt');
 
 var num=1;
 var mode=1;
-var injntm=false;
+var indrawing=false;
 var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
 var cells=[];
@@ -286,8 +286,8 @@ var all=configs.names.split(' ');
 var all_index=(' '+configs.names_index).split(' ');
 
 document.body.onclick=function(){
-    if(!injntm){
-        music('j.mp3');
+    if(!indrawing){
+        //music('j.mp3');
     }
 }
 $minus.onclick=function(){
@@ -369,12 +369,12 @@ function start(){
             })(i);
         }
     });
-    var jntm=music('jntm.mp3',0.25);
-    injntm=true;
+    //var bgmusic=music('jntm.mp3',0.25);
+    indrawing=true;
     next(function(){
-        jntm.pause();
+        bgmusic.pause();
         delete jntm;
-        injntm=false;
+        indrawing=false;
     });
     next=Timer();
 }
