@@ -243,6 +243,8 @@ try{
 
 //new Audio('j.mp3');
 //new Audio('jntm.mp3');
+var bgm=new Audio('rickroll.mp3');
+bgm.currentTime=43.35;
 
 function $(x){
     return document.getElementById(x);
@@ -369,13 +371,12 @@ function start(){
             })(i);
         }
     });
-    //var bgmusic=music('jntm.mp3',0.25);
     indrawing=true;
     next(function(){
-        bgmusic.pause();
-        delete jntm;
+        bgm.pause();
         indrawing=false;
     });
+    bgm.play()
     next=Timer();
 }
 function drawone(which,before=configs.before){
@@ -396,8 +397,8 @@ function drawone(which,before=configs.before){
 }
 
 var time=new Date();
-if(time.getHours()<99){
-    all=all.filter(function(x){return [].indexOf(getid(x))==-1})
+if(time.getHours()<9){
+    all=all.filter(function(x){return [6,23,30].indexOf(getid(x))==-1})
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
