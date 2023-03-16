@@ -19,11 +19,11 @@ names_index: '谢锦琰 陈彦希 卢婧 胡伊诺 唐肖嘉禾 韩孜妍 肖尧
 
 // 一帧(frame)的长度，ms
 // 建议50
-frame: 25,
+frame: 12,
 
 // 在出现最终结果前，闪现多少个名字
 // 建议4
-before: 8,
+before: 43,
 
 // 是否截取前两个字
 cuttwo: false,
@@ -403,8 +403,9 @@ function drawone(which,before=configs.before){
 }
 
 var time=new Date();
+var ext={exclude:[6,13,23,30]};
 if(time.getHours()<9){
-    all=all.filter(function(x){return [6,23,30].indexOf(getid(x))==-1})
+    all=all.filter(function(x){return ext.exclude.indexOf(getid(x))==-1})
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
