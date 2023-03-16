@@ -367,6 +367,11 @@ function start(){
             cells[i].onclick=(function(i){
                 return function(){
                     drawone(i);
+                    next(function(){
+                        bgm.pause();
+                        indrawing=false;
+                    });
+                    bgm.play()
                     next=Timer();
                 };
             })(i);
