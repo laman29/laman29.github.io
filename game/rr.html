@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<title>what is it?</title>
+<style>
+body{
+    height: 100%;
+}
+body{
+    font-size: 10vw;
+    text-align: center;
+}
+#noteframe>div{
+    width: 3em;
+    height: 0.5em;
+    background-color: #ccddff;
+    position: absolute;
+    left: 3.5em;
+    top: 0em;
+}
+#noteframe>div::before{
+    content: "";
+    position: relative;
+    display: block;
+    left: -0.1em;
+    top: 0.1em;
+    width: 3.2em;
+    height: 0.3em;
+    background-color: #ccddff;
+}
+#noteframe>div::after{
+    content: "";
+    position: relative;
+    display: block;
+    left: 0.05em;
+    top: -0.2em;
+    width: 2.9em;
+    height: 0.3em;
+    background-color: #88aaff;
+}
+#line{
+    width: 0vw;
+    left: 50vw;
+    height: 0.05em;
+    background-color: #000000;
+    position: absolute;
+    top: 50%;
+}
+</style>
+</head>
+<body>
+
+<div id='noteframe'>
+<div id='a'></div>
+</div>
+<div id='line'></div>
+
+<script>
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+
+ns('noteframe line');
+ns('a');
+
+var _line_i=-25,_line_interval=setInterval(function(){
+    if(++_line_i<0){}else if(_line_i<50){
+        var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+        $line.style.width=i*2+'vw';
+        $line.style.left=50-i+'vw';
+    }else{
+        clearInterval(_line_interval);
+    }
+},20)
+
+function gameloop(){
+    var time=new Date().getTime()-startstamp;
+    $a.style.top=time*0.01-2+'em'
+}
+var startstamp=new Date().getTime()+1500;
+setInterval(gameloop,0)
+</script>
+</body>
+</html>
