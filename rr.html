@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+<title>what is it?</title>
+<style>
+body,html{
+    height: 100%;
+}
+body{
+    font-size: 10vw;
+    text-align: center;
+}
+#noteframe>div{
+    width: 3em;
+    height: 0.5em;
+    background-color: #ccddff;
+    position: absolute;
+    left: 3.5em;
+    top: -100%;
+}
+#noteframe>div::before{
+    content: "";
+    position: relative;
+    display: block;
+    left: -0.1em;
+    top: 0.1em;
+    width: 3.2em;
+    height: 0.3em;
+    background-color: #ccddff;
+}
+#noteframe>div::after{
+    content: "";
+    position: relative;
+    display: block;
+    left: 0.05em;
+    top: -0.2em;
+    width: 2.9em;
+    height: 0.3em;
+    background-color: #88aaff;
+}
+#line{
+    width: 0%;
+    left: 50%;
+    height: 0.05em;
+    background-color: #000000;
+    position: absolute;
+    top: 80%;
+}
+</style>
+</head>
+<body onclick='awa();'>
+
+<div id='noteframe'></div>
+<div id='line'></div>
+
+<script>
+try{
+
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+
+ns('noteframe line');
+ns('a');
+
+track=[0,1,3,4,5,7,8,9,10,14,18,22,24, 26,30,34,38,39,40,41, 42,46,50,54, 58,62,66,68,69,70,71,72,73];
+
+function awa(){
+var _line_i=-25,_line_interval=setInterval(function(){
+    if(++_line_i<0){}else if(_line_i<50){
+        var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+        $line.style.width=i*2+'%';
+        $line.style.left=50-i+'%';
+    }else{
+        clearInterval(_line_interval);
+    }
+},20);
+
+function gameloop(){
+    var time=(new Date().getTime()-startstamp)/1000;
+    update_notes(track,time);
+}
+function update_notes(track,time,beat=0.131579){
+    for(var i=0;i<track.length;i++){
+        $noteframe.childNodes[i].style.top=80+(time-track[i]*beat)*80+'%';
+    }
+}
+
+for(var i=0;i<track.length;i++){
+    var _c=document.createElement('div');
+    $noteframe.appendChild(_c);
+}
+
+var offset=-0.2;//本站0.35，网易云0.2
+//var music=new Audio('rickroll.mp3');
+var music=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
+//music.currentTime=offset;
+var startstamp=new Date().getTime()+2000;
+setInterval(gameloop,0);
+setTimeout(function(){music.play()},offset*1000+2000);
+}
+}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+</body>
+</html>
