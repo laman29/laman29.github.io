@@ -71,6 +71,9 @@ ns('noteframe line');
 ns('a');
 
 track=[0,1,3,4,5,7,8,9,10,14,18,22,24, 26,30,34,38,39,40,41, 42,46,50,54, 58,62,66,68,69,70,71,72,73];
+//var music=new Audio('rickroll.mp3');
+var music=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
+var offset=-0.3;//本站0.45，网易云0.3
 
 function awa(){
 var _line_i=-25,_line_interval=setInterval(function(){
@@ -90,6 +93,7 @@ function gameloop(){
 function update_notes(track,time,beat=0.131579){
     for(var i=0;i<track.length;i++){
         $noteframe.childNodes[i].style.top=80+(time-track[i]*beat)*80+'%';
+if(time-track[i]*beat>0){'music.pause();alert(1);throw 0'}
     }
 }
 
@@ -98,8 +102,6 @@ for(var i=0;i<track.length;i++){
     $noteframe.appendChild(_c);
 }
 
-var offset=-0.35;
-var music=new Audio('rickroll.mp3');
 //music.currentTime=offset;
 var startstamp=new Date().getTime()+2000;
 setInterval(gameloop,0);
