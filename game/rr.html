@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>what is it?</title>
 <style>
 body,html{
@@ -66,25 +67,8 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-
 ns('noteframe line');
 ns('a');
-
-track=[0,1,3,4,5,7,8,9,10,14,18,22,24, 26,30,34,38,39,40,41, 42,46,50,54, 58,62,66,68,69,70,71,72,73];
-//var music=new Audio('rickroll.mp3');
-var music=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
-var offset=-0.6;//本站0.45，网易云0.6
-
-function awa(){
-var _line_i=-25,_line_interval=setInterval(function(){
-    if(++_line_i<0){}else if(_line_i<50){
-        var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
-        $line.style.width=i*2+'%';
-        $line.style.left=50-i+'%';
-    }else{
-        clearInterval(_line_interval);
-    }
-},20);
 
 function gameloop(){
     var time=(new Date().getTime()-startstamp)/1000;
@@ -93,20 +77,37 @@ function gameloop(){
 function update_notes(track,time,beat=0.131579){
     for(var i=0;i<track.length;i++){
         $noteframe.childNodes[i].style.top=80+(time-track[i]*beat)*80+'%';
-if(time-track[i]*beat>0){'music.pause();alert(1);throw 0'}
+//if(time-track[i]*beat>0){'music.pause();alert(1);throw 0'}
     }
 }
 
-for(var i=0;i<track.length;i++){
-    var _c=document.createElement('div');
-    $noteframe.appendChild(_c);
+track=[0,1,3,4,5,7,8,9,10,14,18,22,24, 26,30,34,38,39,40,41, 42,46,50,54, 58,62,66,68,69,70,71,72,73];
+//var music=new Audio('rickroll.mp3');
+var music=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
+var offset=-0.6;//本站0.45，网易云0.6
+
+var ingame=0;
+var startstamp;
+function awa(){
+    if(ingame){return}else{ingame=1}
+    var _line_i=-25,_line_interval=setInterval(function(){
+        if(++_line_i<0){}else if(_line_i<50){
+            var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+            $line.style.width=i*2+'%';
+            $line.style.left=50-i+'%';
+        }else{
+            clearInterval(_line_interval);
+        }
+    },20);
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        $noteframe.appendChild(_c);
+    }
+    startstamp=new Date().getTime()+2000;
+    setInterval(gameloop,0);
+    setTimeout(function(){music.play()},offset*1000+2000);
 }
 
-//music.currentTime=offset;
-var startstamp=new Date().getTime()+2000;
-setInterval(gameloop,0);
-setTimeout(function(){music.play()},offset*1000+2000);
-}
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
 </script>
 </body>
