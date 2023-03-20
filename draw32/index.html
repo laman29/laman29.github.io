@@ -23,7 +23,7 @@ frame: 12,
 
 // 在出现最终结果前，闪现多少个名字
 // 建议4
-before: 43,
+before: 43*0,
 
 // 是否截取前两个字
 cuttwo: false,
@@ -280,13 +280,14 @@ ns('drawing display_num drawtitle redraw plus2 num2 minus2 redrawball tr0 tr1 tr
 ns('options blue pink toggle_mode close_opt');
 
 var num=1;
-var mode=1;
+var mode=0;
 var indrawing=false;
 var rest=[];
 var rows=[tr0,tr1,tr2,tr3,tr4];
 var cells=[];
 var all=configs.names.split(' ');
 var all_index=(' '+configs.names_index).split(' ');
+var star=Array(all_index.length).fill(-1);
 
 document.body.onclick=function(){
     if(!indrawing){
@@ -375,13 +376,11 @@ function start(){
                     next=Timer();
                 };
             })(i);
+        bgm.pause();
+        indrawing=false;
         }
     });
     indrawing=true;
-    next(function(){
-        bgm.pause();
-        indrawing=false;
-    });
     bgm.play()
     next=Timer();
 }
@@ -396,8 +395,17 @@ function drawone(which,before=configs.before){
     next(function(args){
         cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2]);
         if(mode&&args[3]){
-            cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />保<br />底</span>'
+            cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />保<br />底</span>';
         }
+        if(!mode){
+            var _id=getid(args[2]);
+            var _star=star[_id]+=1;
+            if(_star>0){
+                var _text=_star<7?_star:'6+';
+                cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />'+_text+'<br />命</span>';
+            }
+        }
+
     },1,name,rest.length==1);
     rest=rest.filter(function(x){return x!=name});
 }
