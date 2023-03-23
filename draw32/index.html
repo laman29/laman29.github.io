@@ -411,7 +411,7 @@ function drawone(which,before=configs.before){
 }
 
 var time=new Date();
-var ext={exclude:[6,13,23,30]};
+var ext={exclude:[]};
 if(time.getHours()<9){
     all=all.filter(function(x){return ext.exclude.indexOf(getid(x))==-1})
 }
