@@ -9,52 +9,84 @@ body,html{
 }
 body{
     font-size: 10vw;
+    color: #ffffff;
     text-align: center;
+    background-color: #111111;
 }
+/*
 #noteframe>div{
-    width: 3em;
-    height: 0.5em;
+    width: 30vw;
+    height: 5vw;
     background-color: #ccddff;
     position: absolute;
-    left: 3.5em;
+    left: 35vw;
     top: -100%;
 }
 #noteframe>div::before{
     content: "";
     position: relative;
     display: block;
-    left: -0.1em;
-    top: 0.1em;
-    width: 3.2em;
-    height: 0.3em;
+    left: -1vw;
+    top: 1vw;
+    width: 32vw;
+    height: 3vw;
     background-color: #ccddff;
 }
 #noteframe>div::after{
     content: "";
     position: relative;
     display: block;
-    left: 0.05em;
-    top: -0.2em;
-    width: 2.9em;
-    height: 0.3em;
+    left: 0.5vw;
+    top: -2vw;
+    width: 29vw;
+    height: 3vw;
     background-color: #88aaff;
+}
+*/
+#noteframe>div{
+    position: absolute;
+    left: 6vw;
+    width: 24vw;
+    height: 2vw;
+    border: 1vw solid #ffffff;
+    background-color: #44ccff;
+}
+#noteframe>div::before{
+    content: "";
+    display: block;
+    position: relative;
+    left: -3vw;
+    top: -0.5vw;
+    width: 1vw;
+    height: 3vw;
+    background-color: #ffffff;
+}
+#noteframe>div::after{
+    content: "";
+    display: block;
+    position: relative;
+    left: 26vw;
+    top: -3.5vw;
+    width: 1vw;
+    height: 3vw;
+    background-color: #ffffff;
 }
 #line{
     width: 0%;
     left: 50%;
-    height: 0.05em;
-    background-color: #000000;
+    height: 1vw;
+    background-color: #ffffaa;
     position: absolute;
-    top: 80%;
+    top: 80vw;
 }
 </style>
 </head>
 <body onclick='awa();'>
 <div id='noteframe'></div>
 <div id='line'></div>
-Test/rr laman29<br />
+game/rr laman29<br />
 Autoplay
-<p id='gamescore'></p>
+<p id='gamescore'>点 击 以 开 始</p>
 
 <script>
 try{
@@ -75,32 +107,42 @@ ns('a');
 function gameloop(){
     var time=(new Date().getTime()-startstamp)/1000;
     update_notes(track,time);
+    $gamescore.innerText=(count/track.length*1000000).toString().split('.')[0].padStart(7,'0');
 }
 function update_notes(track,time,beat=0.131579){
+    count=0
     for(var i=0;i<track.length;i++){
-        $noteframe.childNodes[i].style.top=80+(time-track[i]*beat)*80+'%';
-        if(time-track[i]*beat>0){$noteframe.childNodes[i].style.display='none';}
+        var self=$noteframe.childNodes[i].style;
+        self.top=80+(time-track[i]*beat)*80+'vw';
+        self.left=map[i]*32-26+'vw';
+        if(time-track[i]*beat>0){
+            $noteframe.childNodes[i].style.display='none';
+            count+=1;
+        }
     }
+    if(count==track.length){music.pause();delete music}
 }
 function clicknote(e){
     
 }
 
-track=[0,1,3,4,5,7,8,9, 10,16,22,24, 26,32,38,39,40,41, 42,48,54,56, 58,62,66,68,69,70,71,72,73];
+track=[0,0,1,1,3,4,5,7,8,9, 10,16,22,24, 26,32,38,39,40,41, 42,48,54,56, 58,58,62,62,66,68,69,70,71,72,73];
+map  =[1,3,1,3,3,2,3,1,2,1, 2, 3, 1, 1,  3, 2, 1, 2, 3, 2,  1, 3, 1, 1,  1.5,2.5,1.5,2.5,2,1,1,3,3,1,1]
 //var music=new Audio('rickroll.mp3');
 var music=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
 var offset=-0.6;//本站0.45，网易云0.6
 
 var gamestatus=0;
 var gamescore=0;
+var count=0;
 var startstamp;
 function awa(){
     if(gamestatus==1){return}else{gamestatus=1}
     var _line_i=-25,_line_interval=setInterval(function(){
         if(++_line_i<0){}else if(_line_i<50){
             var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
-            $line.style.width=i*2+'%';
-            $line.style.left=50-i+'%';
+            $line.style.width=i*2+'vw';
+            $line.style.left=50-i+'vw';
         }else{
             clearInterval(_line_interval);
         }
