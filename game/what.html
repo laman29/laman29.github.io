@@ -84,6 +84,7 @@ body{
 <body>
 <div id='noteframe'></div>
 <div id='line'></div>
+<div id='eff'></div>
 game/Igallta<br />
 Se-U-Ra
 <p id='gamescore'>点 击 以 开 始</p>
@@ -101,8 +102,8 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('noteframe line gamescore');
-ns('a');
+ns('noteframe line eff gamescore');
+//ns('a');
 
 function gameloop(){
     var time=(new Date().getTime()-startstamp)/1000;
@@ -110,27 +111,58 @@ function gameloop(){
     $gamescore.innerText=(count/track.length*1000000).toString().split('.')[0].padStart(7,'0');
 }
 function update_notes(time){
-    for(var i=0;i<track.length;i++){
+    for(var i=waitfor;i<track.length;i++){
         var self=$noteframe.childNodes[i].style;
         self.top=80+gety(time,i)*80+'vw';
         self.left=map[i]*32-26+'vw';
+        if(gety(time,i)>0.16){
+            $noteframe.childNodes[i].style.display='none';
+            waitfor++;
+        }
     }
-    if(count==track.length){
+    if(waitfor==track.length){
         music.pause();
         delete music;
     }
 }
 function clicknote(e,time){
     e.preventDefault();
-    if(1 || -0.16<gety(time,waitfor)<0.16){
-        //获取第一个
+    if(Math.abs(gety(time,waitfor))<0.08){
         $noteframe.childNodes[waitfor].style.display='none';
+        eff(waitfor,1);
         count++;
+        waitfor++;
+    }else if(Math.abs(gety(time,waitfor))<0.16){
+        $noteframe.childNodes[waitfor].style.display='none';
+        eff(waitfor,0.65);
+        count+=0.65;
         waitfor++;
     }else if(-0.32<gety(time,waitfor)<-0.16){
         waitfor++;
     }
     return false;
+}
+function eff(i,type){
+    if(type==1){
+        var c='#ffff99';
+    }else{
+        var c='#99ffff';
+    }
+    var _e=document.createElement('div');
+    var _s=_e.style;
+    _s.position='absolute';
+    _s.top='80vw';
+    _s.left=map[i]*32-26+'vw';
+    _s.border='1px solid '+c;
+    for(var i=1;i>=0;i-=0.1){
+        setTimeout(function(i){
+            _t=Math.sqrt(1-i*i);
+            _s.width=_s.height=_t*36+'vw';
+            _s.top=80-_t*18+'vw';
+            _s.left=map[i]*32-26-_t*18+'vw';
+        },(1-i)*400,i);
+    }
+    $eff.appendChild(_e);
 }
 function gety(time,i){
     return time-(track[i]+2)*beat;
@@ -148,7 +180,7 @@ var gamescore=0;
 var count=0;
 var waitfor=0;
 var startstamp;
-document.body.ontouchstart=function(e){
+function tap(e){
     if(gamestatus==1){
         var time=(new Date().getTime()-startstamp)/1000;
         return clicknote(e,time);
@@ -169,6 +201,17 @@ document.body.ontouchstart=function(e){
     startstamp=new Date().getTime()+2000;
     setInterval(gameloop,0);
     setTimeout(function(){music.play()},offset*1000+2000);
+}
+if('ontouchstart' in window){
+    document.body.ontouchstart=tap;
+}else{
+    document.body.onmousedown=tap;
+    document.body.oncontextmenu=function(e){
+        //专治SB Seewo
+        e.preventdefault();
+        clicknote();clicknote();
+        return false;
+    }
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
