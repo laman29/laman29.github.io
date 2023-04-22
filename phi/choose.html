@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<title>Choose</title>
+<script>
+if(location.search.length<2){
+    location.replace('play.html');
+}
+</script>
+<style>
+#bottom{
+    display: block;
+    text-align: center;
+    margin: 1em;
+    font-size: 0.5em;
+    color: #114514;
+}
+body{
+    color: #ffffff;
+    font-size: 8vw;
+    padding: 0 0.5em;
+    line-height: 1.2em;
+    background-color: #222222;
+}
+h2{
+    font-size: 2em;
+}
+.comment{
+    color: gray;
+}
+p{
+    margin: 0.5em 0;
+}
+p a{
+    display: inline-block;
+    margin: 0.1em;
+    padding: 0.3em;
+    border-radius: 0.3em;
+    font-size: 0.7em;
+    line-height: 0.8em;
+    font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
+    color: #ffffff;
+    cursor: pointer;
+    text-decoration: none;
+}
+p a:hover{
+    border-color: #ffff00;
+}
+p a::after{
+    content: ' >>';
+    color: #abcdef
+}
+p a:hover::after{
+    color: #ffff00;
+}
+.ez{
+    border: 0.1em solid #66ff66;
+    background-color: #119911;
+}
+.hd{
+    border: 0.1em solid #66ffff;
+    background-color: #1199cc;
+}
+.in{
+    border: 0.1em solid #ff6666;
+    background-color: #cc1111;
+}
+.at{
+    border: 0.1em solid #aaaaaa;
+    background-color: #888888;
+}
+</style>
+</head>
+<body>
+
+选择一个难度！
+<div id='wrapper'>
+</div>
+
+<script>
+try{
+
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+ns('wrapper');
+
+var songs={}
+var _list=location.search.substring(1).split('+');
+for(var i=0;i<_list.length;i++){
+    var [_a,_b]=_list[i].split('$');
+    songs[_a]=_b.split('_');
+}
+for(name in songs){
+    var levels=songs[name];
+    var song=document.createElement('p');
+    song.innerText=name;
+    song.appendChild(document.createElement('br'));
+    for(i=0;i<levels.length;i++){
+        var level=levels[i];
+        var ach=document.createElement('a');
+        ach.classList.add(level);
+        ach.href='play.html?'+name+'$'+level;
+        ach.innerText=level.toUpperCase();
+        song.appendChild(ach);
+    }
+    $wrapper.appendChild(song);
+}
+
+}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+</body>
+</html>
