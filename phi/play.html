@@ -7,7 +7,9 @@
 try{
 
 var speed=150;
+var delay=100;
 var lineY=100;
+
 var songs={
 igallta$ez:{
     name:'igallta',
@@ -248,14 +250,13 @@ function update_notes(time){
         }
     }
 }
-function clicknote(e,time){
-    e.preventDefault();
+function clicknote(x,time){
     var match=-1919810,_min_offset=114e514;
     for(var i=0;i<track.length;i++){
         if(!flag[i]){
             continue;
         }
-        var _errx=Math.abs(map[i]*32-14 - (e.touches[e.touches.length-1]||e).clientX*100/document.body.offsetWidth)
+        var _errx=Math.abs(map[i]*32-14 - x*100/document.body.offsetWidth)
         if(_errx<=18){
             var _offset=Math.abs(gety(time,i)*150)+_errx;
             if(_offset<_min_offset){
@@ -293,6 +294,7 @@ function clicknote(e,time){
     }
 }
 function eff(i,type){
+    //(function(x){x.currentTime=0.045;x.play()})(new Audio('media/tap.mp3'));
     if(type==1){
         var c='#ffff99';
     }else{
@@ -325,9 +327,11 @@ function getscore(){
 }
 
 function tap(e){
+    e.preventDefault();
     if(gamestatus==1){
         var time=(new Date().getTime()-startstamp)/1000;
-        return clicknote(e,time);
+        var x=e.touches?e.touches[e.touches.length-1].clientX:e.clientX;
+        return clicknote(x,time);
     }else{gamestatus=1}
     $line.style.top=lineY+'vw';
     var _line_i=-25,_line_interval=setInterval(function(){
@@ -346,7 +350,7 @@ function tap(e){
         }
         $noteframe.appendChild(_c);
     }
-    startstamp=new Date().getTime()+2000;
+    startstamp=new Date().getTime()+2000+delay;
     mainInterval=setInterval(gameloop,0);
     setTimeout(function(){music.play()},offset*1000+2000);
 }
@@ -357,9 +361,10 @@ if('ontouchstart' in window){
     document.body.onmousedown=tap;
     document.body.oncontextmenu=function(e){
         //专治SB Seewo
-        e.preventdefault();
+        e.preventDefault();
         var time=(new Date().getTime()-startstamp)/1000;
-        clicknote(e,time);clicknote(e,time);
+        var x=e.clientX;
+        clicknote(x,time);clicknote(x,time);
         return false;
     }
 }
