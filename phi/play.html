@@ -6,9 +6,10 @@
 <script>
 try{
 
-var speed=150;
-var delay=100;
+var speed=140;
+var delay=0;
 var lineY=100;
+var autoplay=0;
 
 var songs={
 igallta$ez:{
@@ -69,7 +70,17 @@ new$in:{
     offset:-0,
     beat:0.174,
     url:'media/new.mp3'
-}
+},
+'chicken$ez':{
+    name:'ni tai mei',
+    composer:'SWIN-S / laman29',
+    track:[-2,-1,0,1,3,5,7,10,11,        14,15,16,17,17,19,19,21,21,23,23,26,27, 28,29,30,30.5,31,32,33,33,35,37,39,42,43, 46,47,48,49,49,51,51,53,53,55,55,58,59,60,61,62,63, ],
+    map  :[1.5,2,2,3,3,2.5,1.5,1.5,1, 1.5,2.5,2,1,3,2,3,1.5,2.5,1,2,1.5,1,       3,2.5,2.5,1.5,2.5,3,1,2.5,2,3,1,2,1.5,    2.5,3,1,1.5,3,1,2,2,3,1,2.5,3,1.5,2.5,2,1.5,1,      ],
+    offset:-0.81,
+    beat:0.28037,
+    current:0.25,
+    url:'../draw32/jntm_full.mp3'
+},
 
 /*Tips:
 xx$ez:{
@@ -85,7 +96,7 @@ xx$ez:{
 */
 
 };
-var _sch=location.search.substring(1);
+var _sch=decodeURI(location.search.substring(1));
 
 if(_sch in songs){
     var _song=songs[_sch];
@@ -111,7 +122,7 @@ if(_sch in songs){
     }
     var items=[];
     for(song in levels){
-        items.push(song+'$'+levels[song].join('_'));
+        items.push(encodeURI(song)+'$'+levels[song].join('_'));
     }
     var sch=items.join('+');
     location.replace('choose.html'+'?'+sch);
@@ -136,6 +147,7 @@ p{
     font-size: 0.6em;
 }
 #noteframe>div{
+    display: none;
     position: absolute;
     left: 6vw;
     top: -100vw;
@@ -241,12 +253,16 @@ function update_notes(time){
         var self=$noteframe.childNodes[i].style;
         self.top=lineY-2+gety(time,i)*speed+'vw';
         self.left=map[i]*32-27+'vw';
-        if(gety(time,i)>0.16){
+        if(autoplay && gety(time,i)>=0){
+            clicknote();
+        }else if(gety(time,i)>0.16){
             $noteframe.childNodes[i].style.display='none';
             flag[i]=false;
             count++;
             combo=0;
             ap=fc=false;
+        }else if(gety(time,i)*speed>-6.16-lineY){
+            $noteframe.childNodes[i].style.display='block';
         }
     }
 }
