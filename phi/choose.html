@@ -66,9 +66,13 @@ p a:hover::after{
     border: 0.1em solid #ff6666;
     background-color: #cc1111;
 }
-.at{
+.at,.legacy{
     border: 0.1em solid #aaaaaa;
     background-color: #888888;
+}
+.sp{
+    border: 0.1em solid #ff00ff;
+    background-color: #991199;
 }
 </style>
 </head>
@@ -109,7 +113,7 @@ for(name in songs){
         var ach=document.createElement('a');
         ach.classList.add(level);
         ach.href='play.html?'+name+'$'+level;
-        ach.innerText=level.toUpperCase();
+        ach.innerText=(level=='legacy'?'Legacy':level.toUpperCase());
         song.appendChild(ach);
     }
     $wrapper.appendChild(song);
