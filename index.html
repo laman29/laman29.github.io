@@ -107,13 +107,15 @@ p a:hover::after{
 
     <a name='game' href='#title'>游戏</a>
     <p>游戏主页<a href='9934/wxr/'>前往</a></p>
-    <p>本站游戏<a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
+    <p>本站游戏<a href='phi/play.html'>音游</a><a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
     <p>经典游戏<a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊无限道具</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a></p>
 
     <a name='tool' href='#title'>工具箱</a>
     <p>链接中转站<a href='as/'>前往</a></p>
     <p>下载站<a href='download/'>索引</a></p>
     <p>骗人<a href='lib/fake.html'>长按复制链接</a></p>
+    <p>手写<a href='tool/write.html'>前往</a></p>
+    <p>多押测试<a href='tool/test.html'>前往</a></p>
 
     <a name='prog' href='#title'>一些有趣的玩意</a>
     <p>32班专属抽号机<a href='go/?draw32'>前往</a></p>
@@ -123,6 +125,51 @@ p a:hover::after{
 </div>
 <div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
 
+<script>
+setInterval((function(){
+    var ht=document.getElementById('headtitle');
+    var i=0;
+    return function(){
+        ht.style.color='hsl('+(i++)%360+' 100% 33%)';
+    };
+})(),100);
+(function(){
+    document.title='';
+    var fred1=setInterval((function(){
+        var title=document.getElementById('title');
+        var i=0;
+        var A='练习时长：不到两年半';
+        var B=[
+            'ff0000',
+            '0000ff',
+            '00cc00',
+            'ff00ff',
+            'ffcc00',
+            '00ccff'
+        ];
+        var C=[
+            '首','页 ','| ','L','a','m','a','n','2','9'
+        ];
+        var c,x,k;
+        return function(){
+            c=i++;
+            x=A[c];
+            k=B[c%B.length];
+            title.innerHTML+='<span style="color:#'+k+'">'+x+'</span>&nbsp;';
+            document.title=C[C.length-1-c]+document.title;
+            if(i==A.length){
+                clearInterval(fred1);
+            }
+        };
+    })(),150);
+})();
+(function(){
+    as=document.getElementsByTagName('a');
+    for(var i=0;i<as.length;i++){
+        as[i].target=as[i].target||'_blank';
+    }
+})()
+</script>
 <script>
 setInterval((function(){
     var ht=document.getElementById('headtitle');
