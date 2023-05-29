@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<title>系统测试</title>
+<style>
+body{font-size:6vw}
+p{font-size:0.8em;margin: 0 0 0.1em 1.25em}
+</style>
+</head>
+<body>
+触屏点击
+<p id='a'>No touch found</p>
+系统参数
+<p id='b'>不支持JS</p>
+<p id='z'>未测试多押</p>
+<script>
+try{
+    eval('let __HOMO__=114514');
+    b.innerText='支持ES6';
+}catch{
+    b.innerText='不支持ES6';
+}
+try{
+    function getTextWidth(text){
+        const element=document.createElement('span');
+        element.setAttribute('aria-hidden','true');
+        element.setAttribute('style','font-size:16px!important;position:absolute;top:0;opacity:0;font-family:Consolas,"Liberation Mono","Courier New",monospace');
+        element.textContent=text;
+        document.body.appendChild(element);
+        const width=element.clientWidth;
+        document.body.removeChild(element);
+        return width;
+    };
+    b.innerText+='\n'+(Math.abs(getTextWidth('🐔')-getTextWidth('😁'))<4?'支持开团':'不支持开团');
+}catch{}
+ontouchmove=ontouchstart=ontouchend=function(e){
+    try{
+        e.preventDefault();
+        a.innerText=e.touches.length+(e.touches.length<2?' touch\n':(z.innerText='支持多押')&&' touches\n')+Array.from(e.touches).map(a=>a.clientX).join('\n');
+    }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<title>手写</title>
+<style>
+body{
+    margin: 2%;
+}
+#text,#convert,#output{
+    width: 100%;
+    font-size: 5vw;
+}
+#output{
+    height: auto;
+}
+</style>
+</head>
+<body>
+
+<textarea id='text' rows='8' placeholder='输入要手写的文本...' autofocus='autofocus'>
+</textarea>
+<button id='convert'>手写！</button>
+<img id='output' src='' />
+<script>
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+ns('text convert output');
+
+$convert.onclick=function(){
+    var text=$text.value.replace(',','，');
+    $output.src='https://zj.v.api.aa1.cn/api/zuoye/?msg='+encodeURI(text);
+}
+</script>
+</body>
+</html>

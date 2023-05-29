@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>在线播放器</title>
+<style>
+#main{
+    text-align: center;
+    margin: 16px auto;
+    padding: 0;
+    font-size: 16px;
+    width: 50%;
+}
+#type{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 32px;
+}
+#url{
+    width: 90%;
+    margin: 0;
+    height: 100%;
+}
+#go{
+    width: 9%;
+    margin: 0;
+    height: 100%;
+}
+#player{
+    margin: 0;
+    width: 100%;
+    border: 1px solid black;
+}
+</style>
+</head>
+<body>
+<div id='main'>
+    <div id='type'>
+        <input id='url' placeholder='输入要播放的网址...' />
+        <button id='go'>播放</button>
+    </div>
+    <!-- video id='player' autoplay loop controls>
+        <source id='sr' src='https://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4' />
+    </video -->
+<iframe id='player'>
+</div>
+<script>
+try{
+document.getElementById('go').addEventListener('click',function(){
+    document.getElementById('player').src=document.getElementById('input').value;
+    //document.getElementById('player').load();
+})
+}catch(e){alert(e)}
+</script>
+</body>
+</html>
