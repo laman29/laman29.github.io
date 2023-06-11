@@ -126,13 +126,16 @@ p a:hover::after{
 <div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=报告漏洞&body=泥嚎，我在你的网站发现了一些Bug：%0A%0A(已自动生成开头)'>联系laman29</a></div>
 
 <script>
+
+document.getElementById('headtitle').innerText='距离小中考还有'+(25-new Date().getDate())+'天';
+
 setInterval((function(){
     var ht=document.getElementById('headtitle');
     var i=0;
     return function(){
         ht.style.color='hsl('+(i++)%360+' 100% 33%)';
     };
-})(),100);
+})(),50);
 (function(){
     document.title='';
     var fred1=setInterval((function(){
@@ -169,15 +172,7 @@ setInterval((function(){
         as[i].target=as[i].target||'_blank';
     }
 })()
-</script>
-<script>
-setInterval((function(){
-    var ht=document.getElementById('headtitle');
-    var i=0;
-    return function(){
-        ht.style.color='hsl('+(i++)%360+' 100% 33%)';
-    };
-})(),100);
+
 //var bgm1=new Audio('draw32/jntm_full.mp3');
 var bgm1=new Audio('http://music.163.com/song/media/outer/url?id=5221167');
 </script>
