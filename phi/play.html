@@ -8,7 +8,7 @@
 try{
 
 var speed=160;
-var delay=-40;
+var delay=0;
 var lineY=100;
 var tapsound=0;
 var autoplay=0;
@@ -31,7 +31,8 @@ if(_sch in songs){
     music.preload='auto';
     music.currentTime=_song.current||0;
 }else{
-    location.replace('choose.html');
+    //location.replace('choose.html');
+    location.replace('play.html?new$in')
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
