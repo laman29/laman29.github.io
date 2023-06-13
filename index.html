@@ -74,7 +74,7 @@ p a:hover::after{
 </head>
 <body style='height: 100%'>
 <div id='header'>
-    <a id='headtitle' href='#' onclick='alert("继续练习！")'>欢&nbsp;迎&nbsp;练&nbsp;习</a>
+    <a id='headtitle' href='#' onclick='/*alert("继续练习！")*/'>欢&nbsp;迎&nbsp;练&nbsp;习</a>
     <div style='height:0.1em;width:100%;background-color:#aaaaaa;' align='center'></div>
     <div style='height:0.1em;width:100%;background-color:#eeeeee;' align='center'></div>
 </div>
@@ -127,7 +127,7 @@ p a:hover::after{
 
 <script>
 
-document.getElementById('headtitle').innerText='距离小中考还有'+(25-new Date().getDate())+'天';
+document.getElementById('headtitle').innerText='距离小中考仅剩'+(25-new Date().getDate())+'天';
 
 setInterval((function(){
     var ht=document.getElementById('headtitle');
