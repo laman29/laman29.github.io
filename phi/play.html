@@ -288,6 +288,7 @@ function tap(e){
 //if('ontouchstart' in window){
     //document.body.ontouchstart=tap;
     document.body.addEventListener('touchstart',tap);
+    document.body.addEventListener('contextmenu',(e)=>e.preventDefault());
 /*}else{
     document.body.onmousedown=tap;
     document.body.oncontextmenu=function(e){
