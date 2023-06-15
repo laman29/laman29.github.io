@@ -158,7 +158,7 @@ setInterval((function(){
             c=i++;
             x=A[c];
             k=B[c%B.length];
-            title.innerHTML+='<span style="color:#'+k+'">'+x+'</span>&nbsp;';
+            document.title.innerHTML+='<span style="color:#'+k+'">'+x+'</span>&nbsp;';
             document.title=C[C.length-1-c]+document.title;
             if(i==A.length){
                 clearInterval(fred1);
