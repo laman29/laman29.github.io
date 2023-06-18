@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
+<title>Loading...</title>
+<script src='song.js'></script>
+<script>
+try{
+
+var speed=160;
+var delay=0;
+var lineY=100;
+var tapsound=0;
+var autoplay=0;
+var mode=0;
+var mirror=0;
+
+var _sch=decodeURI(location.search.substring(1));
+var _id=_sch.split('$')[0];
+
+if(_sch in songs){
+    var songname=names[_id];
+    var _song=songs[_sch];
+    var composer=_song.composer;
+    var track=_song.track;
+    var map  =_song.map;
+    var hold =_song.hold || Array(track.length).fill(0);
+    if(mirror){
+        map=map.map(x=>4-x);
+    }
+    var offset=_song.offset;
+    var beat=_song.beat;
+    var level=_sch.split('$')[1];
+    level=(level=='legacy'?'Legacy':level.toUpperCase());
+    var music=new Audio(_song.url);
+    music.preload='auto';
+    music.currentTime=_song.current||0;
+}else{
+    //location.replace('choose.html');
+    location.replace('circle.html?new$in')
+}
+
+}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+<style>
+body,html{
+    height: 100%;
+}
+body{
+    font-size: 10vw;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+    background-color: #222222;
+}
+p,span{
+    display: block;
+}
+p{
+    margin: 0.2em;
+    position: fixed;
+}
+#noteframe>div{
+    display: none;
+    position: absolute;
+    left: 11vw;
+    top: -100vw;
+    width: 12vw;
+    height: 12vw;
+    border-radius: 7vw;
+    border: 1vw solid #ffffff;
+    //background-color: #44ccff;
+}
+
+#line{
+    width: 0%;
+    left: 50%;
+    height: 1vw;
+    background-color: #ffffaa;
+    position: absolute;
+}
+
+#-combo{
+    font-size: 1em;
+    top: 0;
+    left: 0;
+    text-align: right;
+}
+#combo2{
+    font-size: 0.6em;
+}
+#gamescore{
+    font-size: 1em;
+    top: 0;
+    right: 0;
+}
+#songinfo{
+    font-size: 0.8em;
+    bottom: 0;
+    left: 0;
+    text-align: left;
+}
+#-composer{
+    font-size: 0.75em;
+}
+#-level{
+    font-size: 1em;
+    bottom: 0;
+    right: 0;
+}
+
+#taptostart{
+    font-size: 1em;
+    opacity: 0;
+    height: 1em;
+    margin: auto;
+    top: 0; right: 0; bottom: 10%; left: 0;
+}
+
+.double{
+    border-color: #ffff66 !important;
+}
+
+</style>
+</head>
+<body>
+<div id='noteframe'></div>
+<div id='line'></div>
+<div id='eff'></div>
+
+<p id='-combo'>
+    <span id='combo1'></span>
+    <span id='combo2'></span>
+</p>
+<p id='gamescore'></p>
+<p id='songinfo'>
+    <span id='-songname'></span>
+    <span id='-composer'></span>
+</p>
+<p id='-level'></p>
+
+<p id='taptostart'>Tap to start...</p>
+
+<script>
+try{
+
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+ns('noteframe line eff -songname -composer gamescore combo1 combo2 -level taptostart');
+
+document.title=songname+' '+level+' - '+composer;
+$_songname.innerText=songname;
+$_composer.innerText=composer;
+$_level.innerText=level;
+if(autoplay){
+    $combo2.innerText='Autoplay';
+}
+(new Audio('media/tap.mp3').preload='auto');
+var gamestatus=0;
+var gamescore=0;
+var count=0;
+var combo=0;
+var maxcb=0;
+var ap=true,fc=true;
+var flag=Array(track.length).fill(true);
+var startstamp,mainInterval;
+
+function init(){
+    clearInterval(taptostartInterval);
+    $taptostart.style.display='none';
+    $line.style.top=lineY+'vw';
+    var _h=document.body.clientHeight/document.body.clientWidth*100
+    var _line_i=-25,_line_interval=setInterval(function(){
+        if(++_line_i<0){}else if(_line_i<50){
+            var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+            $line.style.width=i*2+'vw';
+            $line.style.left=50-i+'vw';
+            //$line.style.top=
+        }else{
+            clearInterval(_line_interval);
+        }
+    },20);
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        if(track.filter(function(x){return x==track[i]}).length>1){
+            _c.classList.add('double');
+        }
+        $noteframe.appendChild(_c);
+    }
+    startstamp=new Date().getTime()+2000+delay;
+    mainInterval=setInterval(gameloop,0);
+    setTimeout(function(){music.play()},offset*1000+2000);
+}
+function gameloop(){
+    var time=(new Date().getTime()-startstamp)/1000;
+    update_notes(time);
+    update_score();
+    if(count==track.length){
+        music.pause();
+        clearInterval(mainInterval);
+    }
+}
+function update_notes(time){
+    for(var i=0;i<track.length;i++){
+        if(!flag[i]){continue;}
+        var self=$noteframe.childNodes[i].style;
+        if(mode==0){
+            self.top=lineY-7+gety(time,i)*speed+'vw';
+            self.left=map[i]*32-21+'vw';
+        }else{
+            self.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
+            self.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+        }
+        if(autoplay && flag[i] && gety(time,i)>=0){
+            clicknote((map[i]*0.32-0.27)*document.body.offsetWidth,time);
+        }else if(gety(time,i)>0.16){
+            $noteframe.childNodes[i].style.display='none';
+            flag[i]=false;
+            count++;
+            combo=0;
+            ap=fc=false;
+        }else if(gety(time,i)*speed>-61.6-lineY){
+            $noteframe.childNodes[i].style.display='block';
+        }
+    }
+}
+function update_score(){
+    $gamescore.innerText=getscore();
+    $combo1.innerText=combo>2?combo:'';
+    if(!autoplay){
+        combo2.innerText=combo>2?'combo':'';
+    }
+    $line.style.backgroundColor=(ap?'#ffffaa':fc?'#aaffff':'#ffffff');
+}
+function clicknote(x,time){
+    var match=-114514;
+    for(var i=0;i<track.length;i++){
+        if(flag[i] && 16> Math.abs(map[i]*32-14 - x*100/document.body.offsetWidth)){
+        	    match=i;
+        	    break;
+        	}
+    }
+    if(match==-114514){
+        return;
+    }
+    if(Math.abs(gety(time,match))<0.08){
+        $noteframe.childNodes[match].style.display='none';
+        eff(match,1);
+        flag[match]=false;
+        gamescore+=1;
+        count++;
+        combo++;
+        maxcb=Math.max(combo,maxcb);
+    }else if(Math.abs(gety(time,match))<0.16){
+        $noteframe.childNodes[match].style.display='none';
+        eff(match,0.65);
+        flag[match]=false;
+        gamescore+=0.650000001;
+        count++;
+        combo++;
+        maxcb=Math.max(combo,maxcb);
+        ap=false;
+    }else if(-0.18<gety(time,match)){
+        $noteframe.childNodes[match].style.display='none';
+        flag[match]=false;
+        count++;
+        combo=0;
+        ap=fc=false;
+    }
+}
+function eff(i,type){
+    if(tapsound){
+        var x=new Audio('media/tap.mp3');
+        x.currentTime=0.04;
+        x.play();
+        delete x;
+    }
+    if(type==1){
+        var c='#ffff99';
+    }else{
+        var c='#99ffff';
+    }
+    var _e=document.createElement('div');
+    var _s=_e.style;
+    _s.position='absolute';
+    _s.top=lineY+'vw';
+    _s.border='0.25vw solid '+c;
+    _s.borderRadius='100vw';
+    for(var j=0;j<=1;j+=0.05){
+        setTimeout(function(i,j){
+            _t=Math.sqrt(1-j*j);
+            _s.width=_s.height=_t*32+'vw';
+            _s.top=lineY-_t*16+'vw';
+            _s.left=map[i]*32-15-_t*16+'vw';
+        },(1-j)*400,i,j);
+    }
+    setTimeout(function(i){
+        $eff.removeChild(_e);
+        delete _e,_s;
+    },400,i);
+    $eff.appendChild(_e);
+}
+function gety(time,i){
+    return time-(track[i])*beat;
+}
+function getscore(){
+    return ((gamescore*9+maxcb)*100000/track.length).toString().split('.')[0].padStart(7,'0')
+}
+
+function tap(e){
+    e.preventDefault();
+    if(music.readyState!=4){
+        return;
+    }
+    if(gamestatus==1){
+        if(autoplay){
+            return;
+        }
+        var time=(new Date().getTime()-startstamp)/1000;
+        var x=e.touches?e.touches[e.touches.length-1].clientX:e.clientX;
+        clicknote(x,time);
+    }else{
+        init();
+        gamestatus=1;
+    }
+}
+
+document.body.addEventListener('touchstart',tap);
+document.body.onmousedown=document.body.oncontextmenu=function(e){
+    e.preventDefault();
+    return false;
+}
+
+var _taptostart_i=0,taptostartInterval=setInterval(function(){
+    $taptostart.style.opacity=0.5*(1-Math.cos(_taptostart_i*Math.PI));
+    _taptostart_i+=0.01;
+},20)
+
+}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+</body>
+</html>
