@@ -24,9 +24,10 @@ if(_sch in songs){
     var composer=_song.composer;
     var track=_song.track;
     var map  =_song.map;
-    var hold =_song.hold || Array(track.length).fill(0);
+    var hold =_song.hold || [];
+    hold=track.map((x,i)=> hold[i] || 0)
     if(mirror){
-        map=map.map(x=>4-x);
+        map=map.map(x=> 4-x);
     }
     var offset=_song.offset;
     var beat=_song.beat;
@@ -63,13 +64,19 @@ p{
 #noteframe>div{
     display: none;
     position: absolute;
-    left: 11vw;
     top: -100vw;
     width: 12vw;
     height: 12vw;
     border-radius: 7vw;
     border: 1vw solid #ffffff;
-    //background-color: #44ccff;
+}
+#holdframe>div{
+    display: none;
+    position: absolute;
+    top: -100vw;
+    width: 0;
+    border: 0.5vw solid #ffffff;
+    border-radius: 0.5vw;
 }
 
 #line{
@@ -124,6 +131,7 @@ p{
 </style>
 </head>
 <body>
+<div id='holdframe'></div>
 <div id='noteframe'></div>
 <div id='line'></div>
 <div id='eff'></div>
@@ -154,7 +162,7 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('noteframe line eff -songname -composer gamescore combo1 combo2 -level taptostart');
+ns('holdframe noteframe line eff -songname -composer gamescore combo1 combo2 -level taptostart');
 
 document.title=songname+' '+level+' - '+composer;
 $_songname.innerText=songname;
@@ -170,7 +178,7 @@ var count=0;
 var combo=0;
 var maxcb=0;
 var ap=true,fc=true;
-var flag=Array(track.length).fill(true);
+var flag=Array(track.length).fill(1);
 var startstamp,mainInterval;
 
 function init(){
@@ -195,6 +203,13 @@ function init(){
         }
         $noteframe.appendChild(_c);
     }
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        if(hold[i]>0){
+            _c.style.height=hold[i]*beat*speed+'vw';
+        }
+        $holdframe.appendChild(_c);
+    }
     startstamp=new Date().getTime()+2000+delay;
     mainInterval=setInterval(gameloop,0);
     setTimeout(function(){music.play()},offset*1000+2000);
@@ -211,24 +226,30 @@ function gameloop(){
 function update_notes(time){
     for(var i=0;i<track.length;i++){
         if(!flag[i]){continue;}
-        var self=$noteframe.childNodes[i].style;
+        var tap=$noteframe.childNodes[i].style;
+        var hld=$holdframe.childNodes[i].style;
         if(mode==0){
-            self.top=lineY-7+gety(time,i)*speed+'vw';
-            self.left=map[i]*32-21+'vw';
+            tap.top=lineY-7+gety(time,i)*speed+'vw';
+            tap.left=map[i]*32-21+'vw';
         }else{
-            self.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
-            self.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+            tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
+            tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
         }
+        hld.top=lineY+(gety(time,i)-hold[i]*beat)*speed+'vw';
+        hld.left=map[i]*32-14.5+'vw';
         if(autoplay && flag[i] && gety(time,i)>=0){
-            clicknote((map[i]*0.32-0.27)*document.body.offsetWidth,time);
+            clicknote(map[i],time);
         }else if(gety(time,i)>0.16){
             $noteframe.childNodes[i].style.display='none';
-            flag[i]=false;
+            flag[i]=0;
             count++;
             combo=0;
             ap=fc=false;
         }else if(gety(time,i)*speed>-61.6-lineY){
             $noteframe.childNodes[i].style.display='block';
+            if(hold[i]>0){
+                $holdframe.childNodes[i].style.display='block';
+            }
         }
     }
 }
@@ -243,7 +264,7 @@ function update_score(){
 function clicknote(x,time){
     var match=-114514;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && 16> Math.abs(map[i]*32-14 - x*100/document.body.offsetWidth)){
+        if(flag[i] && 16> Math.abs((x-map[i])*32-14)){
         	    match=i;
         	    break;
         	}
@@ -251,29 +272,33 @@ function clicknote(x,time){
     if(match==-114514){
         return;
     }
-    if(Math.abs(gety(time,match))<0.08){
+    if(hold[i]==0){
         $noteframe.childNodes[match].style.display='none';
-        eff(match,1);
-        flag[match]=false;
-        gamescore+=1;
+        flag[match]=0;
         count++;
-        combo++;
-        maxcb=Math.max(combo,maxcb);
-    }else if(Math.abs(gety(time,match))<0.16){
-        $noteframe.childNodes[match].style.display='none';
-        eff(match,0.65);
-        flag[match]=false;
-        gamescore+=0.650000001;
-        count++;
-        combo++;
-        maxcb=Math.max(combo,maxcb);
-        ap=false;
-    }else if(-0.18<gety(time,match)){
-        $noteframe.childNodes[match].style.display='none';
-        flag[match]=false;
-        count++;
-        combo=0;
-        ap=fc=false;
+        if(Math.abs(gety(time,match))<0.08){
+            eff(match,1);
+            gamescore+=1;
+            combo++;
+            maxcb=Math.max(combo,maxcb);
+        }else if(Math.abs(gety(time,match))<0.16){
+            eff(match,0.65);
+            gamescore+=0.650000001;
+            combo++;
+            maxcb=Math.max(combo,maxcb);
+            ap=false;
+        }else if(-0.18<gety(time,match)){
+            combo=0;
+            ap=fc=false;
+        }
+    }else if(hold[i]>0){
+        if(Math.abs(gety(time,match))<0.08){
+            eff(match,1);
+            flag[match]=2;
+        }else if(Math.abs(gety(time,match))<0.16){
+            eff(match,0.65);
+            flag[match]=2.5;
+        }
     }
 }
 function eff(i,type){
@@ -291,7 +316,7 @@ function eff(i,type){
     var _e=document.createElement('div');
     var _s=_e.style;
     _s.position='absolute';
-    _s.top=lineY+'vw';
+    _s.top=lineY-0.5+'vw';
     _s.border='0.25vw solid '+c;
     _s.borderRadius='100vw';
     for(var j=0;j<=1;j+=0.05){
@@ -325,7 +350,8 @@ function tap(e){
             return;
         }
         var time=(new Date().getTime()-startstamp)/1000;
-        var x=e.touches?e.touches[e.touches.length-1].clientX:e.clientX;
+        var x=(e.touches?e.changedTouches[e.changedTouches.length-1].clientX:e.clientX);
+        x=(x*100/document.body.offsetWidth+14)/32
         clicknote(x,time);
     }else{
         init();
