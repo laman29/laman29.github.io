@@ -3,13 +3,17 @@
 <head>
 <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>Loading...</title>
+<link rel='stylesheet' href='circle.css' />
 <script src='song.js'></script>
 <script>
 try{
+//throw 'I miss you.';
 
 var speed=160;
 var delay=0;
-var lineY=100;
+var lineY=105;
+var T80=0.08;
+var T160=T80*2,T180=T80*2.25;
 var tapsound=0;
 var autoplay=0;
 var mode=0;
@@ -25,7 +29,7 @@ if(_sch in songs){
     var track=_song.track;
     var map  =_song.map;
     var hold =_song.hold || [];
-    hold=track.map((x,i)=> hold[i] || 0)
+    hold=track.map((x,i)=> hold[i] || 0);
     if(mirror){
         map=map.map(x=> 4-x);
     }
@@ -41,94 +45,8 @@ if(_sch in songs){
     location.replace('circle.html?new$in')
 }
 
-}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+}catch(e){alert('你看这个laman29，又写了一个Bug！\n错误信息：'+e)}
 </script>
-<style>
-body,html{
-    height: 100%;
-}
-body{
-    font-size: 10vw;
-    line-height: 1;
-    color: #ffffff;
-    text-align: center;
-    background-color: #222222;
-}
-p,span{
-    display: block;
-}
-p{
-    margin: 0.2em;
-    position: fixed;
-}
-#noteframe>div{
-    display: none;
-    position: absolute;
-    top: -100vw;
-    width: 12vw;
-    height: 12vw;
-    border-radius: 7vw;
-    border: 1vw solid #ffffff;
-}
-#holdframe>div{
-    display: none;
-    position: absolute;
-    top: -100vw;
-    width: 0;
-    border: 0.5vw solid #ffffff;
-    border-radius: 0.5vw;
-}
-
-#line{
-    width: 0%;
-    left: 50%;
-    height: 1vw;
-    background-color: #ffffaa;
-    position: absolute;
-}
-
-#-combo{
-    font-size: 1em;
-    top: 0;
-    left: 0;
-    text-align: right;
-}
-#combo2{
-    font-size: 0.6em;
-}
-#gamescore{
-    font-size: 1em;
-    top: 0;
-    right: 0;
-}
-#songinfo{
-    font-size: 0.8em;
-    bottom: 0;
-    left: 0;
-    text-align: left;
-}
-#-composer{
-    font-size: 0.75em;
-}
-#-level{
-    font-size: 1em;
-    bottom: 0;
-    right: 0;
-}
-
-#taptostart{
-    font-size: 1em;
-    opacity: 0;
-    height: 1em;
-    margin: auto;
-    top: 0; right: 0; bottom: 10%; left: 0;
-}
-
-.double{
-    border-color: #ffff66 !important;
-}
-
-</style>
 </head>
 <body>
 <div id='holdframe'></div>
@@ -179,6 +97,7 @@ var combo=0;
 var maxcb=0;
 var ap=true,fc=true;
 var flag=Array(track.length).fill(1);
+var touches=Array();
 var startstamp,mainInterval;
 
 function init(){
@@ -198,7 +117,8 @@ function init(){
     },20);
     for(var i=0;i<track.length;i++){
         var _c=document.createElement('div');
-        if(track.filter(function(x){return x==track[i]}).length>1){
+        _c.style.left=map[i]*32-21+'vw';
+        if(track.filter(x=>x==track[i]).length>1){
             _c.classList.add('double');
         }
         $noteframe.appendChild(_c);
@@ -207,49 +127,113 @@ function init(){
         var _c=document.createElement('div');
         if(hold[i]>0){
             _c.style.height=hold[i]*beat*speed+'vw';
+            _c.style.left=map[i]*32-14.5+'vw';
         }
         $holdframe.appendChild(_c);
     }
     startstamp=new Date().getTime()+2000+delay;
     mainInterval=setInterval(gameloop,0);
-    setTimeout(function(){music.play()},offset*1000+2000);
+    setTimeout(()=>music.play(),offset*1000+2000);
 }
 function gameloop(){
     var time=(new Date().getTime()-startstamp)/1000;
     update_notes(time);
     update_score();
-    if(count==track.length){
-        music.pause();
-        clearInterval(mainInterval);
+    if(autoplay && flag[i] && gety(time,i)>=0){
+        clicknote(map[i],time);
+    }
+    if(count==track.length && flag.every(x=>!x)){
+        setTimeout(()=>{
+            music.pause();
+            clearInterval(mainInterval);
+        },160)
     }
 }
 function update_notes(time){
     for(var i=0;i<track.length;i++){
-        if(!flag[i]){continue;}
-        var tap=$noteframe.childNodes[i].style;
-        var hld=$holdframe.childNodes[i].style;
-        if(mode==0){
-            tap.top=lineY-7+gety(time,i)*speed+'vw';
-            tap.left=map[i]*32-21+'vw';
-        }else{
-            tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
-            tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+        if(flag[i]==0){
+            continue;
         }
-        hld.top=lineY+(gety(time,i)-hold[i]*beat)*speed+'vw';
-        hld.left=map[i]*32-14.5+'vw';
-        if(autoplay && flag[i] && gety(time,i)>=0){
-            clicknote(map[i],time);
-        }else if(gety(time,i)>0.16){
-            $noteframe.childNodes[i].style.display='none';
-            flag[i]=0;
-            count++;
-            combo=0;
-            ap=fc=false;
-        }else if(gety(time,i)*speed>-61.6-lineY){
+        if(flag[i]==1 && gety(time,i)*speed>-61.6-lineY){
             $noteframe.childNodes[i].style.display='block';
             if(hold[i]>0){
                 $holdframe.childNodes[i].style.display='block';
             }
+        }
+        if(hold[i]==0){
+            update_tap(time,i);
+        }else if(hold[i]>0){
+            update_hold(time,i);
+        }
+    }
+}
+function update_tap(time,i){
+    var tap=$noteframe.childNodes[i].style;
+    if(mode==0){
+        tap.top=lineY-7+gety(time,i)*speed+'vw';
+    }else{
+        tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
+        tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+    }
+    if(gety(time,i)>T180){
+        $noteframe.childNodes[i].style.display='none';
+        flag[i]=0;
+        miss();
+    }
+}
+function update_hold(time,i){
+    var tapE=$noteframe.childNodes[i];
+    var hldE=$holdframe.childNodes[i];
+    var tap=tapE.style,hld=hldE.style;
+    var y2=gety2(time,i);
+    hld.top=lineY+y2*speed+'vw';
+    if(flag[i]==1){
+        tap.top=lineY-7+gety(time,i)*speed+'vw';
+    }else{
+        hld.height=-y2*speed+'vw';
+    }
+    if(flag[i]==1){
+        if(gety(time,i)>T160){
+            tap.display='none';
+            hldE.classList.add('missing');
+            flag[i]=4;
+            miss();
+        }
+    }else if([2,2.5].includes(flag[i])){
+        if(y2>=0){
+            var isgood=flag[i]==2.5;
+            tap.display=hld.display='none';
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }else if(touches.every(x=> .5< Math.abs(x-map[i]))){
+            if(y2<-T160){
+                tapE.classList.add('missing');
+                hldE.classList.add('missing');
+                flag[i]=4;
+                miss();
+            }else{
+                flag[i]+=1;
+            }
+        }
+    }else if([3,3.5].includes(flag[i])){
+        if(y2>=0){
+            tap.display=hld.display='none';
+            var isgood=flag[i]==3.5;
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }
+    }else if(flag[i]==4){
+        if(y2>=0){
+            tap.display=hld.display='none';
+            flag[i]=0;
         }
     }
 }
@@ -264,7 +248,7 @@ function update_score(){
 function clicknote(x,time){
     var match=-114514;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && 16> Math.abs((x-map[i])*32-14)){
+        if(flag[i] && .5> Math.abs(x-map[i])){
         	    match=i;
         	    break;
         	}
@@ -274,28 +258,24 @@ function clicknote(x,time){
     }
     if(hold[i]==0){
         $noteframe.childNodes[match].style.display='none';
-        flag[match]=0;
-        count++;
-        if(Math.abs(gety(time,match))<0.08){
+        if(Math.abs(gety(time,match))<T80){
             eff(match,1);
-            gamescore+=1;
-            combo++;
-            maxcb=Math.max(combo,maxcb);
-        }else if(Math.abs(gety(time,match))<0.16){
+            perfect();
+        }else if(Math.abs(gety(time,match))<T160){
             eff(match,0.65);
-            gamescore+=0.650000001;
-            combo++;
-            maxcb=Math.max(combo,maxcb);
-            ap=false;
-        }else if(-0.18<gety(time,match)){
-            combo=0;
-            ap=fc=false;
+            good();
+        }else if(Math.abs(gety(time,match))<T180){
+            miss(1);
+        }else{
+            return;
         }
-    }else if(hold[i]>0){
-        if(Math.abs(gety(time,match))<0.08){
+        flag[match]=0;
+    }else if(hold[i]>0 && flag[i]==1){
+        $noteframe.childNodes[match].style.top=lineY-7+'vw';
+        if(Math.abs(gety(time,match))<T80){
             eff(match,1);
             flag[match]=2;
-        }else if(Math.abs(gety(time,match))<0.16){
+        }else if(Math.abs(gety(time,match))<T160){
             eff(match,0.65);
             flag[match]=2.5;
         }
@@ -334,10 +314,31 @@ function eff(i,type){
     $eff.appendChild(_e);
 }
 function gety(time,i){
-    return time-(track[i])*beat;
+    return time-track[i]*beat;
+}
+function gety2(time,i){
+    return time-(track[i]+hold[i])*beat;
 }
 function getscore(){
     return ((gamescore*9+maxcb)*100000/track.length).toString().split('.')[0].padStart(7,'0')
+}
+function perfect(){
+    count++;
+    gamescore+=1;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+}
+function good(){
+    count++;
+    gamescore+=0.650000001;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+    ap=false;
+}
+function miss(isbad=0){
+    count++;
+    combo=0;
+    ap=fc=false;
 }
 
 function tap(e){
@@ -360,6 +361,13 @@ function tap(e){
 }
 
 document.body.addEventListener('touchstart',tap);
+['touchstart','touchend','touchmove'].forEach(
+    x=>document.body.addEventListener(x,
+        e=>touches=Array.from(e.touches).map(
+            y=>(y.clientX*100/document.body.offsetWidth+14)/32
+        )
+    )
+)
 document.body.onmousedown=document.body.oncontextmenu=function(e){
     e.preventDefault();
     return false;
