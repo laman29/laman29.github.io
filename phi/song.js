@@ -120,11 +120,20 @@ igallta$ez:{
     beat:0.13125,
     url:'https://music.163.com/song/media/outer/url?id=1904191784'
 },
-awa$sp:{
+awa$in:{
     composer:'laman29 XD',
     track:Array(616).fill().map(function(y,x){return x}),
 //    map:Array(616).fill().map(function(x,y){return 2+(y%2?1:-1)*(1-Math.floor(Math.random()*2.2)/2)}),
     map:Array(616).fill(2),
+    offset:0,
+    beat:0.17/2,
+    url:'https://music.163.com/song/media/outer/url?id=1811959255'
+},
+awa$sp:{
+    composer:'laman29 XD',
+    track:Array(616).fill().map(function(y,x){return x}),
+    map:Array(616).fill().map(function(x,y){return 2+(y%2?1:-1)*(1-Math.floor(Math.random()*2.2)/2)}),
+//    map:Array(616).fill(2),
     offset:0,
     beat:0.17/2,
     url:'https://music.163.com/song/media/outer/url?id=1811959255'
