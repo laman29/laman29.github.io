@@ -18,6 +18,7 @@ var tapsound=0;
 var autoplay=0;
 var mode=0;
 var mirror=0;
+var current=0;
 
 var _sch=decodeURI(location.search.substring(1));
 var _id=_sch.split('$')[0];
@@ -41,8 +42,7 @@ if(_sch in songs){
     music.preload='auto';
     music.currentTime=_song.current||0;
 }else{
-    //location.replace('choose.html');
-    location.replace('circle.html?new$in')
+    location.replace('choose.html');
 }
 
 }catch(e){alert('你看这个laman29，又写了一个Bug！\n错误信息：'+e)}
@@ -89,7 +89,8 @@ $_level.innerText=level;
 if(autoplay){
     $combo2.innerText='Autoplay';
 }
-(new Audio('media/tap.mp3').preload='auto');
+if(tapsound){new Audio('media/tap.mp3').preload='auto';};
+
 var gamestatus=0;
 var gamescore=0;
 var count=0;
@@ -100,21 +101,23 @@ var flag=Array(track.length).fill(1);
 var touches=Array();
 var startstamp,mainInterval;
 
-function init(){
-    clearInterval(taptostartInterval);
-    $taptostart.style.display='none';
-    $line.style.top=lineY+'vw';
-    var _h=document.body.clientHeight/document.body.clientWidth*100
-    var _line_i=-25,_line_interval=setInterval(function(){
-        if(++_line_i<0){}else if(_line_i<50){
-            var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
-            $line.style.width=i*2+'vw';
-            $line.style.left=50-i+'vw';
-            //$line.style.top=
-        }else{
-            clearInterval(_line_interval);
-        }
-    },20);
+function init(noline=false){
+    if(!noline){
+        $taptostart.style.display='none';
+        clearInterval(taptostartInterval);
+        $line.style.top=lineY+'vw';
+        var _h=document.body.clientHeight/document.body.clientWidth*100
+        var _line_i=-25,_line_interval=setInterval(function(){
+            if(++_line_i<0){}else if(_line_i<50){
+                var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+                $line.style.width=i*2+'vw';
+                $line.style.left=50-i+'vw';
+                //$line.style.top=
+            }else{
+                clearInterval(_line_interval);
+            }
+        },20);
+    }
     for(var i=0;i<track.length;i++){
         var _c=document.createElement('div');
         _c.style.left=map[i]*32-21+'vw';
@@ -145,6 +148,7 @@ function gameloop(){
     if(count==track.length && flag.every(x=>!x)){
         setTimeout(()=>{
             music.pause();
+            delete music;
             clearInterval(mainInterval);
         },160)
     }
@@ -192,14 +196,17 @@ function update_hold(time,i){
     }else{
         hld.height=-y2*speed+'vw';
     }
-    if(flag[i]==1){
+    switch(flag[i]){
+    case 1:
         if(gety(time,i)>T160){
             tap.display='none';
             hldE.classList.add('missing');
             flag[i]=4;
             miss();
         }
-    }else if([2,2.5].includes(flag[i])){
+    break;
+    case 2:
+    case 2.5:
         if(y2>=0){
             var isgood=flag[i]==2.5;
             tap.display=hld.display='none';
@@ -219,7 +226,9 @@ function update_hold(time,i){
                 flag[i]+=1;
             }
         }
-    }else if([3,3.5].includes(flag[i])){
+    break;
+    case 3:
+    case 3.5:
         if(y2>=0){
             tap.display=hld.display='none';
             var isgood=flag[i]==3.5;
@@ -230,7 +239,8 @@ function update_hold(time,i){
                 perfect();
             }
         }
-    }else if(flag[i]==4){
+    break;
+    case 4:
         if(y2>=0){
             tap.display=hld.display='none';
             flag[i]=0;
@@ -244,8 +254,12 @@ function update_score(){
         combo2.innerText=combo>2?'combo':'';
     }
     $line.style.backgroundColor=(ap?'#ffffaa':fc?'#aaffff':'#ffffff');
+    $line.style.top=lineY+'vw';
 }
 function clicknote(x,time){
+    if(gamestatus!=1){
+        return;
+    }
     var match=-114514;
     for(var i=0;i<track.length;i++){
         if(flag[i] && .5> Math.abs(x-map[i])){
@@ -359,6 +373,29 @@ function tap(e){
         gamestatus=1;
     }
 }
+function keyDown(e){
+    var char=e.key.toUpperCase();
+    var index='CVBNM'.indexOf(char);
+    if(index!=-1){
+        x=1+index/2;
+        var time=(new Date().getTime()-startstamp)/1000;
+        clicknote(x,time);
+    }
+}
+
+function setCurrentFrame(x){
+    init(noline=true);
+    clearInterval(mainInterval);
+    delay+=-1000*x*beat;
+    music.currentTime+=x*beat;
+    flag=track.map(y=> y<x?0:1);
+    var n=flag.filter(y=> !y).length;
+    for(var i=n;i;i--){
+        perfect();
+    }
+    startstamp=new Date().getTime()+2000+delay;
+    gameloop();
+}
 
 document.body.addEventListener('touchstart',tap);
 ['touchstart','touchend','touchmove'].forEach(
@@ -377,6 +414,10 @@ var _taptostart_i=0,taptostartInterval=setInterval(function(){
     $taptostart.style.opacity=0.5*(1-Math.cos(_taptostart_i*Math.PI));
     _taptostart_i+=0.01;
 },20)
+
+if(current){
+    setCurrentFrame(current);
+}
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
 </script>

@@ -2,11 +2,6 @@
 <html>
 <head>
 <title>Choose</title>
-<script>
-if(location.search.length<2){
-    location.replace('play.html');
-}
-</script>
 <style>
 #bottom{
     display: block;
@@ -75,10 +70,11 @@ p a:hover::after{
     background-color: #991199;
 }
 </style>
+<script src='song.js'></script>
 </head>
 <body>
 
-选择一个难度！
+～选择一个难度～
 <div id='wrapper'>
 </div>
 
@@ -97,26 +93,37 @@ function ns(xlist){
 }
 ns('wrapper');
 
-var songs={}
-var _list=location.search.substring(1).split('+');
-for(var i=0;i<_list.length;i++){
-    var [_a,_b]=_list[i].split('$');
-    songs[_a]=_b.split('_');
+var songinfo={/*
+    song1_id:[
+        song1_name,
+        level1, level2, ...
+    ], 
+    ...
+*/};
+
+for(id in names){
+    songinfo[id]=[names[id]];
 }
-for(name in songs){
-    var levels=songs[name];
-    var song=document.createElement('p');
-    song.innerText=decodeURI(name);
-    song.appendChild(document.createElement('br'));
-    for(i=0;i<levels.length;i++){
-        var level=levels[i];
+for(song in songs){
+    var [_id,_lv]=song.split('$');
+    if(_id in songinfo){
+        songinfo[_id].push(_lv);
+    }
+}
+for(id in songinfo){
+    var song=songinfo[id];
+    var li=document.createElement('p');
+    li.innerText=song[0];
+    li.appendChild(document.createElement('br'));
+    for(i=1;i<song.length;i++){
+        var level=song[i];
         var ach=document.createElement('a');
         ach.classList.add(level);
-        ach.href='play.html?'+name+'$'+level;
+        ach.href='circle.html?'+name+'$'+level;
         ach.innerText=(level=='legacy'?'Legacy':level.toUpperCase());
-        song.appendChild(ach);
+        li.appendChild(ach);
     }
-    $wrapper.appendChild(song);
+    $wrapper.appendChild(li);
 }
 
 }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
