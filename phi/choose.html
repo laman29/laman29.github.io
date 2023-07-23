@@ -119,7 +119,7 @@ for(id in songinfo){
         var level=song[i];
         var ach=document.createElement('a');
         ach.classList.add(level);
-        ach.href='circle.html?'+name+'$'+level;
+        ach.href='circle.html?'+id+'$'+level;
         ach.innerText=(level=='legacy'?'Legacy':level.toUpperCase());
         li.appendChild(ach);
     }
