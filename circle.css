@@ -1,0 +1,100 @@
+body,html{
+    height: 100%;
+}
+body{
+    font-size: 10vw;
+    line-height: 1;
+    color: #ffffff;
+    text-align: center;
+    background-color: #222222;
+}
+p,span{
+    display: block;
+}
+p{
+    margin: 0.2em;
+    position: fixed;
+}
+#noteframe>div{
+    display: none;
+    position: absolute;
+    top: -100vw;
+    width: 12vw;
+    height: 12vw;
+    border-radius: 7vw;
+    border: 1vw solid #aaeeff;
+}
+#holdframe>div{
+    display: none;
+    position: absolute;
+    top: -100vw;
+    width: 0;
+    border: 0.5vw solid #cceeaa;
+    border-radius: 0.5vw;
+}
+
+#line{
+    width: 0%;
+    left: 50%;
+    height: 1vw;
+    background-color: #ffffaa;
+    position: absolute;
+}
+
+#-combo{
+    font-size: 1em;
+    top: 0;
+    left: 0;
+    text-align: right;
+}
+#combo2{
+    font-size: 0.6em;
+}
+#gamescore{
+    font-size: 1em;
+    top: 0;
+    right: 0;
+}
+#songinfo{
+    font-size: 0.8em;
+    bottom: 0;
+    left: 0;
+    text-align: left;
+}
+#-composer{
+    font-size: 0.75em;
+}
+#-level{
+    font-size: 1em;
+    bottom: 0;
+    right: 0;
+}
+
+#taptostart{
+    font-size: 1em;
+    opacity: 1;
+    height: 1em;
+    margin: auto;
+    top: 0; right: 0; bottom: 10%; left: 0;
+}
+
+.double{
+    border-color: #eeaaff !important;
+}
+/*.double::before{
+    content: "";
+    display: block;
+    position: relative;
+    top: 0vw;
+    left: 0vw;
+    width: 10vw;
+    height: 10vw;
+    border: 1vw solid #ffff66;
+    border-radius: 8vw;
+}*/
+#noteframe>div.missing{
+    border-color: #ff3333 !important;
+}
+#holdframe>div.missing{
+    border-color: #ff6666 !important;
+}

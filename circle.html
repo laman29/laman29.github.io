@@ -1,0 +1,457 @@
+<!doctype html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
+<title>Loading...</title>
+<link rel='stylesheet' href='circle.css' />
+<script src='song.js'></script>
+<script>
+try{
+//throw 'I miss you.';
+
+var speed=140;
+var delay=-600;
+var lineY=90;
+var T80=0.08;
+var T160=T80*2,T180=T80*2.25;
+var current=0;
+var mode=0;
+var tapsound=false;
+var autoplay=false;
+var mirror=false;
+var ezhd_speed_slowdown=true;
+var airmode=false;
+var auto_fit_screen=true;
+
+var _sch=decodeURI(location.search.substring(1));
+var _id=_sch.split('$')[0];
+
+if(_sch in songs){
+    var songname=names[_id];
+    var _song=songs[_sch];
+    var composer=_song.composer;
+    var track=_song.track;
+    var map  =_song.map;
+    var hold =_song.hold ?? [];
+    hold=track.map((x,i)=> hold[i] ?? 0);
+    if(mirror){
+        map=map.map(x=> 4-x);
+    }
+    var offset=_song.offset;
+    var beat=_song.beat;
+    var level=_sch.split('$')[1];
+    level=(level=='legacy'?'Legacy':level.toUpperCase());
+    if(ezhd_speed_slowdown){
+        switch(level){
+        case 'EZ':
+            speed*=0.75;
+        break;
+        case 'HD':
+            speed*=0.85;
+        }
+    }
+    if(airmode || !_song.url){
+        var music={
+            readyState:4,
+            play:()=>{},
+            pause:()=>{},
+            addEventListener:(name,func,...args)=>{func(event,...args)}
+        };
+    }else{
+        var music=new Audio(_song.url);
+    }
+    music.preload='auto';
+    music.currentTime=_song.current??0;
+}else{
+    location.replace('choose.html');
+}
+
+}catch(e){alert('你看这个laman29，又写了一个Bug！\n错误信息：'+e)}
+</script>
+</head>
+<body>
+<div id='holdframe'></div>
+<div id='noteframe'></div>
+<div id='line'></div>
+<div id='eff'></div>
+
+<p id='-combo'>
+    <span id='combo1'></span>
+    <span id='combo2'></span>
+</p>
+<p id='gamescore'></p>
+<p id='songinfo'>
+    <span id='-songname'></span>
+    <span id='-composer'></span>
+</p>
+<p id='-level'></p>
+
+<p id='taptostart'>Loading...</p>
+
+<script>
+try{
+
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x.replace('-','_')]=$(x);
+    }
+}
+ns('holdframe noteframe line eff -songname -composer gamescore combo1 combo2 -level taptostart');
+
+document.title=songname+' '+level+' - '+composer;
+$_songname.innerText=songname;
+$_composer.innerText=composer;
+$_level.innerText=level;
+if(autoplay){
+    $combo2.innerText='Autoplay';
+}
+if(tapsound){new Audio('media/tap.mp3').preload='auto';};
+
+var gamestatus=0;
+var gamescore=0;
+var count=0;
+var combo=0;
+var maxcb=0;
+var ap=true,fc=true;
+var flag=Array(track.length).fill(1);
+var touches=Array();
+var startstamp,mainInterval,taptostartInterval;
+
+function init(noline=false){
+    if(!noline){
+        $taptostart.style.display='none';
+        clearInterval(taptostartInterval);
+        $line.style.top=lineY+'vw';
+        var _h=document.body.offsetHeight/document.body.offsetWidth*100;
+        if(auto_fit_screen && _h<100){
+        	    var _Y=lineY;
+            lineY=0.8*_h;
+            speed*=lineY/_Y;
+        }
+        var _line_i=-25,_line_interval=setInterval(function(){
+            if(++_line_i<0){}else if(_line_i<50){
+                var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+                $line.style.width=i*2+'vw';
+                $line.style.left=50-i+'vw';
+                //$line.style.top=
+            }else{
+                clearInterval(_line_interval);
+            }
+        },20);
+    }
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        _c.style.left=Math.abs(map[i])*32-21+'vw';
+        if(track.filter(x=>x==track[i]).length>1){
+            _c.classList.add('double');
+        }
+        $noteframe.appendChild(_c);
+    }
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        if(hold[i]>0){
+            _c.style.height=hold[i]*beat*speed+'vw';
+            _c.style.left=Math.abs(map[i])*32-14.5+'vw';
+        }
+        $holdframe.appendChild(_c);
+    }
+    if(!autoplay){['touchstart','touchend','touchmove'].forEach(
+        x=>document.body.addEventListener(x,
+            e=>touches=Array.from(e.touches).map(
+                y=>(y.clientX*100/document.body.offsetWidth+14)/32
+            )
+        )
+    );}
+    startstamp=new Date().getTime()+2000+delay;
+    mainInterval=setInterval(gameloop,0);
+    setTimeout(()=>music.play(),offset*1000+2000);
+}
+function gameloop(){
+    var time=(new Date().getTime()-startstamp)/1000;
+    update_notes(time);
+    update_score();
+    if(autoplay && flag[i] && gety(time,i)>=0){
+        clicknote(Math.abs(map[i]),time);
+    }
+    if(count==track.length && flag.every(x=>!x)){
+        setTimeout(()=>{
+            music.pause();
+            delete music;
+            clearInterval(mainInterval);
+        },160)
+    }
+}
+function update_notes(time){
+    for(var i=0;i<track.length;i++){
+        if(flag[i]==0){
+            continue;
+        }
+        if(flag[i]==1 && gety(time,i)*speed>-61.6-lineY){
+            $noteframe.childNodes[i].style.display='block';
+            if(hold[i]>0){
+                $holdframe.childNodes[i].style.display='block';
+            }
+        }
+        if(hold[i]==0){
+            update_tap(time,i);
+        }else if(hold[i]>0){
+            update_hold(time,i);
+        }
+    }
+}
+function update_tap(time,i){
+    var tap=$noteframe.childNodes[i].style;
+    if(mode==0){
+        tap.top=lineY-7+Math.sign(map[i])*gety(time,i)*speed+'vw';
+    }else{
+        tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
+        tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+    }
+    if(gety(time,i)>T180){
+        $noteframe.childNodes[i].style.display='none';
+        flag[i]=0;
+        miss();
+    }
+}
+function update_hold(time,i){
+    var tapE=$noteframe.childNodes[i];
+    var hldE=$holdframe.childNodes[i];
+    var tap=tapE.style,hld=hldE.style;
+    var y1=gety(time,i),y2=gety2(time,i);
+    hld.top=lineY+(map[i]>0?y2:flag[i]==1?-y1:0)*speed+'vw';
+    if(flag[i]==1){
+        tap.top=lineY-7+Math.sign(map[i])*gety(time,i)*speed+'vw';
+    }else{
+        hld.height=-y2*speed+'vw';
+    }
+    switch(flag[i]){
+    case 1:
+        if(y1>T160){
+            tap.display='none';
+            hldE.classList.add('missing');
+            flag[i]=4;
+            miss();
+        }
+    break;
+    case 2:
+    case 2.5:
+        if(y2>=0){
+            var isgood=flag[i]==2.5;
+            tap.display=hld.display='none';
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }else if(touches.every(x=> .5< Math.abs(x-Math.abs(map[i])))){
+            if(y2<-T160){
+                tapE.classList.add('missing');
+                hldE.classList.add('missing');
+                flag[i]=4;
+                miss();
+            }else{
+                flag[i]+=1;
+            }
+        }
+    break;
+    case 3:
+    case 3.5:
+        if(y2>=0){
+            tap.display=hld.display='none';
+            var isgood=flag[i]==3.5;
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }
+    break;
+    case 4:
+        if(y2>=0){
+            tap.display=hld.display='none';
+            flag[i]=0;
+        }
+    }
+}
+function update_score(){
+    $gamescore.innerText=getscore();
+    $combo1.innerText=combo>2?combo:'';
+    if(!autoplay){
+        combo2.innerText=combo>2?'combo':'';
+    }
+    $line.style.backgroundColor=(ap?'#ffffaa':fc?'#aaffff':'#ffffff');
+    $line.style.top=lineY+'vw';
+}
+function clicknote(x,time){
+    if(gamestatus!=1){
+        return;
+    }
+    var match=-114514;
+    for(var i=0;i<track.length;i++){
+        if(flag[i] && .5> Math.abs(x-Math.abs(map[i]))){
+        	    match=i;
+        	    break;
+        	}
+    }
+    if(match==-114514){
+        return;
+    }
+    if(hold[i]==0){
+        $noteframe.childNodes[match].style.display='none';
+        if(Math.abs(gety(time,match))<T80){
+            eff(match,1);
+            perfect();
+        }else if(Math.abs(gety(time,match))<T160){
+            eff(match,0.65);
+            good();
+        }else if(Math.abs(gety(time,match))<T180){
+            miss(1);
+        }else{
+            return;
+        }
+        flag[match]=0;
+    }else if(hold[i]>0 && flag[i]==1){
+        $noteframe.childNodes[match].style.top=lineY-7+'vw';
+        if(Math.abs(gety(time,match))<T80){
+            eff(match,1);
+            flag[match]=2;
+        }else if(Math.abs(gety(time,match))<T160){
+            eff(match,0.65);
+            flag[match]=2.5;
+        }
+    }
+}
+function eff(i,type){
+    if(tapsound){
+        var x=new Audio('media/tap.mp3');
+        x.currentTime=0.04;
+        x.play();
+        delete x;
+    }
+    if(type==1){
+        var c='#ffff99';
+    }else{
+        var c='#99ffff';
+    }
+    var _e=document.createElement('div');
+    var _s=_e.style;
+    _s.position='absolute';
+    _s.top=lineY-0.5+'vw';
+    _s.border='0.25vw solid '+c;
+    _s.borderRadius='100vw';
+    for(var j=0;j<=1;j+=0.05){
+        setTimeout(function(i,j){
+            _t=Math.sqrt(1-j*j);
+            _s.width=_s.height=_t*32+'vw';
+            _s.top=lineY-_t*16+'vw';
+            _s.left=Math.abs(map[i])*32-15-_t*16+'vw';
+        },(1-j)*400,i,j);
+    }
+    setTimeout(function(i){
+        $eff.removeChild(_e);
+        delete _e,_s;
+    },400,i);
+    $eff.appendChild(_e);
+}
+function gety(time,i){
+    return time-track[i]*beat;
+}
+function gety2(time,i){
+    return time-(track[i]+hold[i])*beat;
+}
+function getscore(){
+    return ((gamescore*9+maxcb)*100000/track.length).toString().split('.')[0].padStart(7,'0')
+}
+function perfect(){
+    count++;
+    gamescore+=1;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+}
+function good(){
+    count++;
+    gamescore+=0.650000001;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+    ap=false;
+}
+function miss(isbad=0){
+    count++;
+    combo=0;
+    ap=fc=false;
+}
+
+function tap(e){
+    e.preventDefault();
+    if(music.readyState!=4){
+        return;
+    }
+    if(gamestatus==1){
+        if(autoplay){
+            return;
+        }
+        var time=(new Date().getTime()-startstamp)/1000;
+        var x=(e?.changedTouches?.[e.changedTouches.length-1] ?? e).clientX;
+        x=(x*100/document.body.offsetWidth+14)/32
+        clicknote(x,time);
+    }else{
+        init();
+        gamestatus=1;
+    }
+}
+function keyDown(e){
+    var char=e.key.toUpperCase();
+    var index='CVBNM'.indexOf(char);
+    if(index!=-1){
+        x=1+index/2;
+        var time=(new Date().getTime()-startstamp)/1000;
+        clicknote(x,time);
+    }
+}
+
+function setCurrentFrame(x){
+    init(noline=true);
+    clearInterval(mainInterval);
+    delay+=-1000*x*beat;
+    music.currentTime+=x*beat;
+    flag=track.map(y=> y<x?0:1);
+    var n=flag.filter(y=> !y).length;
+    for(var i=n;i;i--){
+        perfect();
+    }
+    startstamp=new Date().getTime()+2000+delay;
+    gameloop();
+}
+
+document.body.addEventListener('touchstart',tap);
+document.body.onmousedown=document.body.oncontextmenu=function(e){
+    e.preventDefault();
+    return false;
+}
+
+music.addEventListener('canplaythrough',function(e){
+    if(music.readyState==4){
+        var _start=new Date().getTime();
+        taptostartInterval=setInterval(function(){
+            var i=(new Date().getTime()-_start)/2000;
+            $taptostart.style.opacity=0.5*(1-Math.cos(i*Math.PI));
+        },0);
+        $taptostart.innerText='Tap to start...';
+    }
+});
+
+if(current){
+    setCurrentFrame(current);
+}
+
+}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+</body>
+</html>
