@@ -1,98 +1,202 @@
 <!doctype html>
 <html>
 <head>
-<meta charset='utf-8'>
+<meta charset='utf-8' />
+<meta name='viewport' content='user-scalable=no' />
 <title>Choose</title>
-<style>
-#bottom{
-    display: block;
-    text-align: center;
-    margin: 1em;
-    font-size: 0.5em;
-    color: #114514;
-}
-body{
-    color: #ffffff;
-    font-size: 8vw;
-    padding: 0 0.5em;
-    line-height: 1.2em;
-    background-color: #222222;
-}
-h2{
-    font-size: 2em;
-}
-.comment{
-    color: gray;
-}
-p{
-    margin: 0.5em 0;
-}
-p a{
-    display: inline-block;
-    margin: 0.1em;
-    padding: 0.3em;
-    border-radius: 0.3em;
-    font-size: 0.7em;
-    line-height: 0.8em;
-    font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
-    color: #ffffff;
-    cursor: pointer;
-    text-decoration: none;
-}
-p a:hover{
-    border-color: #ffff00;
-    color: #ffff99;
-}
-p a::after{
-    content: ' >>';
-    color: #abcdef
-}
-p a:hover::after{
-    color: #ffff99;
-}
-.ez{
-    border: 0.1em solid #66ff66;
-    background-color: #119911;
-}
-.hd{
-    border: 0.1em solid #66ffff;
-    background-color: #1199cc;
-}
-.in{
-    border: 0.1em solid #ff6666;
-    background-color: #cc1111;
-}
-.at,.legacy{
-    border: 0.1em solid #aaaaaa;
-    background-color: #888888;
-}
-.sp{
-    border: 0.1em solid #ff00ff;
-    background-color: #991199;
-}
-</style>
+<link rel='stylesheet' href='choose.css'>
 <script src='song.js'></script>
 </head>
 <body>
 
-～选择一个难度～
-<div id='wrapper'>
+<div id='choosing'>
+    ～选择一个难度～
+    <div id='wrapper'></div>
+    <p id='bottom'>Simonov @laman29<br />感谢游玩 Simonov会越来越好 </p>
 </div>
+<div id='genshin'>
+    <div id='-center'>
+        <div id='impact'></div>
+    </div>
+    <div id='particle-wrapper'></div>
+    <div id='flash-wrapper'>
+        <div id='flashX'></div>
+        <div id='flashY'></div>
+    </div>
+</div>
+<div id='eff'></div>
 
 <script>
 try{
+
+var scale=1;
+var animate_mode=2;
+/* 0->Null 1->Fast 2->Slow */
 
 function $(x){
     return document.getElementById(x);
 }
 function ns(xlist){
     xlist=xlist.split(' ');
+    var x;
     for(var i=0;i<xlist.length;i++){
-        var x=xlist[i];
+        x=xlist[i];
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('wrapper');
+ns('choosing wrapper genshin impact particle-wrapper flash-wrapper flashX flashY eff');
+
+function Launcher(sch){
+    function step(x){
+        return (1-Math.cos(Math.PI*x))/2
+    }
+    function gauss(){
+        var u,v,w,c;
+        do{
+            u=Math.random()*2-1;
+            v=Math.random()*2-1;
+            w=u*u+v*v;
+        }while(w==0||w>=1)
+        c=Math.sqrt((-2*Math.log(w))/w);
+        return u*c;
+    }
+    function animate(blank,...frames){
+        var T=0,st=new Date().getTime();
+        var t,f1,f2;
+        blank*=scale;
+        for(var i=0;i<frames.length;i++){
+            [t,f1,f2]=frames[i];
+            t*=scale;
+            ((T,t,f1,f2)=>{
+                var I;
+                setTimeout(()=>I=setInterval(
+                    ()=>f1((new Date().getTime()-st-T)/t)
+                ,blank),T);
+                setTimeout(()=>{
+                    clearInterval(I);
+                    f2();
+                },T+t);
+            })(T,t,f1,f2);
+            T+=t;
+        }
+    }
+    function eff(x,y,type=1){
+        var c=type==1?'#ffff99':'#00ffff';
+        var _e=document.createElement('div');
+        var _s=_e.style;
+        x*=100;
+        y*=100;
+        _s.position='fixed';
+        _s.top='-100%';
+        _s.border='0.25vw solid '+c;
+        _s.borderRadius='100vw';
+        animate(10,[100,i=>{
+            _t=Math.sqrt(i*(2-i));
+            _s.width=_s.height=_t*32+'vw';
+            _s.top=y-_t*16+'vw';
+            _s.left=x-_t*16+'vw';
+        },()=>{
+            $eff.removeChild(_e);
+            delete _e,_s;
+        }]);
+        $eff.appendChild(_e);
+    }
+    function launcher(e){
+        var GENSHIN='音游？',
+            LAUNCH='启动！';
+        var A1=[1,1.2,-1,-1.2],A2=[1,-1,1,-1],a=3,k=1,h_x=0.585,h_y=0.458,h_Y=h_y*$genshin.clientHeight/$genshin.clientWidth;
+        var T=[[0,0,0,0,0,0,0],[200,200,300,600,200,300,200],[300,600,600,800,300,300,300]][animate_mode];
+        eff(e.clientX/document.body.clientWidth,
+            e.clientY/document.body.clientWidth);
+        animate(0,
+            [T[0],i=>{
+                $choosing.style.opacity=1-i;
+                $genshin.style.left=(1-i)**2*100+'%';
+            },()=>{
+                $choosing.style.display='none';
+                $genshin.style.left=0;
+                $impact.innerText=GENSHIN;
+            }],
+            [T[1],i=>{
+                m=i*i
+                $impact.style.opacity=step(i);
+                $impact.style.left=2*m*gauss()+'%';
+                $impact.style.top=1*m*gauss()+'%';
+            },()=>{
+                $impact.style.opacity=1;
+            }],
+            [T[2],i=>{
+                var m=i**8;
+                var m255=Math.floor((1/8+7/8*m)*255);
+                $genshin.style.backgroundColor='#'+(0x10101*m255).toString(16);
+                $impact.style.left=6*gauss()+'%';
+                $impact.style.top=3*gauss()+'%';                
+            },()=>{
+                $genshin.style.backgroundColor='#ffffff';
+                $impact.style.left=$impact.style.top='';
+                $impact.innerText=LAUNCH;
+                for(var i=0;i<4;i++){
+                    var e=document.createElement('div');
+                    e.classList.add('launcher-particle');
+                    $particle_wrapper.appendChild(e);
+                }
+            }],
+            [T[3],i=>{
+                var m=i;
+                var m255=Math.floor((1-8/16*m)*255);
+                $impact.style.color='#'+(0x10101*m255).toString(16);
+                m=k*(1-i);
+                for(var i=0;i<4;i++){
+                    var p=$particle_wrapper.childNodes[i];
+                    var x=h_x+A1[i]*m,
+                        y=h_Y+A2[i]*m+a*m*m;
+                    eff(x,y,2);
+                    p.style.left=x*100+'vw';
+                    p.style.top=y*100+'vw';
+                }
+            },()=>{
+                $genshin.removeChild($particle_wrapper);
+            }],
+            [T[4],i=>{
+                eff(h_x,h_Y,2);
+                var m=i**2;
+                var m255=Math.floor((8/16-2/16*m)*255);
+                $impact.style.color='#'+(0x10101*m255).toString(16);
+                $flashX.style.left=(1-m)*h_x*100+'%';
+                $flashX.style.top=h_y*100+'%';
+                $flashX.style.width=m*100+'%';
+                $flashY.style.left=h_x*100+'%';
+                $flashY.style.top=(1-m)*h_y*100+'%';
+                $flashY.style.height=m*100+'%';
+            },()=>{
+                $impact.style.color='#222222';
+                $flashX.style.left=$flashY.style.top=0;
+                $flashX.style.width=h_x;
+                $flashY.style.height=h_y;
+            }],
+            [T[5],i=>0,()=>0],
+            [T[6]*step(h_x),i=>{
+                var m=step(h_x*i),
+                    m1=step(h_x);
+                $flashX.style.left=m*100+'%';
+                $flashY.style.left=(h_x+i*(m1-h_x))*100+'%';
+                $impact.style.left=m*200+'%';
+            },()=>{
+                
+            }],
+            [T[6]*(1-step(h_x)),i=>{
+                var m=step(h_x+(1-h_x)*i);
+                $flashX.style.left=$flashY.style.left=m*100+'%';
+                var m255=Math.floor((1-14/16*step(i))*255);
+                $genshin.style.backgroundColor='#'+(0x10101*m255).toString(16);
+            },()=>{
+                $impact.style.display='none';
+                location.href='circle.html?'+sch;
+            }],
+        );
+    }
+    return launcher;
+}
 
 var songinfo={/*
     song1_id:[
@@ -101,7 +205,6 @@ var songinfo={/*
     ], 
     ...
 */};
-
 for(id in names){
     songinfo[id]=[names[id]];
 }
@@ -120,8 +223,9 @@ for(id in songinfo){
         var level=song[i];
         var ach=document.createElement('a');
         ach.classList.add(level);
-        ach.href='circle.html?'+id+'$'+level;
+        ach.href='javascript:void(0)';
         ach.innerText=(level=='legacy'?'Legacy':level.toUpperCase());
+        ach.addEventListener('click',Launcher(id+'$'+level));
         li.appendChild(ach);
     }
     $wrapper.appendChild(li);

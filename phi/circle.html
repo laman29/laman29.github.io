@@ -5,7 +5,7 @@
 <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>Loading...</title>
 <link rel='stylesheet' href='circle.css' />
-<script src='song.js?t=20230814a'></script>
+<script src='song.js?t=20230822a'></script>
 <script>
 try{
 //throw 'I miss you.';
@@ -35,8 +35,11 @@ if(_sch in songs){
     var map  =_song.map;
     var hold =_song.hold ?? [];
     hold=track.map((x,i)=> hold[i] ?? 0);
+    if(old_maps.indexOf(_id)>-1){
+        map=map.map(x=> 2*x-1);
+    }
     if(mirror){
-        map=map.map(x=> 4-x);
+        map=map.map(x=> 6-x);
     }
     var offset=_song.offset;
     var beat=_song.beat;
@@ -50,6 +53,9 @@ if(_sch in songs){
         case 'HD':
             speed*=0.85;
         }
+    }
+    if(tapsound){
+        delay-=200;
     }
     if(airmode || !_song.url){
         var music={
@@ -121,9 +127,11 @@ var maxcb=0;
 var ap=true,fc=true;
 var flag=Array(track.length).fill(1);
 var touches=Array();
-var startstamp,mainInterval,taptostartInterval;
+var startstamp;
+var mainInterval,effInterval,loadingInterval,taptostartInterval;
 
 function init(noline=false){
+    var EFF_SPACING=100;
     if(!noline){
         $taptostart.style.display='none';
         clearInterval(taptostartInterval);
@@ -147,7 +155,7 @@ function init(noline=false){
     }
     for(var i=0;i<track.length;i++){
         var _c=document.createElement('div');
-        _c.style.left=Math.abs(map[i])*32-21+'vw';
+        _c.style.left=Math.abs(map[i])*16-5+'vw';
         if(track.filter(x=>x==track[i]).length>1){
             _c.classList.add('double');
         }
@@ -157,34 +165,46 @@ function init(noline=false){
         var _c=document.createElement('div');
         if(hold[i]>0){
             _c.style.height=hold[i]*beat*speed+'vw';
-            _c.style.left=Math.abs(map[i])*32-14.5+'vw';
+            _c.style.left=Math.abs(map[i])*16+1.5+'vw';
         }
         $holdframe.appendChild(_c);
     }
     if(!autoplay){['touchstart','touchend','touchmove'].forEach(
         x=>document.body.addEventListener(x,
             e=>touches=Array.from(e.touches).map(
-                y=>(y.clientX*100/document.body.offsetWidth+14)/32
+                y=>(y.clientX*100/document.body.offsetWidth-2)/16
             )
         )
     );}
     startstamp=new Date().getTime()+2000+delay;
     mainInterval=setInterval(gameloop,0);
+    effInterval=setInterval(effloop,EFF_SPACING);
     setTimeout(()=>music.play(),offset*1000+2000);
 }
 function gameloop(){
     var time=(new Date().getTime()-startstamp)/1000;
     update_notes(time);
     update_score();
-    if(autoplay && flag[i] && gety(time,i)>=0){
-        clicknote(Math.abs(map[i]),time);
+    if(autoplay){
+        touches=[];
+        for(var i=0;i<track.length;i++){
+            if(flag[i]==1 && gety(time,i)>=0){
+                clicknote(map[i],time);
+            }
+            if([2,2.5].indexOf(flag[i])>-1){
+                touches.push(map[i]);
+            }
+        }
     }
     if(count==track.length && flag.every(x=>!x)){
-        setTimeout(()=>{
-            music.pause();
-            delete music;
-            clearInterval(mainInterval);
-        },160)
+        setTimeout(gameover,160)
+    }
+}
+function effloop(){
+    for(var i=0;i<track.length;i++){
+        if([2,2.5,3,3.5].indexOf(flag[i])>-1){
+            eff(i,[2,3].indexOf(flag[i])>-1?1:0.65,false);
+        }
     }
 }
 function update_notes(time){
@@ -211,7 +231,7 @@ function update_tap(time,i){
         tap.top=lineY-7+Math.sign(map[i])*gety(time,i)*speed+'vw';
     }else{
         tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
-        tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+        tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*16)-11+'vw';
     }
     if(gety(time,i)>T180){
         $noteframe.childNodes[i].style.display='none';
@@ -250,7 +270,7 @@ function update_hold(time,i){
             }else{
                 perfect();
             }
-        }else if(touches.every(x=> .5< Math.abs(x-Math.abs(map[i])))){
+        }else if(touches.every(x=> 1< Math.abs(x-Math.abs(map[i])))){
             if(y2<-T160){
                 tapE.classList.add('missing');
                 hldE.classList.add('missing');
@@ -290,13 +310,34 @@ function update_score(){
     $line.style.backgroundColor=(ap?'#ffffaa':fc?'#aaffff':'#ffffff');
     $line.style.top=lineY+'vw';
 }
+function gameover(){
+    if(gamestatus!=1){
+        return;
+    }else{
+        gamestatus=2;
+    }
+    music.pause();
+    delete music;    
+    clearInterval(mainInterval);
+    clearInterval(effInterval);
+    var _line_i=0,_line_interval=setInterval(function(){
+        if(++_line_i<0){}else if(_line_i<50){
+            var i=50*(0.5-0.5*Math.cos(Math.PI*(1-_line_i/50)));
+            $line.style.width=i*2+'vw';
+            $line.style.left=50-i+'vw';
+        }else{
+            clearInterval(_line_interval);
+            $line.style.display='none';
+        }
+    },10);
+}
 function clicknote(x,time){
     if(gamestatus!=1){
         return;
     }
     var match=-114514;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && .5> Math.abs(x-Math.abs(map[i]))){
+        if(flag[i] && 1> Math.abs(x-Math.abs(map[i]))){
         	    match=i;
         	    break;
         	}
@@ -329,8 +370,8 @@ function clicknote(x,time){
         }
     }
 }
-function eff(i,type){
-    if(tapsound){
+function eff(i,type,playsound=true){
+    if(tapsound && playsound){
         var x=new Audio('media/tap.mp3');
         x.currentTime=0.04;
         x.play();
@@ -341,25 +382,57 @@ function eff(i,type){
     }else{
         var c='#99ffff';
     }
+    var _o=0.3,_v=40;
     var _e=document.createElement('div');
+    var _l1=document.createElement('div');
+    var _l2=document.createElement('div');
     var _s=_e.style;
     _s.position='absolute';
     _s.top=lineY-0.5+'vw';
+    _s.left=Math.abs(map[i])*16+1.75+'vw';
     _s.border='0.25vw solid '+c;
     _s.borderRadius='100vw';
-    for(var j=0;j<=1;j+=0.05){
+    _s=_l1.style;
+    _s.position='absolute';
+    _s.top=lineY+'vw';
+    _s.width='100vw';
+    _s.height='0.5vw';
+    _s.backgroundColor=c;
+    _s.opacity=_o;
+    _s=_l2.style;
+    _s.position='absolute';
+    _s.top=lineY+'vw';
+    _s.width='100vw';
+    _s.height='0.5vw';
+    _s.backgroundColor=c;
+    _s.opacity=_o;
+    for(var j=0;j<=1;j+=0.04){
         setTimeout(function(i,j){
-            _t=Math.sqrt(1-j*j);
+            var _x=1-j,
+                _t=Math.sqrt(1-j*j);
+            _s=_e.style;
             _s.width=_s.height=_t*32+'vw';
-            _s.top=lineY-_t*16+'vw';
-            _s.left=Math.abs(map[i])*32-15-_t*16+'vw';
+            _s.top=lineY-0.5-_t*16+'vw';
+            _s.left=Math.abs(map[i])*16+1.75-_t*16+'vw';
+            _s=_l1.style;
+            _s.top=lineY-_v*_x+'vw';
+            _s.opacity=j*_o;
+            _s=_l2.style;
+            _s.top=lineY+_v*_x+'vw';
+            _s.opacity=j*_o;
         },(1-j)*400,i,j);
     }
     setTimeout(function(i){
         $eff.removeChild(_e);
-        delete _e,_s;
+        $eff.removeChild(_l1);
+        $eff.removeChild(_l2);
+        delete _e,_l1,_l2,_s;
     },400,i);
     $eff.appendChild(_e);
+    if(playsound){
+        $eff.appendChild(_l1);
+        $eff.appendChild(_l2);
+    }
 }
 function gety(time,i){
     return time-track[i]*beat;
@@ -394,17 +467,17 @@ function tap(e){
     if(music.readyState!=4){
         return;
     }
-    if(gamestatus==1){
+    if(gamestatus!=0){
         if(autoplay){
             return;
         }
         var time=(new Date().getTime()-startstamp)/1000;
         var x=(e?.changedTouches?.[e.changedTouches.length-1] ?? e).clientX;
-        x=(x*100/document.body.offsetWidth+14)/32
+        x=(x*100/document.body.offsetWidth-2)/16
         clicknote(x,time);
     }else{
-        init();
         gamestatus=1;
+        init();
     }
 }
 function keyDown(e){
@@ -420,6 +493,7 @@ function keyDown(e){
 function setCurrentFrame(x){
     init(noline=true);
     clearInterval(mainInterval);
+    clearInterval(effInterval);
     delay+=-1000*x*beat;
     music.currentTime+=x*beat;
     flag=track.map(y=> y<x?0:1);
@@ -437,14 +511,36 @@ document.body.onmousedown=document.body.oncontextmenu=function(e){
     return false;
 }
 
+loadingInterval=setInterval(()=>{
+    var b=music.buffered;
+    var x=b.end(b.length-1)/(music.duration-music.currentTime) || 0;
+    x=Math.min(x,1);
+    $taptostart.innerText='Loading...\n'+(x*100).toFixed(2)+'%';
+},0);
 music.addEventListener('canplaythrough',function(e){
     if(music.readyState==4){
-        var _start=new Date().getTime();
-        taptostartInterval=setInterval(function(){
-            var i=(new Date().getTime()-_start)/2000;
-            $taptostart.style.opacity=0.5*(1-Math.cos(i*Math.PI));
+        var _FLASH_TIME=300;
+        var _flashstart=new Date().getTime();
+        var _flashInterval=setInterval(()=>{
+            var t=(new Date().getTime()-_flashstart)/_FLASH_TIME;
+            if(t>=1){
+                clearInterval(_flashInterval);
+                $taptostart.style.backgroundColor='';
+                return;
+            }
+            var m=t<.5?1-Math.sqrt(1-4*t*t):.5-.5*Math.cos(2*Math.PI*t);
+            var m255=Math.floor((1/8+7/8*m)*255)
+            $taptostart.style.backgroundColor='#'+(0x10101*m255).toString(16);
         },0);
-        $taptostart.innerText='Tap to start...';
+        setTimeout(()=>{
+            clearInterval(loadingInterval);
+            var _start=new Date().getTime();
+            taptostartInterval=setInterval(function(){
+                var i=(new Date().getTime()-_start)/2000;
+                $taptostart.style.opacity=0.5*(1-Math.cos(i*Math.PI));
+            },0);
+            $taptostart.innerText='Tap to start';
+        },_FLASH_TIME);
     }
 });
 
@@ -452,7 +548,7 @@ if(current){
     setCurrentFrame(current);
 }
 
-}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+}catch(e){alert('你家laman29天天写Bug\n错误信息：'+e)}
 </script>
 </body>
 </html>

@@ -10,7 +10,7 @@ try{
 var speed=180;
 var delay=0;
 var lineY=100;
-var tapsound=0;
+var tapsound=1;
 var autoplay=0;
 var mode=0;
 
@@ -23,6 +23,9 @@ if(_sch in songs){
     var composer=_song.composer;
     var track=_song.track;
     var map=_song.map;
+    if(old_maps.indexOf(_id)==-1){
+        map=map.map(x=>(x+1)/2);
+    }
     //map=map.map(x=>4-x);
     var offset=_song.offset;
     var beat=_song.beat;

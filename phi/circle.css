@@ -74,6 +74,8 @@ p{
     font-size: 1em;
     opacity: 1;
     height: 1em;
+    width: auto;
+    padding: 0;
     margin: auto;
     top: 0; right: 0; bottom: 10%; left: 0;
 }
