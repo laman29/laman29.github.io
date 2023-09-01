@@ -5,7 +5,7 @@
 <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>Loading...</title>
 <link rel='stylesheet' href='circle.css' />
-<script src='song.js?t=20230822a'></script>
+<script src='song.js?t=20230831a'></script>
 <script>
 try{
 //throw 'I miss you.';
@@ -13,8 +13,7 @@ try{
 var speed=140;
 var delay=0;
 var lineY=90;
-var T80=0.08;
-var T160=T80*2,T180=T80*2.25;
+var T80=0.08,T160,T180;
 var current=0;
 var mode=0;
 var tapsound=false;
@@ -23,9 +22,13 @@ var mirror=false;
 var ezhd_speed_slowdown=true;
 var airmode=false;
 var auto_fit_screen=true;
+var pattern_width=1,
+    hold_pattern_width;
 
-var _sch=decodeURI(location.search.substring(1));
-var _id=_sch.split('$')[0];
+var _args=location.search.substring(1).split('&');
+var _sch=_args[0];
+var _rest=_args.slice(1);
+var [_id,level]=_sch.split(/[$.]/,2);
 
 if(_sch in songs){
     var songname=names[_id];
@@ -43,7 +46,6 @@ if(_sch in songs){
     }
     var offset=_song.offset;
     var beat=_song.beat;
-    var level=_sch.split('$')[1];
     level=(level=='legacy'?'Legacy':level.toUpperCase());
     if(ezhd_speed_slowdown){
         switch(level){
@@ -69,11 +71,45 @@ if(_sch in songs){
     }
     music.preload='auto';
     music.currentTime=_song.current??0;
+/*
+var speed=140;
+var delay=0;
+var lineY=90;
+var T80=0.08;
+var current=0;
+var mode=0;
+var tapsound=false;
+var autoplay=!false;
+var mirror=false;
+var ezhd_speed_slowdown=true;
+var airmode=false;
+var auto_fit_screen=true;
+var pattern_width=1;
+*/
+    var BOOL_ARGS='tapsound,autoplay,mirror,ezhd_speed_slowdown,airmode,auto_fit_screen'.split();
+    var INTG_ARGS='speed,delay,lineY,T80,T160,T180,current,mode,pattern_width,hold_pattern_width'.split();
+    for(var i=0;i<_rest.length;i++){
+        _l=_rest[i].split('=');
+        if(_l.length==1){
+            if(BOOL_ARGS.indexOf(_l[0])>-1){
+                _l.push('yes');
+            }else{
+                continue;
+            }
+        }
+    }
+    T160??=T80*2;
+    T180??=T80*2.25;
+    hold_pattern_width??=pattern_width
 }else{
     location.replace('choose.html');
 }
 
-}catch(e){alert('你看这个laman29，又写了一个Bug！\n错误信息：'+e)}
+}catch(e){
+    //alert('你看这个laman29，又写了一个Bug！\n错误信息：'+e)
+    alert('参数格式不正确\n'+e);
+    //location.replace('choose.html');
+}
 </script>
 </head>
 <body>
@@ -189,10 +225,10 @@ function gameloop(){
         touches=[];
         for(var i=0;i<track.length;i++){
             if(flag[i]==1 && gety(time,i)>=0){
-                clicknote(map[i],time);
+                clicknote(Math.abs(map[i]),time);
             }
             if([2,2.5].indexOf(flag[i])>-1){
-                touches.push(map[i]);
+                touches.push(Math.abs(map[i]));
             }
         }
     }
@@ -270,7 +306,7 @@ function update_hold(time,i){
             }else{
                 perfect();
             }
-        }else if(touches.every(x=> 1< Math.abs(x-Math.abs(map[i])))){
+        }else if(touches.every(x=> hold_pattern_width< Math.abs(x-Math.abs(map[i])))){
             if(y2<-T160){
                 tapE.classList.add('missing');
                 hldE.classList.add('missing');
@@ -337,7 +373,7 @@ function clicknote(x,time){
     }
     var match=-114514;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && 1> Math.abs(x-Math.abs(map[i]))){
+        if(flag[i] && pattern_width> Math.abs(x-Math.abs(map[i]))){
         	    match=i;
         	    break;
         	}
@@ -394,14 +430,14 @@ function eff(i,type,playsound=true){
     _s.borderRadius='100vw';
     _s=_l1.style;
     _s.position='absolute';
-    _s.top=lineY+'vw';
+    _s.top=lineY-7+'vw';
     _s.width='100vw';
     _s.height='0.5vw';
     _s.backgroundColor=c;
     _s.opacity=_o;
     _s=_l2.style;
     _s.position='absolute';
-    _s.top=lineY+'vw';
+    _s.top=lineY+7+'vw';
     _s.width='100vw';
     _s.height='0.5vw';
     _s.backgroundColor=c;
@@ -415,10 +451,10 @@ function eff(i,type,playsound=true){
             _s.top=lineY-0.5-_t*16+'vw';
             _s.left=Math.abs(map[i])*16+1.75-_t*16+'vw';
             _s=_l1.style;
-            _s.top=lineY-_v*_x+'vw';
+            _s.top=lineY-7-_v*_x+'vw';
             _s.opacity=j*_o;
             _s=_l2.style;
-            _s.top=lineY+_v*_x+'vw';
+            _s.top=lineY+7+_v*_x+'vw';
             _s.opacity=j*_o;
         },(1-j)*400,i,j);
     }
