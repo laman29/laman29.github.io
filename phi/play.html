@@ -7,9 +7,9 @@
 <script>
 try{
 
-var speed=180;
-var delay=0;
-var lineY=100;
+var speed=120;
+var delay=-200;
+var lineY=80;
 var tapsound=1;
 var autoplay=0;
 var mode=0;
@@ -24,7 +24,7 @@ if(_sch in songs){
     var track=_song.track;
     var map=_song.map;
     if(old_maps.indexOf(_id)==-1){
-        map=map.map(x=>(x+1)/2);
+        map=map.map(x=>(x+Math.sign(x))/2);
     }
     //map=map.map(x=>4-x);
     var offset=_song.offset;
@@ -168,14 +168,14 @@ function update_notes(time){
         if(!flag[i]){continue;}
         var self=$noteframe.childNodes[i].style;
 if(mode==0){
-        self.top=lineY-2+gety(time,i)*speed+'vw';
-        self.left=map[i]*32-27+'vw';
+        self.top=lineY-2+Math.sign(map[i])*gety(time,i)*speed+'vw';
+        self.left=Math.abs(map[i])*32-27+'vw';
 }else{
         self.top=lineY-2+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
-        self.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*32)-27+'vw';
+        self.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(Math.abs(map[i])*32)-27+'vw';
 }
         if(autoplay && flag[i] && gety(time,i)>=0){
-            clicknote((map[i]*0.32-0.27)*document.body.offsetWidth,time);
+            clicknote((Math.abs(map[i])*0.32-0.27)*document.body.offsetWidth,time);
         }else if(gety(time,i)>0.16){
             $noteframe.childNodes[i].style.display='none';
             flag[i]=false;
@@ -190,7 +190,7 @@ if(mode==0){
 function clicknote(x,time){
     var match=-114514;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && 18> Math.abs(map[i]*32-14 - x*100/document.body.offsetWidth)){
+        if(flag[i] && 18> Math.abs(Math.abs(map[i])*32-14 - x*100/document.body.offsetWidth)){
         	    match=i;
         	    break;
         	}
@@ -245,7 +245,7 @@ function eff(i,type){
             _t=Math.sqrt(1-j*j);
             _s.width=_s.height=_t*36+'vw';
             _s.top=lineY-_t*18+'vw';
-            _s.left=map[i]*32-15-_t*18+'vw';
+            _s.left=Math.abs(map[i])*32-15-_t*18+'vw';
         },(1-j)*400,i,j);
     }
     setTimeout(function(i){

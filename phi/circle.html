@@ -39,7 +39,7 @@ if(_sch in songs){
     var hold =_song.hold ?? [];
     hold=track.map((x,i)=> hold[i] ?? 0);
     if(old_maps.indexOf(_id)>-1){
-        map=map.map(x=> 2*x-1);
+        map=map.map(x=> 2*x-Math.sign(x));
     }
     if(mirror){
         map=map.map(x=> 6-x);
