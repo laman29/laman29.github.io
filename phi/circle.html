@@ -24,6 +24,7 @@ var airmode=false;
 var auto_fit_screen=true;
 var pattern_width=1,
     hold_pattern_width;
+var rate=1;
 
 var _args=location.search.substring(1).split('&');
 var _sch=_args[0];
@@ -71,6 +72,7 @@ if(_sch in songs){
     }
     music.preload='auto';
     music.currentTime=_song.current??0;
+    music.playbackRate=rate;
 /*
 var speed=140;
 var delay=0;
@@ -128,6 +130,7 @@ var pattern_width=1;
     <span id='-composer'></span>
 </p>
 <p id='-level'></p>
+<p id='-rate'></p>
 
 <p id='taptostart'>Loading...</p>
 
@@ -144,12 +147,15 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('holdframe noteframe line eff -songname -composer gamescore combo1 combo2 -level taptostart');
+ns('holdframe noteframe line eff -songname -composer gamescore combo1 combo2 -level -rate taptostart');
 
 document.title=songname+' '+level+' - '+composer;
 $_songname.innerText=songname;
 $_composer.innerText=composer;
 $_level.innerText=level;
+if(rate!=1){
+    $_rate.innerText=rate+'x';
+}
 if(autoplay){
     $combo2.innerText='Autoplay';
 }
@@ -167,11 +173,11 @@ var startstamp;
 var mainInterval,effInterval,loadingInterval,taptostartInterval;
 
 function init(noline=false){
-    var EFF_SPACING=100;
+    var EFF_SPACING=100/rate;
     if(!noline){
         $taptostart.style.display='none';
         clearInterval(taptostartInterval);
-        $line.style.top=lineY+'vw';
+        $line.style.top=lineY-0.5+'vw';
         var _h=document.body.offsetHeight/document.body.offsetWidth*100;
         if(auto_fit_screen && _h<100){
         	    var _Y=lineY;
@@ -194,6 +200,9 @@ function init(noline=false){
         _c.style.left=Math.abs(map[i])*16-5+'vw';
         if(track.filter(x=>x==track[i]).length>1){
             _c.classList.add('double');
+        }
+        if(hold[i]>0){
+            _c.classList.add('ishold');
         }
         $noteframe.appendChild(_c);
     }
@@ -218,7 +227,7 @@ function init(noline=false){
     setTimeout(()=>music.play(),offset*1000+2000);
 }
 function gameloop(){
-    var time=(new Date().getTime()-startstamp)/1000;
+    var time=getTime();
     update_notes(time);
     update_score();
     if(autoplay){
@@ -344,7 +353,7 @@ function update_score(){
         combo2.innerText=combo>2?'combo':'';
     }
     $line.style.backgroundColor=(ap?'#ffffaa':fc?'#aaffff':'#ffffff');
-    $line.style.top=lineY+'vw';
+    $line.style.top=lineY-0.5+'vw';
 }
 function gameover(){
     if(gamestatus!=1){
@@ -456,19 +465,22 @@ function eff(i,type,playsound=true){
             _s=_l2.style;
             _s.top=lineY+7+_v*_x+'vw';
             _s.opacity=j*_o;
-        },(1-j)*400,i,j);
+        },(1-j)*400/rate,i,j);
     }
     setTimeout(function(i){
         $eff.removeChild(_e);
         $eff.removeChild(_l1);
         $eff.removeChild(_l2);
         delete _e,_l1,_l2,_s;
-    },400,i);
+    },400/rate,i);
     $eff.appendChild(_e);
     if(playsound){
         $eff.appendChild(_l1);
         $eff.appendChild(_l2);
     }
+}
+function getTime(){
+    return (new Date().getTime()-startstamp)*rate/1000;
 }
 function gety(time,i){
     return time-track[i]*beat;
@@ -507,12 +519,13 @@ function tap(e){
         if(autoplay){
             return;
         }
-        var time=(new Date().getTime()-startstamp)/1000;
+        var time=getTime();
         var x=(e?.changedTouches?.[e.changedTouches.length-1] ?? e).clientX;
         x=(x*100/document.body.offsetWidth-2)/16
         clicknote(x,time);
     }else{
         gamestatus=1;
+        document.body.requestFullscreen();
         init();
     }
 }
@@ -521,7 +534,7 @@ function keyDown(e){
     var index='CVBNM'.indexOf(char);
     if(index!=-1){
         x=1+index/2;
-        var time=(new Date().getTime()-startstamp)/1000;
+        var time=getTime();
         clicknote(x,time);
     }
 }
