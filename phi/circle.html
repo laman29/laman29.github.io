@@ -27,9 +27,9 @@ var pattern_width=1,
 var rate=1;
 
 var _args=location.search.substring(1).split('&');
-var _sch=_args[0];
+var _sch=_args[0].replace('.','$');
 var _rest=_args.slice(1);
-var [_id,level]=_sch.split(/[$.]/,2);
+var [_id,level]=_sch.split('$',2);
 
 if(_sch in songs){
     var songname=names[_id];
