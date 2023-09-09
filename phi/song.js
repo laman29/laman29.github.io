@@ -3,6 +3,7 @@ phimix:'DESTRUCTION 3,2,1 (Heycore Mix)',
 reimei:'Reimei',
 op:'Let the wind tell you',
 a:'You Are the Miserable',
+b:'test',
 m01:'Untitled (01)',
 chicken:'ni tai mei',
 new:'Untitled (00)',
@@ -73,6 +74,16 @@ a$a:{
     beat:0.36,
     current:0,
     url:'https://music.163.com/song/media/outer/url?id=1961805370'
+},
+b$b:{
+    composer:'',
+    track:[1,1,2,2,3,3,5,5,6,6,9,9,10,10,13,13,14,14,15,15,16,16,17,17,18,18,19,19,20,20,],
+    map  :[2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,],
+    hold: [],
+    offset:0,
+    beat:0.079,
+    current:0,
+    url:''
 },
 a$in:{
     composer:'',

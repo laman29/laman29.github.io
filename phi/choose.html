@@ -29,9 +29,12 @@
 <script>
 try{
 
-var scale=1;
+var scale=1.2;
 var animate_mode=2;
 /* 0->Null 1->Fast 2->Slow */
+
+var m_url='http://music.163.com/song/media/outer/url?id=511460368',
+    m_current=81.1;
 
 function $(x){
     return document.getElementById(x);
@@ -104,6 +107,11 @@ function Launcher(sch){
     function launcher(e){
         var GENSHIN='音游？',
             LAUNCH='启动！';
+/*
+        [GENSHIN,LAUNCH]=sch.split('$');
+        GENSHIN=names[GENSHIN]+'？';
+        LAUNCH=LAUNCH.toUpperCase()+'！';
+*/
         var A1=[1,1.2,-1,-1.2],A2=[1,-1,1,-1],a=3,k=1,h_x=0.585,h_y=0.458,h_Y=h_y*$genshin.clientHeight/$genshin.clientWidth;
         var T=[[0,0,0,0,0,0,0],[200,200,300,600,200,300,200],[300,600,600,800,300,300,300]][animate_mode];
         eff(e.clientX/document.body.clientWidth,
@@ -194,8 +202,13 @@ function Launcher(sch){
                 location.href='circle.html?'+sch;
             }],
         );
+        play_music();
     }
     return launcher;
+}
+function play_music(){
+    music.currentTime=m_current;
+    music.play();
 }
 
 var songinfo={/*
@@ -230,8 +243,10 @@ for(id in songinfo){
     }
     $wrapper.appendChild(li);
 }
+var music=new Audio(m_url);
+music.currentTime=m_current;
 
-}catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+}catch(e){alert('你看这个laman29天天写Bug\n错误信息：'+e)}
 </script>
 </body>
 </html>
