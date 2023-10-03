@@ -5,7 +5,7 @@
 <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <title>Loading...</title>
 <link rel='stylesheet' href='circle.css' />
-<script src='song.js?t=20230907a'></script>
+<script src='song.js?t=20231003a'></script>
 <script>
 try{
 //throw 'I miss you.';
@@ -72,24 +72,8 @@ if(_sch in songs){
     }
     music.preload='auto';
     music.currentTime=_song.current??0;
-    music.playbackRate=rate;
-/*
-var speed=140;
-var delay=0;
-var lineY=90;
-var T80=0.08;
-var current=0;
-var mode=0;
-var tapsound=false;
-var autoplay=!false;
-var mirror=false;
-var ezhd_speed_slowdown=true;
-var airmode=false;
-var auto_fit_screen=true;
-var pattern_width=1;
-*/
     var BOOL_ARGS='tapsound,autoplay,mirror,ezhd_speed_slowdown,airmode,auto_fit_screen'.split();
-    var INTG_ARGS='speed,delay,lineY,T80,T160,T180,current,mode,pattern_width,hold_pattern_width'.split();
+    var INTG_ARGS='speed,delay,lineY,T80,T160,T180,current,mode,pattern_width,hold_pattern_width,rate'.split();
     for(var i=0;i<_rest.length;i++){
         _l=_rest[i].split('=');
         if(_l.length==1){
@@ -179,9 +163,9 @@ function init(noline=false){
         clearInterval(taptostartInterval);
         $line.style.top=lineY-0.5+'vw';
         var _h=document.body.offsetHeight/document.body.offsetWidth*100;
-        if(auto_fit_screen && _h<100){
+        if(auto_fit_screen /* && _h<100 */ ){
         	    var _Y=lineY;
-            lineY=0.8*_h;
+            lineY=0.5*_h;
             speed*=lineY/_Y;
         }
         var _line_i=-25,_line_interval=setInterval(function(){
@@ -224,6 +208,7 @@ function init(noline=false){
     startstamp=new Date().getTime()+2000+delay;
     mainInterval=setInterval(gameloop,0);
     effInterval=setInterval(effloop,EFF_SPACING);
+    music.playbackRate=rate;
     setTimeout(()=>music.play(),offset*1000+2000);
 }
 function gameloop(){
