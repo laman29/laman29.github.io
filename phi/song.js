@@ -1,4 +1,5 @@
 var names={
+bt4t:"Birthday's Tabata for TYS",
 tabata:"8 min's Tabata",
 phimix:'DESTRUCTION 3,2,1 (Heycore Mix)',
 reimei:'Reimei',
@@ -15,6 +16,16 @@ awa:' (⊙ω⊙)',
 };
 
 var songs={
+bt4t$at:{
+    composer:'fifteen aged laman29',
+    track:[],
+    map  :[],
+    hold: [],
+    offset:0,
+    beat:0.1,
+    current:0,
+    url:'media/tabata3.mp3'
+},
 tabata1$ez:{
     composer:"9 (32)'s laman29",
     track:[1],
