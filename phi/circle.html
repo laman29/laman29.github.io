@@ -42,9 +42,6 @@ if(_sch in songs){
     if(old_maps.indexOf(_id)>-1){
         map=map.map(x=> 2*x-Math.sign(x));
     }
-    if(mirror){
-        map=map.map(x=> 6-x);
-    }
     var offset=_song.offset;
     var beat=_song.beat;
     level=(level=='legacy'?'Legacy':level.toUpperCase());
@@ -72,10 +69,12 @@ if(_sch in songs){
     }
     music.preload='auto';
     music.currentTime=_song.current??0;
-    var BOOL_ARGS='tapsound,autoplay,mirror,ezhd_speed_slowdown,airmode,auto_fit_screen'.split();
-    var INTG_ARGS='speed,delay,lineY,T80,T160,T180,current,mode,pattern_width,hold_pattern_width,rate'.split();
+    var _l,_k,_v,b_i,i_i;
+    var BOOL_ARGS='tapsound,autoplay,mirror,ezhd_speed_slowdown,airmode,auto_fit_screen'.split(',');
+    var INTG_ARGS='speed,delay,lineY,T80,T160,T180,current,mode,pattern_width,hold_pattern_width,rate'.split(',');
     for(var i=0;i<_rest.length;i++){
         _l=_rest[i].split('=');
+        _l[0]=_l[0].toLowerCase();
         if(_l.length==1){
             if(BOOL_ARGS.indexOf(_l[0])>-1){
                 _l.push('yes');
@@ -83,9 +82,26 @@ if(_sch in songs){
                 continue;
             }
         }
+        [_k,_v]=_l;
+        b_i=BOOL_ARGS.indexOf(_k);
+        if(b_i>-1){
+            _v=['yes','y'].indexOf(_v.toLowerCase())>-1;
+            window[_k]=_v;
+            continue;
+        }
+        i_i=INTG_ARGS.indexOf(_k);
+        if(i_i>-1){
+            _v=+_v;
+            if(_v==_v){
+                window[_k]=_v;
+            }
+        }
     }
     T160??=T80*2;
     T180??=T80*2.25;
+    if(mirror){
+        map=map.map(x=> Math.sign(x)*6-x);
+    }
     hold_pattern_width??=pattern_width
 }else{
     location.replace('choose.html');
@@ -109,6 +125,7 @@ if(_sch in songs){
     <span id='combo2'></span>
 </p>
 <p id='gamescore'></p>
+<p id='gameacc'></p>
 <p id='songinfo'>
     <span id='-songname'></span>
     <span id='-composer'></span>
@@ -131,7 +148,7 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('holdframe noteframe line eff -songname -composer gamescore combo1 combo2 -level -rate taptostart');
+ns('holdframe noteframe line eff -songname -composer gamescore gameacc combo1 combo2 -level -rate taptostart');
 
 document.title=songname+' '+level+' - '+composer;
 $_songname.innerText=songname;
@@ -146,7 +163,16 @@ if(autoplay){
 if(tapsound){new Audio('media/tap.mp3').preload='auto';};
 
 var gamestatus=0;
-var gamescore=0;
+var gamescore={
+    perfect:0,good:0,bad:0,miss:0,
+    get score(){
+        return this.perfect+this.good*0.65
+    },
+    get acc(){
+        var acc=this.score/(this.perfect+this.good+this.bad+this.miss);
+        return isNaN(acc)?1:acc;
+    }
+};
 var count=0;
 var combo=0;
 var maxcb=0;
@@ -333,6 +359,7 @@ function update_hold(time,i){
 }
 function update_score(){
     $gamescore.innerText=getscore();
+    $gameacc.innerText=getacc().toFixed(2)+'%';
     $combo1.innerText=combo>2?combo:'';
     if(!autoplay){
         combo2.innerText=combo>2?'combo':'';
@@ -365,17 +392,26 @@ function clicknote(x,time){
     if(gamestatus!=1){
         return;
     }
-    var match=-114514;
+    var err;
+    var match=[],errs=[],t=Infinity;
     for(var i=0;i<track.length;i++){
-        if(flag[i] && pattern_width> Math.abs(x-Math.abs(map[i]))){
-        	    match=i;
-        	    break;
-        	}
+        err=Math.abs(x-Math.abs(map[i]));
+        errs.push(err);
+        if(flag[i] && pattern_width>err){
+            if(track[i]<t){
+                t=track[i]
+                match=[];
+            }
+            if(track[i]==t){
+                match.push(i);
+            }
+        }
     }
-    if(match==-114514){
+    if(match==[]){
         return;
     }
-    if(hold[i]==0){
+    match=match.sort((a,b)=> errs[a]>errs[b])[0];
+    if(hold[match]==0){
         $noteframe.childNodes[match].style.display='none';
         if(Math.abs(gety(time,match))<T80){
             eff(match,1);
@@ -389,7 +425,7 @@ function clicknote(x,time){
             return;
         }
         flag[match]=0;
-    }else if(hold[i]>0 && flag[i]==1){
+    }else if(hold[match]>0 && flag[match]==1){
         $noteframe.childNodes[match].style.top=lineY-7+'vw';
         if(Math.abs(gety(time,match))<T80){
             eff(match,1);
@@ -464,6 +500,7 @@ function eff(i,type,playsound=true){
         $eff.appendChild(_l2);
     }
 }
+
 function getTime(){
     return (new Date().getTime()-startstamp)*rate/1000;
 }
@@ -474,23 +511,31 @@ function gety2(time,i){
     return time-(track[i]+hold[i])*beat;
 }
 function getscore(){
-    return ((gamescore*9+maxcb)*100000/track.length).toString().split('.')[0].padStart(7,'0')
+    return Math.round((gamescore.score*9+maxcb)*100000/track.length).toString().padStart(7,'0');
+}
+function getacc(){
+    return gamescore.acc*100;
 }
 function perfect(){
     count++;
-    gamescore+=1;
+    gamescore.perfect+=1;
     combo++;
     maxcb=Math.max(combo,maxcb);
 }
 function good(){
     count++;
-    gamescore+=0.650000001;
+    gamescore.good+=1;
     combo++;
     maxcb=Math.max(combo,maxcb);
     ap=false;
 }
 function miss(isbad=0){
     count++;
+    if(isbad){
+        gamescore.bad+=1;
+    }else{
+        gamescore.miss+=1;
+    }
     combo=0;
     ap=fc=false;
 }
@@ -510,7 +555,7 @@ function tap(e){
         clicknote(x,time);
     }else{
         gamestatus=1;
-        document.body.requestFullscreen();
+        //document.body.requestFullscreen();
         init();
     }
 }
