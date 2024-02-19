@@ -1,0 +1,661 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
+<title>Loading...</title>
+<link rel='stylesheet' href='stylesheet/play.css' />
+<script src='vendor/namespace.js'></script>
+<script src='song.js'></script>
+<script src='script/ingame-init.js'></script>
+</head>
+
+<body>
+<svg id='arcframe'></svg>
+<!--polygon fill='red' points='0,0 100,50 50,100'></polygon-->
+</svg>
+<div id='holdframe'></div>
+<div id='noteframe'></div>
+<div id='line'></div>
+<div id='eff'></div>
+<p id='-combo'>
+    <span id='combo1'></span>
+    <span id='combo2'></span>
+</p>
+<p id='gamescore'></p>
+<p id='gameacc'></p>
+<p id='songinfo'>
+    <span id='-songname'></span>
+    <span id='-composer'></span>
+</p>
+<p id='-level'></p>
+<p id='-rate'></p>
+<p id='taptostart'>Loading...</p>
+
+<script>
+try{
+
+ns('aw1 arcframe holdframe noteframe line eff -songname -composer gamescore gameacc combo1 combo2 -level -rate taptostart');
+var SVG_NS='http://www.w3.org/2000/svg';
+
+/*
+//alert($arcframe.viewbox)
+aw2=document.createElementNS("http://www.w3.org/2000/svg",'polygon')
+$arcframe.appendChild(aw2)
+aw2.style.fill='#00ffff'
+aw2.setAttribute('points','1,1 66,1 1,66')
+$aw1.style.fill='#1ffe33'
+$aw1.setAttribute('points','0,0 50,0 50,20 0,20');
+*/
+
+document.title=songname+' '+level+' - '+composer;
+$_songname.innerText=songname;
+$_composer.innerText=composer;
+$_level.innerText=level;
+if(rate!=1){
+    $_rate.innerText=rate+'x';
+}
+if(autoplay){
+    $combo2.innerText='Autoplay';
+}
+if(tapsound){
+    new Audio('media/tap.mp3').preload='auto';
+}
+
+var gamestatus=0;
+var gamescore={
+    perfect:0,good:0,bad:0,miss:0,
+    get score(){
+        return this.perfect+this.good*0.65
+    },
+    get acc(){
+        var acc=this.score/(this.perfect+this.good+this.bad+this.miss);
+        return isNaN(acc)?1:acc;
+    }
+};
+var count=0;
+var combo=0;
+var maxcb=0;
+var ap=true,fc=true;
+var flag=Array(track.length).fill(1);
+var touches=Array();
+var bind=Array(arc.length).fill(-1);
+var freeze=Array(arc.length).fill(0);
+var startstamp;
+var mainInterval,effInterval,loadingInterval,taptostartInterval;
+
+
+function init(noline=false){
+    var EFF_SPACING=100/rate;
+    if(!noline){
+        $taptostart.style.display='none';
+        cancelAnimationFrame(taptostartInterval);
+        $line.style.top=lineY-0.5+'vw';
+        var _h=document.body.offsetHeight/document.body.offsetWidth*100;
+        if(auto_fit_screen /* && _h<100 */ ){
+        	    var _Y=lineY;
+            lineY=0.5*_h;
+            speed*=lineY/_Y;
+        }
+        var _line_i=-25,_line_interval=requestAnimationFrame(function(){
+            if(++_line_i<0){
+                requestAnimationFrame(arguments.callee);
+            }else if(_line_i<50){
+                var i=50*(0.5-0.5*Math.cos(Math.PI*_line_i/50));
+                $line.style.width=i*2+'vw';
+                $line.style.left=50-i+'vw';
+                _line_interval=requestAnimationFrame(arguments.callee);
+            }
+        });
+    }
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        _c.style.left=Math.abs(map[i])*16-5+'vw';
+        if(track.filter(x=>x==track[i]).length>1){
+            _c.classList.add('double');
+        }
+        if(hold[i]>0){
+            _c.classList.add('ishold');
+        }
+        $noteframe.appendChild(_c);
+    }
+    for(var i=0;i<track.length;i++){
+        var _c=document.createElement('div');
+        if(hold[i]>0){
+            _c.style.height=hold[i]*beat*speed+'vw';
+            _c.style.left=Math.abs(map[i])*16+1.5+'vw';
+        }
+        $holdframe.appendChild(_c);
+    }
+    $arcframe.style.width='100%';
+    $arcframe.style.height=lineY+'vw';
+    $arcframe.setAttribute('viewBox','0 0 100 '+lineY);
+    for(var i=0;i<arc.length;i++){
+        var _g=document.createElementNS(SVG_NS,'g');
+        $arcframe.appendChild(_g);
+        _g.style.opacity=0.7;
+        for(var j=0;j<arc[i].arcs.length;j++){
+            var _c=document.createElementNS(SVG_NS,'polygon');
+            _g.appendChild(_c);
+            _c.style.fill=arc[i].color;
+        }
+    }
+    /* awa1 */
+    if(!autoplay){['touchstart','touchend','touchmove'].forEach(
+        x=>document.body.addEventListener(x,
+            e=>touches=Array.from(e.touches).map(
+                y=>(y.clientX*100/document.body.offsetWidth-2)/16
+            )
+        )
+    );}
+    startstamp=Date.now()+2000+delay;
+    mainInterval=requestAnimationFrame(gameloop);
+    effInterval=setInterval(effloop,EFF_SPACING);
+    music.playbackRate=rate;
+    setTimeout(()=>music.play(),offset*1000/rate+2000);
+}
+function gameloop(){
+    var time=getTime();
+    update_notes(time);
+    update_arcs(time);
+    update_score();
+    if(autoplay){
+        touches=[];
+        for(var i=0;i<track.length;i++){
+            if(flag[i]==1 && gety(time,i)>=0){
+                clicknote(Math.abs(map[i]),time);
+            }
+            if([2,2.5].indexOf(flag[i])>-1){
+                touches.push(Math.abs(map[i]));
+            }
+        }
+    }
+    if(count==track.length && flag.every(x=>!x)){
+        setTimeout(gameover,160)
+    }
+    mainInterval=requestAnimationFrame(gameloop);
+}
+function effloop(){
+    for(var i=0;i<track.length;i++){
+        if([2,2.5,3,3.5].indexOf(flag[i])>-1){
+            eff(i,[2,3].indexOf(flag[i])>-1?1:0.65,false);
+        }
+    }
+}
+function update_notes(time){
+    for(var i=0;i<track.length;i++){
+        if(flag[i]==0){
+            continue;
+        }
+        if(flag[i]==1 && gety(time,i)*speed>-61.6-lineY){
+            $noteframe.childNodes[i].style.display='block';
+            if(hold[i]>0){
+                $holdframe.childNodes[i].style.display='block';
+            }
+        }
+        if(hold[i]==0){
+            update_tap(time,i);
+        }else if(hold[i]>0){
+            update_hold(time,i);
+        }
+    }
+}
+function update_tap(time,i){
+    var tap=$noteframe.childNodes[i].style;
+    if(mode==0){
+        tap.top=lineY-7+Math.sign(map[i])*gety(time,i)*speed+'vw';
+    }else{
+        tap.top=lineY-7+Math.sin(gety(time,i)*speed*Math.PI/140)*speed/2+'vw';
+        tap.left=Math.cos(gety(time,i)*speed*Math.PI/240)*(map[i]*16)-11+'vw';
+    }
+    if(gety(time,i)>T180){
+        $noteframe.childNodes[i].style.display='none';
+        flag[i]=0;
+        miss();
+    }
+}
+function update_hold(time,i){
+    var tapE=$noteframe.childNodes[i];
+    var hldE=$holdframe.childNodes[i];
+    var tap=tapE.style,hld=hldE.style;
+    var y1=gety(time,i),y2=gety2(time,i);
+    hld.top=lineY+(map[i]>0?y2:flag[i]==1?-y1:0)*speed+'vw';
+    if(flag[i]==1){
+        tap.top=lineY-7+Math.sign(map[i])*gety(time,i)*speed+'vw';
+    }else{
+        hld.height=-y2*speed+'vw';
+    }
+    switch(flag[i]){
+    case 1:
+        if(y1>T160){
+            tap.display='none';
+            hldE.classList.add('missing');
+            flag[i]=4;
+            miss();
+        }
+    break;
+    case 2:
+    case 2.5:
+        if(y2>=0){
+            var isgood=flag[i]==2.5;
+            tap.display=hld.display='none';
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }else if(touches.every(x=> hold_pattern_width< Math.abs(x-Math.abs(map[i])))){
+            if(y2<-T160){
+                tapE.classList.add('missing');
+                hldE.classList.add('missing');
+                flag[i]=4;
+                miss();
+            }else{
+                flag[i]+=1;
+            }
+        }
+    break;
+    case 3:
+    case 3.5:
+        if(y2>=0){
+            tap.display=hld.display='none';
+            var isgood=flag[i]==3.5;
+            flag[i]=0;
+            if(isgood){
+                good();
+            }else{
+                perfect();
+            }
+        }
+    break;
+    case 4:
+        if(y2>=0){
+            tap.display=hld.display='none';
+            flag[i]=0;
+        }
+    }
+}
+function update_arcs(time){
+    for(var i=0;i<arc.length;i++){
+        var track=arc[i];
+        var tick=getT();
+        var pin=[-1,-1,-1];
+        track.flag=0;
+        for(var j=0;j<track.arcs.length;j++){
+            var _this_arc=track.arcs[j];
+            if(tick>=_this_arc.start && tick<=_this_arc.end){
+                pin[0]=j;
+                track.flag=1;
+                for(var k=0;k<_this_arc.subarcs.length;k++){
+                    var _this_subarc=_this_arc.subarcs[k];
+                    if(tick>=_this_subarc.start && tick<=_this_subarc.end){
+                        pin[1]=k;
+                        pin[2]=getArcNoteIndex(tick,_this_subarc);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        if(tick>_this_arc.end){
+            track.flag=-1;
+        }
+        if(track.flag==0){
+            
+        }else if(track.flag==1){
+            
+        }
+    }
+    /* awa2 */
+    display_arcs(time);
+}
+function display_arcs(time){
+    var shape=[
+        x=>x,
+        x=>Math.sin(x*Math.PI/2),
+        x=>1-Math.cos(x*Math.PI/2),
+        x=>(x=>x*x*(3-x*2))(x*(x*(1.5-x)+.5))
+    ];
+    var dt=.2,radius=5;
+    for(var i=0;i<arc.length;i++){
+        var track=arc[i];
+        for(var j=0;j<track.arcs.length;j++){
+            var one=track.arcs[j];
+            var node=$arcframe.childNodes[i].childNodes[j];
+            var points=[];
+            for(var k=0;k<one.subarcs.length;k++){
+                var unit=one.subarcs[k];
+                var _dt=unit.type?dt:1;
+                for(var m=0;m<1;m+=_dt){
+                    var x=(unit.x0+(unit.x1-unit.x0)*shape[unit.type](m))*16+2-radius;
+                    var y=lineY+(time-(unit.start+(unit.end-unit.start)*m)*beat)*speed;
+                    points.push(x+','+y);
+                }
+            }
+            x=unit.x1*16+2-radius;
+            y=lineY+(time-unit.end*beat)*speed;
+            points.push(x+','+y);
+            for(var k=one.subarcs.length-1;k>-1;k--){
+                var unit=one.subarcs[k];
+                var _dt=unit.type?dt:1;
+                for(var m=1;m>0;m-=_dt){
+                    var x=(unit.x0+(unit.x1-unit.x0)*shape[unit.type](m))*16+2+radius;
+                    var y=lineY+(time-(unit.start+(unit.end-unit.start)*m)*beat)*speed;
+                    points.push(x+','+y);
+                }
+            }
+            x=unit.x0*16+2+radius;
+            y=lineY+(time-unit.start*beat)*speed;
+            points.push(x+','+y);
+            node.setAttribute('points',points.join(' '));
+        }
+    }
+}
+function update_score(){
+    $gamescore.innerText=getscore();
+    $gameacc.innerText=getacc().toFixed(2)+'%';
+    $combo1.innerText=combo>2?combo:'';
+    if(!autoplay){
+        combo2.innerText=combo>2?'combo':'';
+    }
+    $line.classList.remove('line-ap');
+    $line.classList.remove('line-fc');
+    $line.classList.remove('line-nl');
+    $line.classList.add(ap?'line-ap':fc?'line-fc':'line-nl');
+    $line.style.top=lineY-0.5+'vw';
+}
+function gameover(){
+    if(gamestatus!=1){
+        return;
+    }else{
+        gamestatus=2;
+    }
+    music.pause();
+    delete music;    
+    cancelAnimationFrame(mainInterval);
+    clearInterval(effInterval);
+    var _line_start=Date.now(),_line_interval=requestAnimationFrame(function(){
+        var _line_i=(Date.now()-_line_start)/10
+        if(_line_i<0){
+            _line_interval=requestAnimationFrame(arguments.callee);
+        }else if(_line_i<50){
+            var i=50*(0.5-0.5*Math.cos(Math.PI*(1-_line_i/50)));
+            $line.style.width=i*2+'vw';
+            $line.style.left=50-i+'vw';
+            _line_interval=requestAnimationFrame(arguments.callee);
+        }else{
+            $line.style.display='none';
+        }
+    });
+}
+function clicknote(x,time){
+    if(gamestatus!=1){
+        return;
+    }
+    var err;
+    var match=[],errs=[],t=Infinity;
+    for(var i=0;i<track.length;i++){
+        err=Math.abs(x-Math.abs(map[i]));
+        errs.push(err);
+        if(flag[i] && pattern_width>err){
+            if(track[i]<t){
+                t=track[i]
+                match=[];
+            }
+            if(track[i]==t){
+                match.push(i);
+            }
+        }
+    }
+    if(match==[]){
+        return;
+    }
+    match=match.sort((a,b)=> errs[a]>errs[b])[0];
+    if(hold[match]==0){
+        $noteframe.childNodes[match].style.display='none';
+        if(Math.abs(gety(time,match))<T80){
+            eff(match,1);
+            perfect();
+        }else if(Math.abs(gety(time,match))<T160){
+            eff(match,0.65);
+            good();
+        }else if(Math.abs(gety(time,match))<T180){
+            miss(1);
+        }else{
+            return;
+        }
+        flag[match]=0;
+    }else if(hold[match]>0 && flag[match]==1){
+        $noteframe.childNodes[match].style.top=lineY-7+'vw';
+        if(Math.abs(gety(time,match))<T80){
+            eff(match,1);
+            flag[match]=2;
+        }else if(Math.abs(gety(time,match))<T160){
+            eff(match,0.65);
+            flag[match]=2.5;
+        }
+    }
+}
+function eff(i,type,playsound=true){
+    if(tapsound && playsound){
+        var x=new Audio('media/tap.mp3');
+        x.currentTime=0.04;
+        x.play();
+        delete x;
+    }
+    if(type==1){
+        var c='eff-p-';
+    }else{
+        var c='eff-g-';
+    }
+    var _o=0.3,_v=40;
+    var _e=document.createElement('div');
+    var _l1=document.createElement('div');
+    var _l2=document.createElement('div');
+    var _s=_e.style;
+    _s.position='absolute';
+    _s.top=lineY-0.5+'vw';
+    _s.left=Math.abs(map[i])*16+1.75+'vw';
+    _e.classList.add(c+'bd');
+    _s.borderRadius='100vw';
+    _s=_l1.style;
+    _s.position='absolute';
+    _s.top=lineY-7+'vw';
+    _s.width='100vw';
+    _s.height='0.5vw';
+    _l1.classList.add(c+'bg');
+    _s.opacity=_o;
+    _s=_l2.style;
+    _s.position='absolute';
+    _s.top=lineY+7+'vw';
+    _s.width='100vw';
+    _s.height='0.5vw';
+    _l2.classList.add(c+'bg');
+    _s.opacity=_o;
+    for(var j=0;j<=1;j+=0.04){
+        setTimeout(function(i,j){
+            var _x=1-j,
+                _t=Math.sqrt(1-j*j);
+            _s=_e.style;
+            _s.width=_s.height=_t*32+'vw';
+            _s.top=lineY-0.5-_t*16+'vw';
+            _s.left=Math.abs(map[i])*16+1.75-_t*16+'vw';
+            _s=_l1.style;
+            _s.top=lineY-7-_v*_x+'vw';
+            _s.opacity=j*_o;
+            _s=_l2.style;
+            _s.top=lineY+7+_v*_x+'vw';
+            _s.opacity=j*_o;
+        },(1-j)*400/rate,i,j);
+    }
+    setTimeout(function(i){
+        $eff.removeChild(_e);
+        $eff.removeChild(_l1);
+        $eff.removeChild(_l2);
+        delete _e,_l1,_l2,_s;
+    },400/rate,i);
+    $eff.appendChild(_e);
+    if(playsound && tapsound){
+        $eff.appendChild(_l1);
+        $eff.appendChild(_l2);
+    }
+}
+
+function getTime(){
+    return (Date.now()-startstamp)*rate/1000;
+}
+function getT(){
+    return getTime()/beat
+}
+function gety(time,i){
+    return time-track[i]*beat;
+}
+function gety2(time,i){
+    return time-(track[i]+hold[i])*beat;
+}
+function getArcNoteIndex(tick,subarc){
+    var beat_=beat;
+    if(beat<0.12){
+        beat_*=2;
+    }
+    Math.floor((tick-subarc.start)/beat)
+}
+function getscore(){
+    return Math.round((gamescore.score*9+maxcb)*100000/total_count).toString().padStart(7,'0');
+}
+function getacc(){
+    return gamescore.acc*100;
+}
+function perfect(){
+    count++;
+    gamescore.perfect+=1;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+}
+function good(){
+    count++;
+    gamescore.good+=1;
+    combo++;
+    maxcb=Math.max(combo,maxcb);
+    ap=false;
+}
+function miss(isbad=0){
+    count++;
+    if(isbad){
+        gamescore.bad+=1;
+    }else{
+        gamescore.miss+=1;
+    }
+    combo=0;
+    ap=fc=false;
+}
+
+function tap(e){
+    e.preventDefault();
+    if(music.readyState!=4){
+        return;
+    }
+    if(gamestatus==1){
+        if(autoplay){
+            return;
+        }
+        var time=getTime();
+        var x=(e?.changedTouches?.[e.changedTouches.length-1] ?? e).clientX;
+        x=(x*100/document.body.offsetWidth-2)/16
+        clicknote(x,time);
+    }else if(gamestatus==0){
+        gamestatus=1;
+        //document.body.requestFullscreen();
+        init();
+    }
+}
+function keyDown(e){
+    e.preventDefault();
+    var char=e.key.toUpperCase();
+    var index=' CVBNM'.indexOf(char);
+    if(index!=-1){
+        if(index==0){
+            gamestatus=1;
+            init();
+        }else{
+            var x=index;
+            var time=getTime();
+            clicknote(x,time);
+        }
+    }
+}
+
+function setCurrentFrame(x){
+    init(noline=true);
+    cancelAnimationFrame(mainInterval);
+    clearInterval(effInterval);
+    delay+=-1000*x*beat;
+    music.currentTime+=x*beat;
+    flag=track.map(y=> y<x?0:1);
+    var n=flag.filter(y=> !y).length;
+    for(var i=n;i;i--){
+        perfect();
+    }
+    startstamp=Date.now()+2000+delay;
+    gameloop();
+    cancelAnimationFrame(mainInterval);
+}
+
+(function(){ //Run at once ->
+
+document.body.addEventListener('touchstart',tap);
+document.body.addEventListener('keyDown',keyDown);
+document.body.onmousedown=document.body.oncontextmenu=function(e){
+    e.preventDefault();
+    return false;
+}
+
+loadingInterval=requestAnimationFrame(function(){
+    try{
+        var b=music.buffered;
+        var x=b.end(b.length-1)/music.duration || 0;
+        $taptostart.innerText='Loading...\n'+(x*100).toFixed(2)+'%';
+    }catch(e){
+        $taptostart.innerText='Loading...\n0.00%'
+    }
+    loadingInterval=requestAnimationFrame(arguments.callee);
+});
+music.addEventListener('canplaythrough',function(e){
+    if(music.readyState==4){
+        cancelAnimationFrame(loadingInterval);
+        $taptostart.innerText='Loading...\n100.00%'
+        var _FLASH_TIME=300;
+        var _flashstart=Date.now();
+        var _flashInterval=requestAnimationFrame(function(){
+            var t=(Date.now()-_flashstart)/_FLASH_TIME;
+            if(t>=1){
+                $taptostart.style.backgroundColor='';
+                return;
+            }
+            var m=t<.5?1-Math.sqrt(1-4*t*t):.5-.5*Math.cos(2*Math.PI*t);
+            var m255=Math.floor((1/8+7/8*m)*255)
+            $taptostart.style.backgroundColor='#'+(0x10101*m255).toString(16);
+            _flashInterval=requestAnimationFrame(arguments.callee);
+        });
+        setTimeout(()=>{
+            var _start=Date.now();
+            taptostartInterval=requestAnimationFrame(function(){
+                var i=(Date.now()-_start)/2000;
+                $taptostart.style.opacity=0.5*(1-Math.cos(i*Math.PI));
+                taptostartInterval=requestAnimationFrame(arguments.callee);
+            });
+            $taptostart.innerText='Tap to start';
+        },_FLASH_TIME);
+    }
+});
+
+if(current){
+    setCurrentFrame(current);
+}
+/* <- Run at once */ })(); 
+
+}catch(e){alert('你家laman29天天写Bug\n错误信息：'+e)}
+</script>
+</body>
+</html>
