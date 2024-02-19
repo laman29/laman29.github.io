@@ -19,12 +19,15 @@
     color: #114514;
 }
 body{
-    font-size: 1.8vh;
+    font-size: 3.5vw;
     padding: 4em 0.5em 0 0.5em;
     line-height: 1.2em;
 }
 h2{
     font-size: 1.8em;
+}
+.center{
+    text-align: center;
 }
 .comment{
     color: gray;
@@ -64,6 +67,9 @@ p a:hover::after{
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     font-weight: bold;
 }
+li>a,#content>a:visited{
+    color: blue;
+}
 #content>a::before{
     content: ' § ';
     font-size: 0.6em;
@@ -74,13 +80,13 @@ p a:hover::after{
 </head>
 <body style='height: 100%'>
 <div id='header'>
-    <a id='headtitle' href='#' onclick='/*alert("继续练习！")*/'>欢&nbsp;迎&nbsp;练&nbsp;习</a>
+    <a id='headtitle'>瞧瞧你这，多老的设备呀！</a>
     <div style='height:0.1em;width:100%;background-color:#aaaaaa;' align='center'></div>
     <div style='height:0.1em;width:100%;background-color:#eeeeee;' align='center'></div>
 </div>
 <div id='content'>
-    <h2>
-        <a name='title' href='#' onclick='location.reload(1);'>
+<!--    <h2>
+        <a name='title' onclick='location.reload(1);'>
             <span style='color:#ff0000'>练</span>
             <span style='color:#0000ff'>习</span>
             <span style='color:#00cc00'>时</span>
@@ -93,46 +99,56 @@ p a:hover::after{
             <span style='color:#ff00ff'>半</span>
         </a>
     </h2>
+    <h1 id='toexam' style='color:red;text-align:center'></h1>
+-->
+    <h3 style='color:brown;text-align:center'>中考日期：6月19日</h3>
 
     <ul>
-        <li><a href='#game'>游戏</a></li>
-        <li><a href='#tool'>工具箱</a></li>
-        <li><a href='#prog'>有趣的玩意</a></li>
+        <li><a href='#fast' target='_self'>快速导航</a></li>
+        <li><a href='#game' target='_self'>游戏</a></li>
+        <li><a href='#tool' target='_self'>工具箱</a></li>
+        <li><a href='#prog' target='_self'>有趣的玩意</a></li>
     </ul>
 
+    <a name='fast' href='#title' target='_self'>快速导航</a>
     <p>
-        <a href='phi/circle.html?tabata$in' target='_self'>Tabata</a>
+    <a href='https://cn.bing.com/'>必应搜索</a>
+    <a href='tool/test.html'>浏览器测试</a>
+    <a href='go/?draw32'>32班抽号</a>
+    <a href='circle/index.html'>Circle选关</a>
     </p>
 
-    <a name='game' href='#title'>游戏</a>
+    <a name='game' href='#title' target='_self'>游戏</a>
     <p>游戏主页<a href='9934/wxr/'>前往</a></p>
-    <p>本站游戏<a href='phi/choose.html'>新音游</a><a href='phi/play.html'>旧音游</a><a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
-    <p>经典游戏<a href='https://darock.top/tapToStart/index.html'>Phi Online (PEC File)</a><a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊无限道具</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a></p>
+    <p>本站游戏<a href='circle/index.html'>Circle</a><a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
+    <p>经典游戏<a href='https://darock.top/tapToStart/index.html'>Phi Online</a><a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a><a href='https://cdn.198434.com/cli/H5/sheep/'>摸鱼</a></p>
 
-    <a name='tool' href='#title'>工具箱</a>
+    <a name='tool' href='#title' target='_self'>工具箱</a>
     <p>链接中转站<a href='as/'>前往</a></p>
-    <p>下载站<a href='download/'>索引</a></p>
-    <p>骗人<a href='lib/fake.html'>长按复制链接</a></p>
+    <p>下载站（在建）<a <!--href='download/'-- >不可用</a></p>
     <p>手写<a href='tool/write.html'>前往</a></p>
-    <p>多押测试<a href='tool/test.html'>前往</a></p>
+    <p>浏览器测试<a href='tool/test.html'>前往</a></p>
 
-    <a name='prog' href='#title'>一些有趣的玩意</a>
+    <a name='prog' href='#title' target='_self'>一些有趣的玩意</a>
     <p>32班专属抽号机<a href='go/?draw32'>前往</a></p>
+    <p>电信诈骗<a href='http://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4'>长按复制链接</a></p>
+    <p class='center comment'>—— 全球互联网关闭后，以下站点将无法访问 ——</p>
     <p>地球联合政府<a href='https://uegov.world/'>前往</a></p>
     <p>地下城居住资格抽签<a href='https://uegov.world/random-draw/'>前往</a></p>
 
 </div>
-<div id='bottom'>Powered by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=异常报告&body=laman29:%0a%20%20'>联系laman29</a></div>
+<div id='bottom'>Provided by Simonov/<b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=异常报告&body=laman29:%0a%20%20'>联系laman29</a></div>
 
 <script>
 
-document.getElementById('headtitle').innerText='距离一检仅剩'+Math.floor((1706457600000-Date.now())/86400000)+'天';
+document.getElementById('headtitle').innerText='距离一检仅剩'+Math.floor((1718726400000-Date.now())/86400000)+'天';
+//document.getElementById('toexam').innerText='距离中考仅剩'+Math.floor((1718798297000-Date.now())/86400000)+'天';
 
 setInterval((function(){
     var ht=document.getElementById('headtitle');
     var i=0;
     return function(){
-        ht.style.color='hsl('+(i++)%360+' 100% 33%)';
+        ht.style.color='hsl('+(i++)%360+' 100% 55%)';
     };
 })(),50);
 (function(){
