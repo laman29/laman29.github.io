@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>系统测试</title>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
 <style>
 body{font-size:6vw}
 p{font-size:0.8em;margin: 0 0 0.1em 1.25em}
@@ -36,7 +37,7 @@ try{
 ontouchmove=ontouchstart=ontouchend=function(e){
     try{
         e.preventDefault();
-        a.innerText=e.touches.length+(e.touches.length<2?' touch\n':(z.innerText='支持多押')&&' touches\n')+Array.from(e.touches).map(a=>a.clientX).join('\n');
+        a.innerText=e.touches.length+(e.touches.length<2?' touch\n':(z.innerText='支持多押')&&' touches\n')+Array.from(e.touches).map(a=>a.identifier+';'+a.clientX).join('\n');
     }catch(e){alert('都怪阿韦不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
 }
 </script>
