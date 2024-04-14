@@ -102,6 +102,7 @@ li>a,#content>a:visited{
     <h1 id='toexam' style='color:red;text-align:center'></h1>
 -->
     <h3 style='color:brown;text-align:center'>中考日期：6月19日</h3>
+    <h3 style='color:brown;text-align:center'>距离考试开始仅剩<span id='toexamstart'></span></h3>
 
     <ul>
         <li><a href='#fast' target='_self'>快速导航</a></li>
@@ -144,7 +145,18 @@ li>a,#content>a:visited{
 <script>
 
 document.getElementById('headtitle').innerText='距离中考仅剩'+Math.ceil((1718726400000-Date.now())/86400000)+'天';
-//document.getElementById('toexam').innerText='距离中考仅剩'+Math.floor((1718798297000-Date.now())/86400000)+'天';
+function updateToExam(){
+var tostart=Math.round((1718755200000-Date.now())/1000);
+var weeks=Math.floor(tostart/(86400*7));
+var days=Math.floor(tostart%(86400*7)/86400);
+var hours=Math.floor(tostart%86400/3600);
+var mins=Math.floor(tostart%3600/60);
+var secs=tostart%60;
+var s=`\n ${weeks} 星期 ${days} 天 ${hours} 小时 ${mins} 分 ${secs} 秒`;
+document.getElementById('toexamstart').innerText=s;
+}
+updateToExam();
+setInterval(updateToExam,1000);
 
 setInterval((function(){
     var ht=document.getElementById('headtitle');
