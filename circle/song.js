@@ -1,6 +1,8 @@
 var ARC_TYPES=['L','SI','SO','B'];
 
 var names={
+m07:'⑦ -Colourful Sunshine-',
+fr:'???',
 shu:'Little Mouse vs. Light',
 bt4t:"Birthday's Tabata for TYS",
 tabata:"8 min's Tabata",
@@ -11,16 +13,17 @@ yatm:'You Are the Miserable',
 a:'Test 1',
 m01:'Untitled (01)',
 chicken:'ni tai mei',
-m00:'K.M₂OE₃ (00)',
+m00:'Dragurnotes',
 mkbk:'Makka Pakka',
 rr:'Rickroll',
 igallta:'igallta',
 awa:' (⊙ω⊙)',
+xx:'not Arcaea but arc',
 };
 
 var songs={
 xx$in:{
-    composer:'laman29',
+    composer:'laman29 testing',
     track:[1,3,6,7,616],
     map  :[1,3,1,3,5],
     hold: [],
@@ -32,6 +35,26 @@ xx$in:{
     beat:0.2,
     current:0,
     url:''
+},
+m07$in:{
+    composer:'laman love ⑨',
+    track:[1,1,3,4,5,6,8,9,9,11,13,14,16,17,17,19,20,21,21,22,23,24,25,25,28,29,30,31, 33,33,34,34.5,35,36,37,37,38,38,40,40,41,41.5,42,42.5,43,43.5,44,44.5,45,46,48,49,50,50.5,51,52,53,53,54,55,55,56,57,57,58,58,58.5,58.5,59,59,60,60,60.5,60.5,61,61,63,63, ],
+    map  :[1,5,4,2,4,2,3,1,5,4,4,3,2,2,5,4,3,1,4,3,4,5,2,4,3,4,3,1,                    1,5,3,3,3,2,1,3,3,5,1,3,5,1,4,1,3,2,2,2,1,3,5,3,3,3,3,1,2,4,5,2,4,1,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,                                                                       ],
+    hold: [,,,,,,,,,,,,,,,,,,,,,,,,,,,,                                                ,,,,,,,,,,,,,,,,,,,,2,2,,,,,,,,,,,,,,,,,,,,,,,,,,,,1,                                                                                                                      ],
+    offset:-1.45,
+    beat:0.15,
+    current:1,
+    url:'media/m07.mp3'
+},
+fr$in:{
+    composer:'???',
+    track:[1,5,5,9,9,13,13,17,17,21,21,25,25,27,27,27, ],
+    map  :[3,-2,-4,2,4,-1,-5,1,5,3,-3,2,4,-1,3,-5,     ],
+    hold: [,,,,,,,,,3,2,1,1,.5,.5,.5,                  ],
+    offset:-1.5,
+    beat:0.3,
+    current:24.47,
+    url:'http://music.163.com/song/media/outer/url?id=1385304973'
 },
 shu$in:{
     composer:'--W.X.R-鸠-laman②⑨--',
