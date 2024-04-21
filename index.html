@@ -2,8 +2,17 @@
 <html>
 <head>
 <title>首页 | Laman29</title>
-<link rel='stylesheet' href='9934/css/header.css' type='text/css' />
 <style>
+#header{
+    font-size: 3em;
+    text-align: center;
+    background: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
 #headtitle{
     text-decoration: none;
     line-height: 1.25em;
@@ -19,6 +28,7 @@
     color: #114514;
 }
 body{
+    font-family: PingFangSC-Regular,Verdana,Arial,"微软雅黑","宋体";
     font-size: 3.5vw;
     padding: 4em 0.5em 0 0.5em;
     line-height: 1.2em;
@@ -32,10 +42,18 @@ h2{
 .comment{
     color: gray;
 }
+a:link,a:visited{
+    color: darkorchid;
+    text-decoration: none;
+}
+a:hover,a:active{
+    color: red;
+    text-decoration: underline;
+}
 p{
     margin: 0.5em 0;
 }
-p a{
+p a:link,p a:visited{
     display: inline-block;
     border: 0.2em solid #114514;
     margin: 0.1em;
@@ -47,7 +65,7 @@ p a{
     background-color: rgb(1 145 14);
     cursor: pointer;
 }
-p a:hover{
+p a:hover,p a:active{
     background-color: #006600;
     color: #ffff00;
     text-decoration: none;
@@ -66,9 +84,6 @@ p a:hover::after{
     font-size: 1.5em;
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     font-weight: bold;
-}
-li>a,#content>a:visited{
-    color: blue;
 }
 #content>a::before{
     content: ' § ';
@@ -162,9 +177,10 @@ setInterval((function(){
     var ht=document.getElementById('headtitle');
     var i=0;
     return function(){
-        ht.style.color='hsl('+(i++)%360+' 100% 55%)';
+        //ht.style.color='hsl('+(i++)%360+' 100% 55%)';
+        ht.style.color='hsl(7 100% '+(65-21*Math.cos(i++/13))+'%)';
     };
-})(),50);
+})(),48);
 (function(){
     document.title='';
     var fred1=setInterval((function(){
