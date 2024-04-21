@@ -398,7 +398,7 @@ function clicknote(x,time){
     for(var i=0;i<track.length;i++){
         err=Math.abs(x-Math.abs(map[i]));
         errs.push(err);
-        if(flag[i] && pattern_width>err){
+        if(flag[i]==1 && pattern_width>err){
             if(track[i]<t){
                 t=track[i]
                 match=[];
