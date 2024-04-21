@@ -39,8 +39,8 @@ var scale=1.2;
 var animate_mode=2;
 /* 0->Null 1->Fast 2->Slow */
 
-var m_url='http://music.163.com/song/media/outer/url?id=1998397497',
-    m_current=79.375;
+var m_url='https://music.163.com/song/media/outer/url?id=502602282',
+    m_current=95.96;
 
 function $(x){
     return document.getElementById(x);
@@ -90,7 +90,7 @@ function Launcher(sch){
         }
     }
     function eff(x,y,type=1){
-        var c=type==1?'#ffff99':'#00ffff';
+        var c=type==1?'#ffff99':'#ff99ff';
         var _e=document.createElement('div');
         var _s=_e.style;
         x*=100;
@@ -115,7 +115,7 @@ function Launcher(sch){
             LAUNCH='启动！';
 /*
         [GENSHIN,LAUNCH]=sch.split('$');
-        GENSHIN=names[GENSHIN]+'？';
+        GENSHIN=songs[GENSHIN]+'？';
         LAUNCH=LAUNCH.toUpperCase()+'！';
 */
         var A1=[1,1.2,-1,-1.2],A2=[1,-1,1,-1],a=3,k=1,h_x=0.585,h_y=0.458,h_Y=h_y*$genshin.clientHeight/$genshin.clientWidth;
