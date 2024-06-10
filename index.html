@@ -91,6 +91,9 @@ p a:hover::after{
     color: #424242;
     font-weight: normal;
 }
+#dontfar{
+    width: 100%;
+}
 </style>
 </head>
 <body style='height: 100%'>
@@ -116,8 +119,9 @@ p a:hover::after{
     </h2>
     <h1 id='toexam' style='color:red;text-align:center'></h1>
 -->
-    <h3 style='color:brown;text-align:center'>中考日期：6月19日</h3>
-    <h3 style='color:brown;text-align:center'>距离考试开始仅剩<span id='toexamstart'></span></h3>
+    <!-- h3 style='color:brown;text-align:center'>中考日期：6月19日</h3 -->
+    <h3 style='color:brown;text-align:center'>最后一星期！距离考试开始仅剩<span id='toexamstart'></span></h3>
+    <img id='dontfar' src='dontfaratlastmoment.jpg' alt='最后一刻不要Far' />
 
     <ul>
         <li><a href='#fast' target='_self'>快速导航</a></li>
@@ -161,17 +165,18 @@ p a:hover::after{
 
 document.getElementById('headtitle').innerText='距离中考仅剩'+Math.ceil((1718726400000-Date.now())/86400000)+'天';
 function updateToExam(){
-var tostart=Math.round((1718755200000-Date.now())/1000);
-var weeks=Math.floor(tostart/(86400*7));
-var days=Math.floor(tostart%(86400*7)/86400);
+var tostart=Math.round(1718755200000+1800000-Date.now())/1000;
+//var weeks=Math.floor(tostart/(86400*7));
+var days=Math.floor(tostart/86400);
 var hours=Math.floor(tostart%86400/3600);
 var mins=Math.floor(tostart%3600/60);
-var secs=tostart%60;
-var s=`\n ${weeks} 星期 ${days} 天 ${hours} 小时 ${mins} 分 ${secs} 秒`;
+var secs=Math.round(tostart%60);
+var msecs=Math.round((tostart%1)*100);
+var s=`\n ${days} 天 ${hours} 小时 ${mins} 分 ${secs}.${msecs.toString().padEnd(2,0)} 秒`;
 document.getElementById('toexamstart').innerText=s;
 }
 updateToExam();
-setInterval(updateToExam,1000);
+setInterval(updateToExam,0);
 
 setInterval((function(){
     var ht=document.getElementById('headtitle');
