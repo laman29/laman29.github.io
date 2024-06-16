@@ -4,7 +4,7 @@
 <title>首页 | Laman29</title>
 <style>
 #header{
-    font-size: 3em;
+    font-size: 2em; /* 3em */
     text-align: center;
     background: #ffffff;
     position: fixed;
@@ -15,7 +15,7 @@
 }
 #headtitle{
     text-decoration: none;
-    line-height: 1.25em;
+    line-height: 1em; /* 1.25em */
 }
 #content{
     text-align: left;
@@ -91,8 +91,14 @@ p a:hover::after{
     color: #424242;
     font-weight: normal;
 }
+#dontfar1{
+    margin-left: 15%;
+    width: 70%;
+    height: auto;
+}
 #dontfar{
-    width: 100%;
+    margin-left: 15%;
+    width: 70%;
 }
 </style>
 </head>
@@ -120,7 +126,8 @@ p a:hover::after{
     <h1 id='toexam' style='color:red;text-align:center'></h1>
 -->
     <!-- h3 style='color:brown;text-align:center'>中考日期：6月19日</h3 -->
-    <h3 style='color:brown;text-align:center'>最后一星期！距离考试开始仅剩<span id='toexamstart'></span></h3>
+    <h3 style='color:brown;text-align:center'>“天地转，光阴迫。一万年太久，只争朝夕。”<span id='toexamstart'></span></h3>
+    <img id='dontfar1' src='toexam.jpg' alt='即将奔赴考场的你' />
     <img id='dontfar' src='dontfaratlastmoment.jpg' alt='最后一刻不要Far' />
 
     <ul>
@@ -170,10 +177,10 @@ var tostart=Math.round(1718755200000+1800000-Date.now())/1000;
 var days=Math.floor(tostart/86400);
 var hours=Math.floor(tostart%86400/3600);
 var mins=Math.floor(tostart%3600/60);
-var secs=Math.round(tostart%60);
-var msecs=Math.round((tostart%1)*100);
-var s=`\n ${days} 天 ${hours} 小时 ${mins} 分 ${secs}.${msecs.toString().padEnd(2,0)} 秒`;
-document.getElementById('toexamstart').innerText=s;
+var secs=Math.floor(tostart%60);
+var msecs=Math.floor((tostart%1)*1000);
+var s=`\n ${days} 天 ${hours} 小时 ${mins} 分 ${secs}.${msecs.toString().padStart(3,0)} 秒`;
+document.getElementById('headtitle').innerText=s;
 }
 updateToExam();
 setInterval(updateToExam,0);
@@ -183,7 +190,7 @@ setInterval((function(){
     var i=0;
     return function(){
         //ht.style.color='hsl('+(i++)%360+' 100% 55%)';
-        ht.style.color='hsl(7 100% '+(65-21*Math.cos(i++/13))+'%)';
+        ht.style.color='hsl(7 100% '+(60-9*Math.cos(i++/13))+'%)';
     };
 })(),48);
 (function(){
