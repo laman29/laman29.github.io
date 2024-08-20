@@ -44,6 +44,13 @@ button{
     color: #6699ff;
     background-color: #1f1e33;
 }
+#fill{
+    width: 75%;
+    font-size: .9em;
+}
+#fillbox{
+    width: 50%;
+}
 #show{
     flex: 1;
     display: flex;
@@ -70,6 +77,10 @@ const all={
         <button id='clear'>Clear</button>
     </div>
     <div id='in'></div>
+    <div id='more'>
+        <button id='fill'>Fill with <input id='fillbox' /></button>
+        <button id='lock'>Lock</button>
+    </div>
 </div>
 <div id='show'>
     <textarea id='out'></textarea>
