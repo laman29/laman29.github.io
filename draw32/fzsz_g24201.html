@@ -1,0 +1,458 @@
+<!-- 
+
+COPYRIGHT(c) Github@laman29 2024
+版权所有(c) Github@laman29 2024
+
+本项目（https://laman29.github.io/draw32/fzsz_g24201.html）由Github用户@laman29提供
+本文件（包括但不限于本声明、以下代码的完整内容）遵循GPLv3开源
+
+作者Bilibili：@laman29
+联系方式（QQ）：292001748
+
+公益合作：Bilibili@福州三山三叶草TL
+
+ -->
+
+
+<html>
+<head>
+<meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
+<title>fzsz_g20201抽号机</title>
+<script>
+var configs={
+
+// 抽号机配置
+
+// 所有人的名字，以空格分隔
+// 例：'张三 李四 王五'
+// 这个字段指定哪些人会被抽到
+//names: '唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认',
+names: '蔡雯好 曹智铭 陈俊彤 陈勉舒 陈诺熙 陈一苇 陈羽欣 邓禹同 方天翼 高俊辉 侯宇煊 黄意铖 黄梓凌 廖宇辰 林俊西 林乐婧 林凌朵 林若炘 林雯馨 林炫明 林煜成 刘嘉玮 刘铭昊 刘墨涵 刘晓乐 刘栩如 刘子祺 罗嘉豪 潘越 涂鑫铭 王夫涛 王婧 王若凡 吴君扬 吴黄玄 吴思睿 夏雪 肖翊宸 谢戴冰 徐雅涛 杨博文 杨轩睿 叶浚炜 张嘉怡 张烁轩 张晓萱 郑皓天 郑俊杰 郑钰星 周静垚 方苡锘 刘馨菲 李国毅',
+
+// 按顺序排的名字，以空格分隔
+// 和names一样，但是不存在的位置要多空一格
+//names_index: '唱 跳 rap 篮球 坤 只因 🐔 全民制作人 练习 两年半 你太美 Oh~ Baby 蠢蠢欲动 你是我的 我是你的 多一眼 靠近点 会爆炸 会融化 youyou 第一次呀 去否认',
+names_index:'蔡雯好 曹智铭 陈俊彤 陈勉舒 陈诺熙 陈一苇 陈羽欣 邓禹同 方天翼 高俊辉 11 侯宇煊 黄意铖 黄梓凌 廖宇辰 林俊西 林乐婧 林凌朵 林若炘 林雯馨 林炫明 林煜成 刘嘉玮 刘铭昊 刘墨涵 刘晓乐 刘栩如 刘子祺 罗嘉豪 潘越 涂鑫铭 王夫涛 王婧 王若凡 35 吴君扬 吴黄玄 吴思睿 夏雪 肖翊宸 谢戴冰 徐雅涛 杨博文 杨轩睿 叶浚炜 张嘉怡 张烁轩 张晓萱 郑皓天 郑俊杰 郑钰星 周静垚 53 方苡锘 刘馨菲 李国毅',
+
+// 一帧(frame)的长度，ms
+// 建议50
+frame: 12,
+
+// 在出现最终结果前，闪现多少个名字
+// 建议4
+before: 43,
+
+// 是否截取前两个字
+cuttwo: false,
+
+// 设置固有测试项
+fixed: ['','',''],
+
+// 是否启用彩蛋 & 彩蛋配置
+eggs: {
+    //总开关
+    able: false,
+    //玩梗概率
+    //p_jok: 0.15,
+    //尾杀概率
+    p_end: 0.3,
+},
+
+};
+</script>
+<style>
+body{
+    width: 100%;
+    height: 67.6vw;
+    padding-top: 1em;
+    font-size: 6.76vw;
+    line-height: 1;
+    text-align: center;
+    background-color: #fafafa;
+}
+div{
+    position: relative;	
+    margin: 0;
+    box-sizing: border-box;
+    border: 0px solid red;
+    padding: 0;
+    display: inline-block;
+    float: left;
+    width: 100%;
+    height: 100%;
+}
+h1{
+    font-size: 1.5em;
+    font-weight: normal;
+    margin: 0;
+    border: 0.1em solid #cccccc;
+    border-radius: 0.3em;
+    padding: 0.3em;
+    display: inline-block;
+    background-color: #eeeeee;
+}
+h2{
+    font-size: 1.1em;
+    font-weight: normal;
+    margin: 0;
+    border: 0.1em solid #cccccc;
+    border-radius: 0.3em;
+    padding: 0.2em;
+    display: inline-block;
+    background-color: #eeeeee;
+}
+table{
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 1em;
+}
+td{
+    padding: 0.1em;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+}
+
+#options{
+    position: fixed;
+    height: auto;
+    width: 70%;
+    top: 1.2em;
+    left: 15%;
+    z-index: 9;
+    padding: 0.9em;
+    border: 0.2em solid #bf620a;
+    border-radius: 1em;
+    background-color: #eeeeee;
+}
+#num,#num2{
+    font-size: 1.3em;
+}
+#redraw{
+    height: 1.1em;
+    padding: 0.3em;
+    margin: 0;
+}
+#redrawbutton{
+    height: 1.1em;
+    padding-left: 0.1em;
+    padding-right: 0.4em;
+}
+#redrawball{
+    width: 1.1em;
+    height: 1.1em;
+    position: relative;
+    top: 0.2em;
+}
+#display{
+    padding-top: 0.5em;
+}
+
+#drawing,#options,#blue,#redraw{
+    display: none;
+}
+
+.opt-tips{
+    display: inline-block;
+    text-align: left;
+    font-size: 0.5em;
+}
+.ball{
+    width: 2em;
+    height: 2em;
+    border-radius: 50vw;
+}
+.bt{
+    height: 1.2em;
+    padding: 0 0.3em;
+    border: 0.1em solid #114514;
+    border-radius: 0.9em;
+    color: #ffffff;
+    background-color:#199810;
+}
+.bt5{
+    height: 1.2em;
+    padding: 0 0.3em;
+    border: 0.1em solid #bf2d0e;
+    border-radius: 0.9em;
+    color: #ffffff;
+    background-color:#550077;
+}
+.shown{
+    background-color: #ddaa00 !important;
+}
+.bt7{
+    height: 1.2em;
+    padding: 0 0.3em;
+    border: 0.1em solid #191981;
+    border-radius: 0.9em;
+    color: #ff0000;
+    background-color:#addddd;
+}
+.t34{
+    position: relative;
+    top: -0.1em;
+    display: inline-block;
+    width: 0.667em;
+}
+</style>
+</head>
+<body>
+<div id='entering'>
+    <h1>欢迎抽号</h1>
+    <p>
+        <span id='minus' class='bt t34'>-</span>
+        <span id='num'>1</span>
+        <span id='plus' class='bt t34'>+</span>
+    </p>
+    <span id='config' class='bt'>选项...</span>
+    <p>
+        <span id='start' class='bt7'>&nbsp;开始！</span>
+    </p>
+</div>
+<div id='drawing'>
+    <h2 id='drawtitle'>随机抽取<span id='display_num'></span>名<span style='display: inline-block; font-size: 0.5em'>光荣的<br />三中学子</span></h2>
+    <p id='redraw'>
+        <span id='minus2' class='bt t34'>-</span>
+        <span id='num2'>1</span>
+        <span id='plus2' class='bt t34'>+</span>
+        <span id='redrawbutton' class='bt7'>
+        <img id='redrawball' class='ball' src='' />
+        重新抽取
+        </span>
+    </p>
+    <table id='display'>
+        <!-- Dynamic -->
+        <tr id='tr0'></tr>
+        <tr id='tr1'></tr>
+        <tr id='tr2'></tr>
+        <tr id='tr3'></tr>
+        <tr id='tr4'></tr>
+    </table>
+</div>
+<div id='options'>
+    <h2>选项</h2>
+    <p id='blue'>
+        <img class='ball' src='blue.png' />
+        <span class='opt-tips'>
+            【相遇之缘】<br />
+            全部随缘，看脸抽签。<br />
+            在这个模式下，任何概率<br />
+            都是随机。<br />
+            据说，拜佛祖能降低概率
+        </span>
+    </p>
+    <p id='pink'>
+        <img class='ball' src='pink.png' />
+        <span class='opt-tips'>
+            【纠缠之缘】<br />
+            平均分布，轮流处刑。<br />
+            在这个模式下，将高几率<br />
+            抽取逃过一劫的小可爱。<br />
+            底数用完后触发保底机制
+        </span>
+    </p>
+    <span id='toggle_mode' class='bt'>切换</span>
+    <span id='close_opt' class='bt7'>确定</span>
+</div>
+
+<script>
+try{
+
+//new Audio('j.mp3');
+//new Audio('jntm.mp3');
+//var bgm=new Audio('rickroll.mp3');
+var bgm=new Audio('https://music.163.com/song/media/outer/url?id=5221167');
+bgm.currentTime=43.5;
+
+function $(x){
+    return document.getElementById(x);
+}
+function ns(xlist){
+    xlist=xlist.split(' ');
+    for(var i=0;i<xlist.length;i++){
+        var x=xlist[i];
+        window['$'+x]=$(x);
+    }
+}
+function Timer(){
+    var t=0;
+    return function(f=function(){},x=1){
+        setTimeout(f,t,arguments);
+        t+=configs.frame*x;
+    }
+}
+next=Timer()
+function choose(arr){
+    return arr[Math.floor(Math.random()*arr.length)]
+}
+function music(path,time=0){
+    var audio=new Audio(path);
+    audio.currentTime=time;
+    audio.play();
+    return audio;
+}
+
+ns('entering minus num plus config start');
+ns('drawing display_num drawtitle redraw plus2 num2 minus2 redrawball tr0 tr1 tr2 tr3 tr4');
+ns('options blue pink toggle_mode close_opt');
+
+var num=1;
+var mode=1;
+var indrawing=false;
+var rest=[];
+var rows=[tr0,tr1,tr2,tr3,tr4];
+var cells=[];
+var all=configs.names.split(' ');
+var all_index=(' '+configs.names_index).split(' ');
+var star=Array(all_index.length).fill(-1);
+var spaceholder='۞';
+
+document.body.onclick=function(){
+    if(!indrawing){
+        //music('j.mp3');
+    }
+}
+$minus.onclick=function(){
+    if(num>1){num--};
+    $num.innerText=num;
+}
+$plus.onclick=function(){
+    if(num<10){num++};
+    $num.innerText=num;
+}
+$minus2.onclick=function(){
+    if(num>1){num--};
+    $num2.innerText=num;
+}
+$plus2.onclick=function(){
+    if(num<10){num++};
+    $num2.innerText=num;
+}
+$config.onclick=function(){
+    $options.style.display='block';
+}
+var toggle=$toggle_mode.onclick=function(){
+    mode=1-mode;
+    $blue.style.display=['block','none'][mode];
+    $pink.style.display=['none','block'][mode];
+}
+$close_opt.onclick=function(){
+    $options.style.display='none';
+}
+$start.onclick=redrawbutton.onclick=function(){
+    $entering.style.display='none';
+    $drawing.style.display='inline-block';
+    start();
+}
+
+function getid(x){
+    return all_index.indexOf(x);
+}
+function start(){
+    $display_num.innerText=num;
+    $drawtitle.style.display='inline-block';
+    $redraw.style.display='none';
+    cells=[]
+    for(var i=0;i<5;i++){
+        rows[i].innerHTML='';
+    }
+    for(var i=0;i<num;i++){
+        rows[i%5].innerHTML+='<td><span id="cell'+i+'" class="bt5">'+spaceholder+'</span></td>';
+    }
+    for(var i=0;i<num;i++){
+        cells.push($('cell'+i));
+    }
+    if(!mode){
+        rest=[];
+    }
+    for(var i=0;i<num-1;i++){
+        drawone(i);
+    }
+    if(configs.eggs.able && Math.random()<configs.eggs.p_end){
+        var _rest=rest.concat();
+        drawone(num-1);
+        rest=_rest;
+        var _name=configs.fixed[which]||choose(rest);
+        next(function(args){cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2])},1,_name);
+        rest=rest.filter(function(x){return x!=name});
+        //没写完
+    }else{drawone(num-1);}
+    next(function(){
+        $num2.innerText=num;
+        $redrawball.src=['blue','pink'][mode]+'.png';
+        $drawtitle.style.display='none';
+        $redraw.style.display='inline-block';
+        for(var i=0;i<num;i++){
+            cells[i].onclick=(function(i){
+                return function(){
+                    drawone(i);
+                    next(function(){
+                        bgm.pause();
+                        indrawing=false;
+                    });
+                    bgm.play()
+                    next=Timer();
+                };
+            })(i);
+        bgm.pause();
+        indrawing=false;
+        }
+    });
+    indrawing=true;
+    bgm.play()
+    next=Timer();
+}
+function drawone(which,before=configs.before){
+    for(var i=0;i<before;i++){
+        next(function(){cells[which].innerText=choose(all)});
+    }
+    if(!rest.length){
+        rest=all.concat();
+    }
+    var name=configs.fixed[which]||choose(rest);
+    next(function(args){
+        cells[which].innerText=getid(args[2])+' '+(configs.cuttwo?args[2].slice(-2):args[2]);
+        cells[which].classList.add('shown');
+        if(mode&&args[3]){
+            cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />保<br />底</span>';
+        }
+        if(!mode){
+            var _id=getid(args[2]);
+            var _star=star[_id]+=1;
+            if(_star>0){
+                var _text=_star<7?_star:'6+';
+                cells[which].innerHTML+='<span style="color:#000000;display:inline-block;font-size:0.4em;line-height:1em;"><br />'+_text+'<br />命</span>';
+            }
+        }
+
+    },1,name,rest.length==1);
+    rest=rest.filter(function(x){return x!=name});
+}
+
+var time=new Date();
+var ext={exclude:[]};
+if(time.getHours()<9){
+    all=all.filter(function(x){return ext.exclude.indexOf(getid(x))==-1})
+}
+
+toggle();
+
+console.log(`COPYRIGHT(c) Github@laman29 2024
+版权所有(c) Github@laman29 2024
+
+本项目（https://laman29.github.io/draw32/fzsz_g24201.html）由Github用户@laman29提供
+本文件（包括但不限于本声明、以下代码的完整内容）遵循GPLv3开源
+
+作者Bilibili：@laman29
+联系方式（QQ）：292001748
+
+公益合作：Bilibili@福州三山三叶草TL
+`);
+
+}catch(e){alert('都怪laman29不仔细，这个页面出现了一个Bug！\n错误信息：'+e)}
+</script>
+</body>
+</html>
