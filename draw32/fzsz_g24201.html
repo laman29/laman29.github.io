@@ -17,7 +17,7 @@ COPYRIGHT(c) Github@laman29 2024
 <html>
 <head>
 <meta name='viewport' content='width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no' />
-<title>fzsz_g24201</title>
+<title>咕咕抽号机</title>
 <script>
 var configs={
 
@@ -201,7 +201,7 @@ td{
 </head>
 <body>
 <div id='entering'>
-    <h1>欢迎抽号</h1>
+    <h1 onclick='if(this.innerText=="咕咕咕咕"){location.reload(false);}this.innerText="咕咕咕咕";$config.innerText="咕咕咕";$start.innerText="&nbsp;咕咕咕&nbsp;";'>欢迎抽号</h1>
     <p>
         <span id='minus' class='bt t34'>-</span>
         <span id='num'>1</span>
@@ -239,19 +239,19 @@ td{
         <span class='opt-tips'>
             【相遇之缘】<br />
             全部随缘，看脸抽签。<br />
-            在这个模式下，任何概率<br />
-            都是随机。<br />
-            据说，拜佛祖能降低概率
+            每一位<span style='display: inline-block; font-size: 0.5em'>光荣的<br />三中学子</span>被抽到的概率<br />
+            都相等<br />
+            除非<span style='display: inline-block; font-size: 0.5em'>光荣的<br />三中学子</span>开挂
         </span>
     </p>
     <p id='pink'>
         <img class='ball' src='pink.png' />
         <span class='opt-tips'>
             【纠缠之缘】<br />
-            平均分布，轮流处刑。<br />
-            在这个模式下，将高几率<br />
-            抽取逃过一劫的小可爱。<br />
-            底数用完后触发保底机制
+            除非全部抽完，<br />
+            否则<span style='display: inline-block; font-size: 0.5em'>光荣的<br />三中学子</span>的卡池不会更新<br />
+            在这个模式下，将优先抽<br />
+            取未被抽到过的<span style='display: inline-block; font-size: 0.5em'>光荣的<br />三中学子</span>。<br />
         </span>
     </p>
     <span id='toggle_mode' class='bt'>切换</span>
