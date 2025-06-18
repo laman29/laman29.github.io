@@ -4,7 +4,7 @@
 <title>首页 | Laman29</title>
 <style>
 #header{
-    font-size: 2em; /* 3em */
+    font-size: 2.5em;
     text-align: center;
     background: #ffffff;
     position: fixed;
@@ -15,7 +15,7 @@
 }
 #headtitle{
     text-decoration: none;
-    line-height: 1em; /* 1.25em */
+    line-height: 1.25em;
 }
 #content{
     text-align: left;
@@ -30,6 +30,7 @@
 body{
     font-family: PingFangSC-Regular,Verdana,Arial,"微软雅黑","宋体";
     font-size: 3.5vw;
+    color: #1f1e33;
     padding: 4em 0.5em 0 0.5em;
     line-height: 1.2em;
 }
@@ -43,44 +44,71 @@ h2{
     color: gray;
 }
 a:link,a:visited{
-    color: darkorchid;
+    color: #3453bc;
     text-decoration: none;
 }
 a:hover,a:active{
-    color: red;
-    text-decoration: underline;
+    color: #33e1f1;
+    text-decoration: none;
 }
 p{
     margin: 0.5em 0;
 }
-p a:link,p a:visited{
+p:hover{
+    background-color: #d5f1f3;
+    margin-color: red;
+}
+p:hover::before{
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100%;
+    height: 3em;
+    background-color: lightblue;
+    z-index: -1;
+}
+#content p a{
     display: inline-block;
-    border: 0.2em solid #114514;
+    border: 0.2em solid;
+    border-color: #9999ff #1f1e33 #1f1e33 #9999ff;
     margin: 0.1em;
     padding: 0.1em;
     border-radius: 0.3em;
     font-size: 0.9em;
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     color: #ffffff;
-    background-color: rgb(1 145 14);
+    background-color: #3453bc;
     cursor: pointer;
 }
-p a:hover,p a:active{
-    background-color: #006600;
-    color: #ffff00;
-    text-decoration: none;
+#content p a:hover{
+    background-color: #4169e1;
+    border-color: #aaaaff #34488c #34488c #aaaaff;
 }
-p a::after{
+#content p a:active{
+    border-color: #34488c #9999ff #9999ff #34488c;
+    background-color: #4169e1;
+    color: #ffffff;
+    cursor: grabbing;
+}
+#content p a::after{
     content: ' >>';
     color: #abcdef
 }
-p a:hover::after{
-    color: #ff6600;
+#content p a:hover::after{
+    color: #ffff99;
+}
+#content p a input,#content p a select{
+    height: 1em;
+    font-size: 1.2em;
+    color: #34488c;
+    border-color: #4169e1;
 }
 #title>span{
     display: none;
 }
 #content>a{
+    scroll-margin-top: 3em;
     font-size: 1.5em;
     font-family: Ubuntu Mono,Microsoft YaHei,微软雅黑,sans-serif;
     font-weight: bold;
@@ -88,7 +116,7 @@ p a:hover::after{
 #content>a::before{
     content: ' § ';
     font-size: 0.6em;
-    color: #424242;
+    color: #7777aa;
     font-weight: normal;
 }
 #dontfar1{
@@ -104,13 +132,25 @@ p a:hover::after{
 </head>
 <body style='height: 100%'>
 <div id='header'>
-    <a id='headtitle'>瞧瞧你这，多老的设备呀！</a>
+    <a id='headtitle'>Ciallo～(∠・ω< )⌒☆</a>
     <div style='height:0.1em;width:100%;background-color:#aaaaaa;' align='center'></div>
     <div style='height:0.1em;width:100%;background-color:#eeeeee;' align='center'></div>
 </div>
 <div id='content'>
-<!--    <h2>
-        <a name='title' onclick='location.reload(1);'>
+    <p>
+        <a href='https://space.bilibili.com/544179567'>
+            <span style='color: #cccccc;'>→ 私の<span style='color:lightpink'>bilibili</span>を見てください！</span>
+        </a>
+        <span style='
+            display: inline-block;
+            border: 0.3em solid transparent;
+            border-radius: 1em;
+        ' onclick='this.id=(typeof window)+(typeof 0721)'></span>
+    </p>
+
+    <!--
+    <h2>
+        <a onclick='location.reload(1);'>
             <span style='color:#ff0000'>练</span>
             <span style='color:#0000ff'>习</span>
             <span style='color:#00cc00'>时</span>
@@ -124,20 +164,22 @@ p a:hover::after{
         </a>
     </h2>
     <h1 id='toexam' style='color:red;text-align:center'></h1>
--->
-    <!-- h3 style='color:brown;text-align:center'>中考日期：6月19日</h3 -->
+
+    <!-- h3 style='color:brown;text-align:center'>中考日期：6月19日</h3>
     <h3 style='color:brown;text-align:center'>“天地转，光阴迫。一万年太久，只争朝夕。”<span id='toexamstart'></span></h3>
     <img id='dontfar1' src='toexam.jpg' alt='即将奔赴考场的你' />
     <img id='dontfar' src='dontfaratlastmoment.jpg' alt='最后一刻不要Far' />
+    -->
 
     <ul>
         <li><a href='#fast' target='_self'>快速导航</a></li>
         <li><a href='#game' target='_self'>游戏</a></li>
         <li><a href='#tool' target='_self'>工具箱</a></li>
         <li><a href='#prog' target='_self'>有趣的玩意</a></li>
+        <li><a href='#link' target='_self'>友情链接</a></li>
     </ul>
 
-    <a name='fast' href='#title' target='_self'>快速导航</a>
+    <a name='fast' href='#' target='_self'>快速导航</a>
     <p>
     <a href='https://cn.bing.com/'>必应搜索</a>
     <a href='tool/test.html'>浏览器测试</a>
@@ -145,34 +187,65 @@ p a:hover::after{
     <a href='circle/index.html'>Circle选关</a>
     </p>
 
-    <a name='game' href='#title' target='_self'>游戏</a>
+    <a name='game' href='#' target='_self'>游戏</a>
     <p>游戏主页<a href='9934/wxr/'>前往</a></p>
     <p>本站游戏<a href='circle/index.html'>Circle</a><a href='9934/wxr/minigames/2048.html'>2048小游戏</a></p>
     <p>经典游戏<a href='https://darock.top/tapToStart/index.html'>Phi Online</a><a href='https://cdn.198434.com/cli/H5/sheep2sheep/'>羊了个羊</a><a href='https://cdn.198434.com/cli/H5/sheep2sheepkun/'>只了个因</a><a href='https://cdn.198434.com/cli/H5/sheep/'>摸鱼</a></p>
 
-    <a name='tool' href='#title' target='_self'>工具箱</a>
-    <p>Desmos<a href='https://www.desmos.com/geometry/olnhd8zrhj?lang=zh-CN'>凸透镜成像</a><a href='https://www.desmos.com/calculator/xo1uushdh2?lang=zh-CN'>调色板-RGB</a><a href='https://www.desmos.com/calculator/wbjkk8r31t?lang=zh-CN'>调色板-HSV</a><a href='https://www.desmos.com/calculator/4ew4a1dkza?lang=zh-CN'>流星</a><a href='https://www.desmos.com/calculator/nhedwd0ro4?lang=zh-CN'>单曲rks</a></p>
+    <a name='tool' href='#' target='_self'>工具箱</a>
+    <p>Desmos<a href='https://www.desmos.com/geometry/olnhd8zrhj?lang=zh-CN'>凸透镜成像</a><a href='https://www.desmos.com/calculator/xo1uushdh2?lang=zh-CN'>调色板-RGB</a><a href='https://www.desmos.com/calculator/wbjkk8r31t?lang=zh-CN'>调色板-HSV</a><a href='https://www.desmos.com/calculator/4ew4a1dkza?lang=zh-CN'>流星</a><a href='https://www.desmos.com/calculator/nhedwd0ro4?lang=zh-CN'>单曲rks</a><a href='https://www.desmos.com/calculator/rrs592l7oy?lang=zh-CN'>推分计算器</a></p>
     <p>链接中转站<a href='as/'>前往</a></p>
     <p>下载站（在建）<a <!--href='download/'-- >不可用</a></p>
     <p>手写<a href='tool/write.html'>前往</a></p>
     <p>浏览器测试<a href='tool/test.html'>前往</a></p>
 
-    <a name='prog' href='#title' target='_self'>一些有趣的玩意</a>
+    <a name='prog' href='#' target='_self'>一些有趣的玩意</a>
     <p>32班专属抽号机<a href='go/?draw32'>前往</a></p>
     <p>电信诈骗<a href='http://vdse.bdstatic.com//192d9a98d782d9c74c96f09db9378d93.mp4'>长按复制链接</a></p>
     <p>更新日志<a href='https://github.com/laman29/laman29.github.io/commits/main'>查看</a></p>
+
+    <a name='link' href='#' target='_self'>友情链接</a>
+    <p><a onclick="location.href='//ciallo.cc/'">
+        <input value='https://' />
+    </a></p>
+
     <p class='center comment'>—— 全球互联网关闭后，以下站点将无法访问 ——</p>
     <p>地球联合政府<a href='https://uegov.world/'>前往</a></p>
     <p>地下城居住资格抽签<a href='https://uegov.world/random-draw/'>前往</a></p>
 
 </div>
-<div id='bottom'>Provided by Simonov/<b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=异常报告&body=laman29:%0a%20%20'>联系laman29</a></div>
+<div id='bottom'>Provided by <b>laman29</b>. <a class='comment' href='mailto:fzwxr@hotmail.com?subject=异常报告&body=laman29:%0a%20%20'>联系laman29</a></div>
+
+<template id='single'>
+    <form method='post' target='sy'>
+        <input name='message' value='Ciallo～(∠・ω< )⌒☆' />
+    </form>
+    <iframe id='sy' style='dispjlay:none'></iframe>
+</template>
+
+<template id='extend'>
+<span>
+Ciallo～(∠・ω< )⌒<a href='alert("Ciallo～(∠・ω< )⌒☆")'>☆</a>
+<p>
+<a onclick='document.getElementById("memory").innerText="尘封的回忆即将展开"'>玻璃碎片
+<select onchange='location.reload(1)'>
+<option value='1' selected>回忆</option>
+<option>注视一切的终结</option>
+</select></a>
+<a id='memory' onclick='if(this.innerText.indexOf("回忆")>-1){
+    location.href="//yahc.top/c"
+}'>破碎的记忆已然淡去</a>
+</a>
+</p>
+</span>
+</template>
 
 <script>
+/*
 
 document.getElementById('headtitle').innerText='距离中考仅剩'+Math.ceil((1718726400000-Date.now())/86400000)+'天';
 function updateToExam(){
-var tostart=Math.round(1718755200000+1800000-Date.now())/1000;
+var tostart=Math.round(1800000000000-Date.now())/1000;
 //var weeks=Math.floor(tostart/(86400*7));
 var days=Math.floor(tostart/86400);
 var hours=Math.floor(tostart%86400/3600);
@@ -185,12 +258,56 @@ document.getElementById('headtitle').innerText=s;
 updateToExam();
 setInterval(updateToExam,0);
 
+*/
+
+var flusher=(function(){
+    var loaded=false;
+    return {reload:function(){
+        if(!loaded){
+            location.reload(1);
+        }
+        flusher.apply();
+    },setloaded:function(){
+        loaded=true;
+    },apply:function(){
+        flusher.setloaded()
+        return loaded
+    }}
+})()
+
+document.getElementById('headtitle').addEventListener('click',flusher.reload)
+
+document.getElementById('content').addEventListener('click',function(){
+    var obn=document.getElementById('objectnumber')
+    if(null !== obn){
+        obn.parentNode.removeChild(obn);
+        flusher.setloaded();
+        /*var sf=document.getElementById('single').content.cloneNode(true).children;
+        sf[1].addEventListener('load',function(){
+            sf[0].action='https://yahc.top/q/send.php';
+            sf[0].submit();
+            flusher.faded=true;
+        });
+        sf[1].src='https://yahc.top/q/set_session.php?username=ciall';
+        document.body.appendChild(sf[1])
+        */
+        	flusher.faded=true;
+        flusher.apply=function(){
+            if(flusher.faded){
+                //prompt('请先设置昵称：');
+                document.getElementById('content').appendChild(document.getElementById('extend').content.cloneNode(true).children[0]);
+                //
+            }
+        }
+    }
+})
+
 setInterval((function(){
     var ht=document.getElementById('headtitle');
     var i=0;
     return function(){
-        //ht.style.color='hsl('+(i++)%360+' 100% 55%)';
-        ht.style.color='hsl(7 100% '+(60-9*Math.cos(i++/13))+'%)';
+        ht.style.color='hsl('+(i++)%360+' 100% 55%)';
+        //ht.style.color='hsl(7 100% '+(60-9*Math.cos(i++/13))+'%)';
     };
 })(),48);
 (function(){
