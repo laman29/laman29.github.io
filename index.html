@@ -225,7 +225,7 @@ p:hover::before{
 
 <template id='extend'>
 <span>
-Ciallo～(∠・ω< )⌒<a href='alert("Ciallo～(∠・ω< )⌒☆")'>☆</a>
+Ciallo～(∠・ω< )⌒<a onclick='alert("Ciallo～(∠・ω< )⌒☆")'>☆</a>
 <p>
 <a onclick='document.getElementById("memory").innerText="尘封的回忆即将展开"'>玻璃碎片
 <select onchange='location.reload(1)'>
@@ -260,16 +260,18 @@ setInterval(updateToExam,0);
 
 */
 
+(function(){
 var flusher=(function(){
     var loaded=false;
     return {reload:function(){
         if(!loaded){
             location.reload(1);
+        }else{
+            flusher.apply();
         }
-        flusher.apply();
     },setloaded:function(){
         loaded=true;
-    },apply:function(){
+    },apply:function(flag){
         flusher.setloaded()
         return loaded
     }}
@@ -277,9 +279,9 @@ var flusher=(function(){
 
 document.getElementById('headtitle').addEventListener('click',flusher.reload)
 
-document.getElementById('content').addEventListener('click',function(){
+obnid=document.getElementById('content').addEventListener('click',function(){
     var obn=document.getElementById('objectnumber')
-    if(null !== obn){
+    if(null !== obn && !flusher.faded){
         obn.parentNode.removeChild(obn);
         flusher.setloaded();
         /*var sf=document.getElementById('single').content.cloneNode(true).children;
@@ -295,12 +297,14 @@ document.getElementById('content').addEventListener('click',function(){
         flusher.apply=function(){
             if(flusher.faded){
                 //prompt('请先设置昵称：');
-                document.getElementById('content').appendChild(document.getElementById('extend').content.cloneNode(true).children[0]);
-                //
+                document.getElementById('content').appendChild(document.getElementById('extend').content.cloneNode(true).children[flusher.faded=0]);
+            }else{
+                //flusher.activate();
             }
         }
     }
 })
+})()
 
 setInterval((function(){
     var ht=document.getElementById('headtitle');
