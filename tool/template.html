@@ -155,6 +155,7 @@ function clear(e){
     for(let tx of $in.childNodes){
         tx.value='';
     }
+    show(e);
 }
 function show(e){
     let i=0;
@@ -174,16 +175,15 @@ function show(e){
 }
 function fillwith(e){
     let value=$fillbox.value;
-    let i=0;
-    for(let blank in f){
-        $in.childNodes[i].value=value;
-        i++;
+    for(let tx of $in.childNodes){
+        tx.value=value;
     }
+    show(e);
 }
 function lock(e){
     locked=!locked;
-    for(let i=0;i<Object.keys(f).length;i++){
-        $in.childNodes[i].disabled=locked;
+    for(let tx of $in.childNodes){
+        tx.disabled=locked;
     }
     [$select,$reset,$clear,$fill,$fillbox].forEach(x=>x.disabled=locked);
     $lock.innerText=locked?'Free':'Lock'
