@@ -27,8 +27,8 @@ select,input,textarea,button{
 }
 div,textarea{
     border: .1em solid #faafbe;
-    margin: .3em;
-    padding: .3em;
+    margin: .5em .1em;
+    padding: .1em .3em;
     border-radius: .5em;
 }
 button{
@@ -59,6 +59,29 @@ button{
 #out{
     flex: 1;
 }
+
+[data-tips]{
+    position: relative;
+    padding-top: .2em;
+}
+[data-tips]::before{
+    content: attr(data-tips);
+    white-space: nowrap;
+    position: absolute;
+    text-align: left;
+    top: -0.7em;
+    left: 1.3em;
+    box-sizing: border-box;
+    border-radius: 9em;
+    margin-right: 100%;
+    padding: 0 0.2em;
+    width: fit-content;
+    height: fit-content;
+    display: block;
+    background-color: #ffffee;
+    color: #faafbe;
+    font-size: 0.5em;
+}
 </style>
 <script>
 const all={
@@ -70,19 +93,19 @@ const all={
 <body>
 
 <span>公 式 做 题 就 是 快</span>
-<div id='config'>
-    <div id='confwrapper'>
+<div id='config' data-tips='♡'>
+    <div id='confwrapper' data-tips='加载'>
         <select id='select'></select>
         <button id='reset'>Reset</button>
         <button id='clear'>Clear</button>
     </div>
-    <div id='in'></div>
-    <div id='more'>
-        <button id='fill'>Fill with <input id='fillbox' /></button>
+    <div id='in' data-tips='填充'></div>
+    <div id='more' data-tips='操作'>
+        <button id='fill'>Fill with <input id='fillbox' onclick='event.stopPropagation();' /></button>
         <button id='lock'>Lock</button>
     </div>
 </div>
-<div id='show'>
+<div id='show' data-tips='?'>
     <textarea id='out'></textarea>
 </textarea>
 </div>
@@ -98,7 +121,7 @@ function ns(xlist){
         window['$'+x.replace('-','_')]=$(x);
     }
 }
-ns('config confwrapper select reset clear in show out')
+ns('config confwrapper select reset clear in show out fill fillbox lock')
 for(let k in all){
     let v=all[k];
     let op=document.createElement('option');
@@ -113,12 +136,16 @@ function load(e){
     $in.innerText='';
     for(let blank in f){
         let value=f[blank];
+        value=value.replace('§TIME',
+            new Date(Date.now()+28800000+60000*(3+Math.random()*3)).toISOString().replace('T',' ').slice(0,19)
+        );
         let tx=document.createElement('input');
         tx.value=tx.placeholder=value;
         tx.addEventListener('input',show)
         $in.appendChild(tx);
     }
     show(e);
+    $out.scroolTop=0;
     //alert($out.value);
 }
 function clear(e){
@@ -142,12 +169,31 @@ function show(e){
     }
     $out.value=str;
 }
+function fillwith(e){
+    let value=$fillbox.value;
+    let i=0;
+    for(let blank in f){
+        $in.childNodes[i].value=value;
+        i++;
+    }
+}
+function lock(e){
+    locked=!locked;
+    for(let i=0;i<Object.keys(f).length;i++){
+        $in.childNodes[i].disabled=locked;
+    }
+    [$select,$reset,$clear,$fill,$fillbox].forEach(x=>x.disabled=locked);
+    $lock.innerText=locked?'Free':'Lock'
+}
 
 let f,s;
+let locked=false;
 load({});
 $select.addEventListener('change',load);
 $reset.addEventListener('click',load);
 $clear.addEventListener('click',clear);
+$fill.addEventListener('click',fillwith);
+$lock.addEventListener('click',lock);
 
 //alert(1)
 </script>
